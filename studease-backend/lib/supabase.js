@@ -4,3 +4,16 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+
+export const createUser = async (email, password) => {
+    try {
+      const { data,error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      return {user:data.user,error:error}
+    } catch (error) {
+      throw error;
+    }
+  };
