@@ -24,6 +24,10 @@ export default function Home() {
     setAnchorElUser(null);
   };
 
+  const handleLoginClick = () => {
+    // Add your login functionality here
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
@@ -33,13 +37,17 @@ export default function Home() {
               <span className="ml-2 text-2xl font-bold text-blue-600">StudEase</span>
             </div>
             <div className="flex items-center space-x-4">
-              <IconButton className="bg-gray-200 p-2 rounded-full hover:bg-gray-400 transition duration-300">
+              <IconButton
+                className="bg-gray-200 p-3 rounded-full hover:bg-gray-400 transition duration-300"
+                style={{ width: '48px', height: '48px' }}  // Ensure size consistency
+              >
                 <NotificationsIcon className="text-black" />
               </IconButton>
               <IconButton
-                className="bg-gray-200 p-2 rounded-full hover:bg-gray-400 transition duration-300"
+                className="bg-gray-200 p-3 rounded-full hover:bg-gray-400 transition duration-300"
                 onClick={handleOpenUserMenu}
                 sx={{ p: 0 }}
+                style={{ width: '48px', height: '48px' }}  // Ensure size consistency
               >
                 <PersonIcon className="text-black" />
               </IconButton>
