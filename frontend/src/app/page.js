@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import StudentDashboard from "./pages/studentDashboard";
 
 const settings = ['Profile', 'Login', 'Logout'];
 
@@ -78,11 +77,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      <main>
-        {/* Other content */}
-        <StudentDashboard/>
-      </main>
     </div>
   );
 }
