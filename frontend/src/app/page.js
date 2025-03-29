@@ -26,6 +26,7 @@ export default function Home() {
 
   const handleLoginClick = () => {
     // Add your login functionality here
+    router.push("/login")
   };
 
   return (
