@@ -1,25 +1,19 @@
 'use client'
 
 import React from "react";
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from 'next/navigation';  // Import useRouter
 import PersonIcon from '@mui/icons-material/Person';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import WorkIcon from '@mui/icons-material/Work';
-import IconButton from '@mui/material/IconButton';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import StudentDashboard from './pages/studentDashboard';  // Correct default import
+import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';  // Add this import
+import Typography from '@mui/material/Typography';
+import StudentDashboard from "./pages/studentDashboard";
 
 const settings = ['Profile', 'Login', 'Logout'];
 
 export default function Home() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const router = useRouter();  // Initialize useRouter
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -36,17 +30,18 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <WorkIcon className="h-8 w-8 text-blue-600" />
               <span className="ml-2 text-2xl font-bold text-blue-600">StudEase</span>
             </div>
             <div className="flex items-center space-x-4">
-              <IconButton className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                <NotificationsIcon />
+              <IconButton className="bg-gray-200 p-2 rounded-full hover:bg-gray-400 transition duration-300">
+                <NotificationsIcon className="text-black" />
               </IconButton>
-              <IconButton className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" 
-                  onClick={handleOpenUserMenu} 
-                  sx={{ p: 0 }}>
-                <PersonIcon />
+              <IconButton
+                className="bg-gray-200 p-2 rounded-full hover:bg-gray-400 transition duration-300"
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0 }}
+              >
+                <PersonIcon className="text-black" />
               </IconButton>
               <Menu
                 sx={{ mt: '30px' }}
@@ -65,7 +60,7 @@ export default function Home() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <MenuItem key={setting} onClick={setting === 'Login' ? handleLoginClick : handleCloseUserMenu}>
                     <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                   </MenuItem>
                 ))}
@@ -76,7 +71,8 @@ export default function Home() {
       </header>
 
       <main>
-        <StudentDashboard />  {/* Directly render the StudentDashboard component */}
+        {/* Other content */}
+        <StudentDashboard/>
       </main>
     </div>
   );
