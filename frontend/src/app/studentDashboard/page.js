@@ -1,6 +1,5 @@
-"use client"
+"use client";
 
-// studentDashboard.js
 import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -11,10 +10,12 @@ import Header from '@/app/components';
 function StudentDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [locationTerm, setLocationTerm] = useState('');
+  const [filtersSelected, setFilters] = useState(false);
 
   return (
     <>
-      <Header/>
+      <Header />
+      <img src='Sion.jpg' alt='Sion'></img>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1 relative">
@@ -28,29 +29,90 @@ function StudentDashboard() {
             />
           </div>
           <div className="flex-1 relative">
-              <LocationOnIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="City or region"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={locationTerm}
-                onChange={(e) => setLocationTerm(e.target.value)}
-              />
-            </div>
+            <LocationOnIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="City or region"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={locationTerm}
+              onChange={(e) => setLocationTerm(e.target.value)}
+            />
+          </div>
           <button className="bg-blue-600 text-white px-8 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center">
             Search
           </button>
-          <IconButton>
-            <FilterIcon />
+          <IconButton onClick={() => setFilters(!filtersSelected)}>
+            <FilterIcon color={filtersSelected ? "primary" : "inherit"} />
           </IconButton>
         </div>
-        
-        <br></br>
-        <h2>Latest Offers</h2>
-      </div>
 
+        {/* Filter Panel */}
+        {filtersSelected && (
+          <div className="mt-4 bg-white shadow p-6 rounded-md border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Options de filtres</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Job étudiant</option>
+                  <option>Stage</option>
+                  <option>Mandat</option>
+                  <option>Proposition de TB ou TM</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Entry</option>
+                  <option>Mid</option>
+                  <option>Senior</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Tech</option>
+                  <option>Finance</option>
+                  <option>Healthcare</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Modalité</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Présentiel</option>
+                  <option>Partiellement en télétravail</option>
+                  <option>Télétravail possible</option>
+                  <option>Uniquement télétravail</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Jours de travail</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Jours de la semaine</option>
+                  <option>Uniquement du lundi au vendredi</option>
+                  <option>Uniquement weekend</option>
+                  <option>Toute la semaine lundi à dimanche</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Rénumeration</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Min-max</option>
+                  <option>Mensuel</option>
+                  <option>Horaire</option>
+                  <option>A la mission</option>
+                  <option>Bénevolat</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <br />
+        <h2 className="text-2xl font-bold">Latest Offers</h2>
+      </div>
     </>
   );
 }
 
-export default StudentDashboard;  // Ensure default export
+export default StudentDashboard;
