@@ -6,11 +6,13 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FilterIcon from '@mui/icons-material/FilterAlt';
 import IconButton from '@mui/material/IconButton';
 import Header from '@/app/components';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 function StudentDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [locationTerm, setLocationTerm] = useState('');
   const [filtersSelected, setFilters] = useState(false);
+  const [jobOffers, setJobOffers] = useState([]);
 
   return (
     <>
@@ -77,14 +79,6 @@ function StudentDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
-                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>Entry</option>
-                  <option>Mid</option>
-                  <option>Senior</option>
-                </select>
-              </div>
-              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
                 <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option>Tech</option>
@@ -120,12 +114,67 @@ function StudentDashboard() {
                   <option>Bénevolat</option>
                 </select>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Taux d'activité</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Variable</option>
+                  <option>A la tâche/mission</option>
+                  <option>Selon disponibilité</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type de contrat</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>CDD</option>
+                  <option>CDI</option>
+                  <option>A la tâche/mission</option>
+                  <option>Indépendant</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Durée d'engagement</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Des que possible</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type d'entreprise</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>Start-up</option>
+                  <option>PME</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
+                <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option>🇩🇪 Allemand</option>
+                <option>🇬🇧 Anglais</option>
+                <option>🇪🇸 Espagnol</option>
+                <option>🇫🇷 Francais</option>
+                <option>🇮🇹 Italien</option>
+                <option>🌐 Autre langue</option>
+                </select>
+              </div>
             </div>
           </div>
         )}
 
-        <div className="mt-8">
+        <div className="mt-8 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-800">Latest Offers</h2>
+          <div className="flex items-center space-x-2">
+          <span className="text-gray-600">Trier par:</span>
+            <div className="relative">
+              <select className="appearance-none bg-transparent pl-1 pr-6 py-1 text-gray-700 hover:text-gray-600 focus:outline-none focus:text-gray-600 cursor-pointer">
+                <option value="pertinence">Le plus pertinent</option>
+                <option value="recent">Le plus récent</option>
+                <option value="ancien">Le plus ancien</option>
+                <option>Le plus d'activité</option>
+                <option>Le moins d'activité</option>
+                <option value="endroit">Le plus proche</option>
+              </select>
+              <KeyboardArrowDownIcon className="pointer-events-none absolute right-0 top-1 text-gray-400" />
+            </div>
+          </div>
         </div>
       </div>
     </>
