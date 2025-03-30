@@ -15,8 +15,23 @@ function StudentDashboard() {
   return (
     <>
       <Header />
-      <img src='Sion.jpg' alt='Sion'></img>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+      {/* Page Title */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 text-center">
+        <h1 className="text-3xl font-bold text-gray-800">Espace étudiants</h1>
+      </div>
+
+      {/* Image slightly smaller but full width */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <img
+          src="Sion.jpg"
+          alt="Sion"
+          className="w-full h-64 object-cover rounded-2xl shadow-md"
+        />
+      </div>
+
+      {/* Search & Filter */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1 relative">
             <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -51,6 +66,7 @@ function StudentDashboard() {
           <div className="mt-4 bg-white shadow p-6 rounded-md border border-gray-200">
             <h3 className="text-lg font-semibold mb-4">Options de filtres</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {/* Filter Options */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
                 <select className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -108,8 +124,9 @@ function StudentDashboard() {
           </div>
         )}
 
-        <br />
-        <h2 className="text-2xl font-bold">Latest Offers</h2>
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-gray-800">Latest Offers</h2>
+        </div>
       </div>
     </>
   );
