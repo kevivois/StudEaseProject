@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase";
-import { getToken } from "next-auth/jwt"
 import cookie from "cookie";
 export async function protectRoute(req, res) {
     const cookies = cookie.parse(req.headers.cookie || "");

@@ -37,15 +37,13 @@ CREATE TABLE offers (
     remuneration_type_id UUID REFERENCES remuneration_types(remuneration_type_id),
     duration_id UUID REFERENCES engagement_durations(duration_id),
     application_deadline DATE,
-    start_date DATE,
-    end_date DATE,
-    is_remote BOOLEAN DEFAULT FALSE,
-    is_part_time BOOLEAN DEFAULT FALSE,
+    work_location_type,VARCHAR(20) -- presentiel,hybride,30% présentiel
     profile_description TEXT,
-    required_skills TEXT[],  
+    required_skills TEXT[], -- not sure for now  
     required_documents TEXT[], -- CV, lettre de motivation, etc.
     benefits TEXT[], -- Liste des avantages offerts
     application_steps TEXT[], -- Étapes du processus de recrutement (ex: postulation, entretien)
+    working_hours_description TEXT[]
     is_working_hours_flexible BOOLEAN DEFAULT FALSE,
     contact_email VARCHAR(255), -- Contact pour postuler
     contact_name VARCHAR(255), -- Contact pour postuler
@@ -97,14 +95,15 @@ CREATE TABLE engagement_durations (
 
 -- Table des relations entre les utilisateurs et les offres sauvegardées (saved_offers)
 CREATE TABLE saved_offers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
-    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, offer_id)
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Table des candidatures (applications)
 CREATE TABLE applications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
     status VARCHAR(20) DEFAULT 'en_attente',  
@@ -114,7 +113,6 @@ CREATE TABLE applications (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
     employer_feedback TEXT, -- Commentaires des recruteurs
     application_progress TEXT[], -- Liste des étapes de la candidature
-    PRIMARY KEY (user_id, offer_id)
 );
 
 -- Table des secteurs d’activité (industries)
@@ -125,19 +123,21 @@ CREATE TABLE industries (
 
 -- Table de lien entre les offres et les secteurs d'activité
 CREATE TABLE offer_industries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
-    industry_id UUID REFERENCES industries(industry_id) ON DELETE CASCADE,
-    PRIMARY KEY (offer_id, industry_id)
+    industry_id UUID REFERENCES industries(industry_id) ON DELETE CASCADE
 );
 
 -- Table des types de contrat (contract_types)
 CREATE TABLE contract_types (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contract_type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contract_type_name VARCHAR(100) UNIQUE NOT NULL
 );
 
 -- Table des relations entre offres et types de contrat
 CREATE TABLE offer_contract_types (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
     contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE CASCADE,
     PRIMARY KEY (offer_id, contract_type_id)
