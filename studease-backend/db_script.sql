@@ -4,9 +4,10 @@ CREATE TABLE users (
     auth_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,  -- Référence directe à auth.users
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
+    phone_number varchar(100) not null,
+    locations_id uuid REFERENCES locations(location_id),
     profile_description TEXT,
     skills TEXT[],  -- Liste des compétences sous forme de tableau
-    preferred_languages TEXT[], -- Langues parlées par l'utilisateur
     availability_start DATE, -- Dates de disponibilité pour les entreprises
     availability_end DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -37,7 +38,7 @@ CREATE TABLE offers (
     remuneration_type_id UUID REFERENCES remuneration_types(remuneration_type_id),
     duration_id UUID REFERENCES engagement_durations(duration_id),
     application_deadline DATE,
-    work_location_type,VARCHAR(20) -- presentiel,hybride,30% présentiel
+    work_location_type VARCHAR(20) -- presentiel,hybride,30% présentiel
     profile_description TEXT,
     required_skills TEXT[], -- not sure for now  
     required_documents TEXT[], -- CV, lettre de motivation, etc.
@@ -69,7 +70,7 @@ CREATE TABLE locations (
     location_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     country VARCHAR(100),
     region VARCHAR(100),
-    city VARCHAR(100),
+    city VARCHAR(100)
 );
 
 -- Table des horaires de travail (working_hours)
@@ -77,7 +78,7 @@ CREATE TABLE working_hours (
     working_hours_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    days_of_week VARCHAR(100)  -- Ex: 'Lundi, Mercredi, Vendredi'
+    day_of_week VARCHAR(100)  -- Ex: 'Lundi, Mercredi, Vendredi'
 );
 
 -- Table des types de rémunération (remuneration_types)
@@ -130,7 +131,6 @@ CREATE TABLE offer_industries (
 
 -- Table des types de contrat (contract_types)
 CREATE TABLE contract_types (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contract_type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contract_type_name VARCHAR(100) UNIQUE NOT NULL
 );
