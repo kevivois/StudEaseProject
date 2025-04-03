@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import { useRouter } from 'next/navigation';  // Import useRouter
+import { useRouter } from 'next/navigation';
 import PersonIcon from '@mui/icons-material/Person';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import IconButton from '@mui/material/IconButton';
@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 const settings = ['Profile', 'Login', 'Logout'];
 
 export default function Header() {
-  const router = useRouter();  // Initialize useRouter
+  const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -23,9 +23,24 @@ export default function Header() {
     setAnchorElUser(null);
   };
 
-  const handleLoginClick = () => {
-    // Add your login functionality here
-    router.push("/login")
+  const handleMenuClick = (setting) => {
+    handleCloseUserMenu();
+
+    switch (setting) {
+      case "Profile":
+        router.push("/userProfile");
+        break;
+      case "Login":
+        router.push("/login");
+        break;
+      case "Logout":
+        // Add logout logic here, e.g., clearing user session
+        console.log("User logged out");
+        router.push("/");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -38,7 +53,7 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <IconButton
               className="bg-gray-200 p-3 rounded-full hover:bg-gray-400 transition duration-300"
-              style={{ width: '48px', height: '48px' }}  // Ensure size consistency
+              style={{ width: '48px', height: '48px' }}
             >
               <NotificationsIcon className="text-black" />
             </IconButton>
@@ -46,7 +61,7 @@ export default function Header() {
               className="bg-gray-200 p-3 rounded-full hover:bg-gray-400 transition duration-300"
               onClick={handleOpenUserMenu}
               sx={{ p: 0 }}
-              style={{ width: '48px', height: '48px' }}  // Ensure size consistency
+              style={{ width: '48px', height: '48px' }}
             >
               <PersonIcon className="text-black" />
             </IconButton>
@@ -67,7 +82,7 @@ export default function Header() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={setting === 'Login' ? handleLoginClick : handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
                   <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
               ))}
