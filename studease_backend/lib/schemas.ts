@@ -16,7 +16,7 @@ export const userSchema = z.object({
   availability_end: z.string().optional(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
-});
+}).strict();
 
 // ✅ Schéma pour la table COMPANIES
 export const companySchema = z.object({
@@ -32,7 +32,7 @@ export const companySchema = z.object({
   company_website: z.string().url().optional(),
   description: z.string().optional(),
   created_at: z.string().optional(),
-});
+}).strict();
 
 // ✅ Schéma pour la table OFFERS
 export const offerSchema = z.object({
@@ -56,7 +56,7 @@ export const offerSchema = z.object({
   contact_name: z.string().min(2, "Nom du contact requis"),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
-});
+}).strict();
 
 // ✅ Schéma pour la table LOCATIONS
 export const locationSchema = z.object({
@@ -64,7 +64,7 @@ export const locationSchema = z.object({
   country: z.string().optional(),
   region: z.string().optional(),
   city: z.string().optional(),
-});
+}).strict();
 
 // ✅ Schéma pour la table APPLICATIONS
 export const applicationSchema = z.object({
@@ -78,19 +78,19 @@ export const applicationSchema = z.object({
   updated_at: z.string().optional(),
   employer_feedback: z.string().optional(),
   application_progress: z.array(z.string()).optional(),
-});
+}).strict();
 
 // ✅ Schéma pour la table JOB TYPES
 export const jobTypeSchema = z.object({
   job_type_id: z.string().uuid().optional(),
   job_type_name: z.string().min(2, "Nom du type d'emploi requis"),
-});
+}).strict();
 
 // ✅ Schéma pour la table REMUNERATION TYPES
 export const remunerationTypeSchema = z.object({
   remuneration_type_id: z.string().uuid().optional(),
   remuneration_type_name: z.string().min(2, "Nom du type de rémunération requis"),
-});
+}).strict();
 
 // ✅ Schéma pour la table WORKING HOURS
 export const workingHoursSchema = z.object({
@@ -98,23 +98,23 @@ export const workingHoursSchema = z.object({
   start_time: z.string(), // Format HH:mm:ss
   end_time: z.string(),
   day_of_week: z.string(),
-});
+}).strict();
 
 // ✅ Schéma pour la table ENGAGEMENT DURATIONS
 export const engagementDurationSchema = z.object({
   duration_id: z.string().uuid().optional(),
   duration_label: z.string().min(2, "Label requis"),
   is_flexible: z.boolean().default(false),
-});
+}).strict();
 
 // ✅ Schéma pour la table INDUSTRIES
 export const industrySchema = z.object({
   industry_id: z.string().uuid().optional(),
   industry_name: z.string().min(2, "Nom de l'industrie requis"),
-});
+}).strict();
 
 // ✅ Schéma pour la table CONTRACT TYPES
 export const contractTypeSchema = z.object({
   contract_type_id: z.string().uuid().optional(),
   contract_type_name: z.string().min(2, "Nom du type de contrat requis"),
-});
+}).strict();
