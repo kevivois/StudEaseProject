@@ -32,6 +32,10 @@ export default function Signup() {
     }
   };
 
+  const handleLoginRedirect = () => {
+    router.push('/login');
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
@@ -75,8 +79,16 @@ export default function Signup() {
           >
             Sign Up
           </button>
-          <a href="/login">Login instead</a>
         </form>
+
+        <div className="mt-4 text-center">
+          <button
+            onClick={handleLoginRedirect}
+            className="text-blue-500 hover:underline"
+          >
+            Login instead
+          </button>
+        </div>
       </div>
     </div>
   );

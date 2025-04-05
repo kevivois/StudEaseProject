@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,13 +12,17 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     // Mock login logic (Replace with real API call)
     if (email === 'admin@example.com' && password === 'password') {
       router.push('/dashboard'); // Redirect after login
     } else {
       setError('Invalid email or password');
     }
+  };
+
+  const handleRegisterRedirect = () => {
+    router.push('/signup');
   };
 
   return (
@@ -53,8 +57,16 @@ export default function Login() {
           >
             Login
           </button>
-          <a href="/signup">Register here</a>
         </form>
+
+        <div className="mt-4 text-center">
+          <button
+            onClick={handleRegisterRedirect}
+            className="text-blue-500 hover:underline"
+          >
+            Register here
+          </button>
+        </div>
       </div>
     </div>
   );

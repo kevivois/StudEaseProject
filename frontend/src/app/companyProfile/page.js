@@ -11,27 +11,27 @@ import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 
 export default function CompanyProfile() {
-  const [user, setUser] = useState({
-    name: "John Doe",
-    gender: "Male",
-    dob: "2005-09-04", // Use YYYY-MM-DD format for input type="date"
-    email: "johndoe@example.com",
-    phoneNumber: "+44 349248535",
-    bio: "Software engineer passionate about web development.",
+  const [company, setCompany] = useState({
+    companyName: "Acme Corp",
+    industry: "Technology",
+    founded: "2001", // YYYY format
+    email: "contact@acmecorp.com",
+    phoneNumber: "+1 (555) 123-4567",
+    description: "Innovative solutions for a digital world.",
   });
 
-  const [isEditing, setIsEditing] = useState(false); // Toggle between edit and read mode
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setCompany({ ...company, [e.target.name]: e.target.value });
   };
 
   const handleSave = () => {
-    setIsEditing(false); // Switch to reading mode
+    setIsEditing(false);
   };
 
   const handleEdit = () => {
-    setIsEditing(true); // Switch to editing mode
+    setIsEditing(true);
   };
 
   return (
@@ -39,112 +39,112 @@ export default function CompanyProfile() {
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         <Typography variant="h4" className="text-left mb-6">
-          {isEditing ? "Edit Profile" : "Profile"}
+          {isEditing ? "Edit Company Profile" : "Company Profile"}
         </Typography>
 
-        <br/>
+        <br />
 
         <div className="flex items-center space-x-6 mb-6">
-          <Avatar sx={{ width: 90, height: 90 }}>U</Avatar>
+          <Avatar sx={{ width: 90, height: 90 }}>C</Avatar>
           {isEditing && (
-            <Button variant="outlined">Change Photo</Button>
+            <Button variant="outlined">Change Logo</Button>
           )}
         </div>
 
         <Divider className="mb-6" />
-        <br></br>
+        <br />
+
         {isEditing ? (
-          // Editing Mode (TextFields)
           <div className="flex flex-col gap-5">
             <TextField
               fullWidth
-              label="Name"
-              name="name"
-              value={user.name}
+              label="Company Name"
+              name="companyName"
+              value={company.companyName}
               onChange={handleChange}
-              className="mb-6" // Added margin bottom for spacing
+              className="mb-6"
             />
             <TextField
               fullWidth
               select
-              label="Gender"
-              name="gender"
-              value={user.gender}
+              label="Industry"
+              name="industry"
+              value={company.industry}
               onChange={handleChange}
-              className="mb-6" // Added margin bottom for spacing
+              className="mb-6"
             >
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
+              <MenuItem value="Technology">Technology</MenuItem>
+              <MenuItem value="Finance">Finance</MenuItem>
+              <MenuItem value="Healthcare">Healthcare</MenuItem>
+              <MenuItem value="Education">Education</MenuItem>
               <MenuItem value="Other">Other</MenuItem>
             </TextField>
             <TextField
               fullWidth
-              label="Date of Birth"
-              name="dob"
-              type="date"
-              value={user.dob}
+              label="Year Founded"
+              name="founded"
+              type="number"
+              value={company.founded}
               onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
-              className="mb-6" // Added margin bottom for spacing
+              className="mb-6"
             />
             <TextField
               fullWidth
-              label="Email"
+              label="Company Email"
               name="email"
-              value={user.email}
+              value={company.email}
               onChange={handleChange}
-              className="mb-6" // Added margin bottom for spacing
+              className="mb-6"
             />
             <TextField
               fullWidth
               label="Phone Number"
               name="phoneNumber"
-              value={user.phoneNumber}
+              value={company.phoneNumber}
               onChange={handleChange}
-              className="mb-6" // Added margin bottom for spacing
+              className="mb-6"
             />
             <TextField
               fullWidth
-              label="Bio"
-              name="bio"
-              value={user.bio}
+              label="Company Description"
+              name="description"
+              value={company.description}
               onChange={handleChange}
               multiline
               rows={4}
-              className="mb-6" // Added margin bottom for spacing
+              className="mb-6"
             />
           </div>
         ) : (
-          // Reading Mode (Static Text)
           <div className="space-y-6">
             <Box>
-              <strong>Name:</strong>
-              <Typography variant="body1">{user.name}</Typography>
+              <strong>Company Name:</strong>
+              <Typography variant="body1">{company.companyName}</Typography>
             </Box>
             <Box>
-              <strong>Gender:</strong>
-              <Typography variant="body1">{user.gender}</Typography>
+              <strong>Industry:</strong>
+              <Typography variant="body1">{company.industry}</Typography>
             </Box>
             <Box>
-              <strong>Date of Birth:</strong>
-              <Typography variant="body1">{user.dob}</Typography>
+              <strong>Year Founded:</strong>
+              <Typography variant="body1">{company.founded}</Typography>
             </Box>
             <Box>
-              <strong>Email:</strong>
-              <Typography variant="body1">{user.email}</Typography>
+              <strong>Company Email:</strong>
+              <Typography variant="body1">{company.email}</Typography>
             </Box>
             <Box>
               <strong>Phone Number:</strong>
-              <Typography variant="body1">{user.phoneNumber}</Typography>
+              <Typography variant="body1">{company.phoneNumber}</Typography>
             </Box>
             <Box>
-              <strong>Bio:</strong>
-              <Typography variant="body1">{user.bio}</Typography>
+              <strong>Company Description:</strong>
+              <Typography variant="body1">{company.description}</Typography>
             </Box>
           </div>
         )}
 
-        <br></br>
+        <br />
 
         {isEditing ? (
           <Button variant="contained" className="mt-6" onClick={handleSave}>
