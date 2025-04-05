@@ -1,0 +1,1 @@
+/* route to create one location and to get all locations */

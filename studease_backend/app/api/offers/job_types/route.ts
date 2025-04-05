@@ -1,0 +1,1 @@
+/*route to create a job_types and to get all*/

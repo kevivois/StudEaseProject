@@ -14,7 +14,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         return NextResponse.json({ error: "no id" }, { status: 500 });
       }
       let {data,error} = await supabase.from('users').select(`
-        *
+        *,auth.users(id,email,password),saved_offers(*),applications(*)
       `).eq('user_id', params.id).single();
       
       if (error) throw error;

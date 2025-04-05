@@ -1,0 +1,1 @@
+/*route to create an industries and to get all*/

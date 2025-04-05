@@ -1,0 +1,1 @@
+/* route to get all contract_types and to create one*/

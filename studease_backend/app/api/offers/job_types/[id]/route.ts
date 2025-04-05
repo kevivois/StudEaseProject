@@ -1,0 +1,1 @@
+/*route to get only one job_types*/

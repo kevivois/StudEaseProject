@@ -1,0 +1,1 @@
+/* route to create a duration and to get all (if necessary , doesnt seems to now)*/
