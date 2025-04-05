@@ -15,7 +15,7 @@ export default function Login() {
 
     // Mock login logic (Replace with real API call)
     if (email === 'admin@example.com' && password === 'password') {
-      router.push('/dashboard'); // Redirect after login
+      router.push('/studentDashboard'); // Redirect after login
     } else {
       setError('Invalid email or password');
     }
