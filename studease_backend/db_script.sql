@@ -60,7 +60,7 @@ CREATE TABLE users (
 CREATE TABLE company_types (
     company_type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     label VARCHAR(20) NOT NULL
-)
+);
 
 -- Table des entreprises (companies)
 CREATE TABLE companies (
@@ -94,7 +94,7 @@ CREATE TABLE offers (
     application_steps TEXT[], -- Étapes du processus de recrutement (ex: postulation, entretien)
     languages TEXT[],
     working_days_hours_description TEXT[],
-    job_level VARCHAR(50)
+    job_level VARCHAR(50),
     is_working_hours_flexible BOOLEAN DEFAULT FALSE,
     contact_email VARCHAR(255), -- Contact pour postuler
     contact_name VARCHAR(255), -- Contact pour postuler
@@ -122,7 +122,7 @@ CREATE TABLE applications (
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
     employer_feedback TEXT, -- Commentaires des recruteurs
-    application_progress TEXT[], -- Liste des étapes de la candidature
+    application_progress TEXT[] -- Liste des étapes de la candidature
 );
 
 
@@ -138,6 +138,5 @@ CREATE TABLE offer_industries (
 CREATE TABLE offer_contract_types (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
-    contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE CASCADE,
-    PRIMARY KEY (offer_id, contract_type_id)
+    contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE CASCADE
 );
