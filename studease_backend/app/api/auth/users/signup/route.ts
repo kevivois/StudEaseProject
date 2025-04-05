@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { userSchema } from "@/lib/schemas"; // Import du schéma
+import { registerUserSchema } from "@/lib/schemas"; // Import du schéma
 
 export async function POST(request: Request) {
 
@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
   const body = await request.json();
 
-  const parsedBody = userSchema.safeParse(body);
+  const parsedBody = registerUserSchema.safeParse(body);
     if (!parsedBody.success) {
       return NextResponse.json(
         { error: "Données invalides", details: parsedBody.error.format() },

@@ -59,7 +59,7 @@ CREATE TABLE users (
 
 CREATE TABLE company_types (
     company_type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    label VARCHAR(20) NOT NULL,
+    label VARCHAR(20) NOT NULL
 )
 
 -- Table des entreprises (companies)
@@ -86,16 +86,19 @@ CREATE TABLE offers (
     remuneration_type_id UUID REFERENCES remuneration_types(remuneration_type_id),
     duration_id UUID REFERENCES engagement_durations(duration_id) ON DELETE SET NULL,
     application_deadline DATE,
-    work_location_type VARCHAR(20) -- presentiel,hybride,30% présentiel
+    work_location_type VARCHAR(20), -- presentiel,hybride,30% présentiel
     profile_description TEXT,
     required_skills TEXT[], -- not sure for now  
     required_documents TEXT[], -- CV, lettre de motivation, etc.
     benefits TEXT[], -- Liste des avantages offerts
     application_steps TEXT[], -- Étapes du processus de recrutement (ex: postulation, entretien)
-    working_hours_description TEXT[],
+    languages TEXT[],
+    working_days_hours_description TEXT[],
+    job_level VARCHAR(50)
     is_working_hours_flexible BOOLEAN DEFAULT FALSE,
     contact_email VARCHAR(255), -- Contact pour postuler
     contact_name VARCHAR(255), -- Contact pour postuler
+    documents_urls TEXT[],
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
