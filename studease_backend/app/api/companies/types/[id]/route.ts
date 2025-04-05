@@ -1,0 +1,1 @@
+/*route to get a type of company */

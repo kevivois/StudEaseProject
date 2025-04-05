@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   const response = await supabase
       .from('users')
       .insert([{
-        user_id: data.user.id,  // Lier l'utilisateur créé à l'auth.users
+        auth_user_id: data.user.id,  // Lier l'utilisateur créé à l'auth.users
         first_name,
         last_name,
         profile_description,

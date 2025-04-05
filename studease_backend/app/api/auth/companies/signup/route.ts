@@ -9,7 +9,7 @@ import { registerCompanySchema } from "@/lib/schemas"; // Import du schéma
 export async function POST(request: Request) {
 
   try{
-
+    const supabase = createRouteHandlerClient({ cookies });
     const body = await request.json();
 
 
@@ -24,17 +24,19 @@ export async function POST(request: Request) {
 
   const { email, password, company_name, company_type_id, company_address, company_phone, company_website } = parsedBody.data;
 
-  const supabase = createRouteHandlerClient({ cookies });
+
+  await supabase.from("company_types").select("*").eq("company_type_id",company_type_id).single().throwOnError()
+
   const { data, error } = await supabase.auth.signUp({ email, password });
 
   if(!data || !data.user || !data.user.id){
-    throw new Error("created user data is null : server Error "+error?.message)
+    throw new Error("server Error "+error?.message)
   }
 
   const response = await supabase
       .from('companies')
       .insert([{
-        company_id: data?.user?.id,  // Utilisation de l'ID de auth.users
+        auth_user_id: data?.user?.id,  // Utilisation de l'ID de auth.users
         company_name,
         company_type_id,
         company_address,

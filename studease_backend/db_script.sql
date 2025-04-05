@@ -84,6 +84,7 @@ CREATE TABLE offers (
     job_type_id UUID REFERENCES job_types(job_type_id) ON DELETE SET NULL,
     location_id UUID REFERENCES locations(location_id) ON DELETE SET NULL,
     remuneration_type_id UUID REFERENCES remuneration_types(remuneration_type_id),
+    contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE SET NULL,
     duration_id UUID REFERENCES engagement_durations(duration_id) ON DELETE SET NULL,
     application_deadline DATE,
     work_location_type VARCHAR(20), -- presentiel,hybride,30% présentiel
@@ -93,6 +94,8 @@ CREATE TABLE offers (
     benefits TEXT[], -- Liste des avantages offerts
     application_steps TEXT[], -- Étapes du processus de recrutement (ex: postulation, entretien)
     languages TEXT[],
+    activity_rate_min VARCHAR(50) NOT NULL,
+    activity_rate_max VARCHAR(50) NOT NULL,
     working_days_hours_description TEXT[],
     job_level VARCHAR(50),
     is_working_hours_flexible BOOLEAN DEFAULT FALSE,
@@ -131,12 +134,4 @@ CREATE TABLE offer_industries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
     industry_id UUID REFERENCES industries(industry_id) ON DELETE CASCADE
-);
-
-
--- Table des relations entre offres et types de contrat
-CREATE TABLE offer_contract_types (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    offer_id UUID REFERENCES offers(offer_id) ON DELETE CASCADE,
-    contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE CASCADE
 );

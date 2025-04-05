@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       let offerId = params.id
       
       let {data,error} = await supabase.from('offers').select(`
-        *
+        *,industries(*),companies(*),job_types(*),locations(*),remuneration_types(*),engagement_durations(*),contract_types(*)
       `).eq('offer_id', offerId).single();
       
       if (error) throw error;
