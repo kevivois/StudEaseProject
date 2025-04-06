@@ -130,6 +130,17 @@ export const engagementDurationSchema = z.object({
   is_flexible: z.boolean().default(false),
 }).strict();
 
+export const userUpdateSchema = z.object({
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  phone_number: z.string().optional(),
+  location_id: z.string().uuid().optional(),
+  profile_description: z.string().optional(),
+  skills: z.array(z.string()).optional(),
+  availability_start: z.string().optional(), // ISO Date
+  availability_end: z.string().optional(),
+}).strict();
+
 // ✅ INDUSTRIES
 export const industrySchema = z.object({
   industry_id: z.string().uuid().optional(),
@@ -169,3 +180,18 @@ export const offerContractTypeSchema = z.object({
   offer_id: z.string().uuid(),
   contract_type_id: z.string().uuid(),
 }).strict();
+
+
+export const companyUpdateSchema = z.object({
+  company_name: z.string().optional(),
+  company_logo_url: z.string().optional(),
+  company_address: z.string().optional(),
+  company_phone: z.string().optional(),
+  company_website: z.string().optional(),
+  company_description: z.string().optional(),
+});
+
+export const updateUserSchema = z.object({
+  email: z.string().email().optional(),
+  password: z.string().min(8).optional(),
+});
