@@ -21,10 +21,6 @@ export async function POST(request: NextRequest) {
 
     let body = await request.json();
 
-    if(body.application_deadline){
-      body.application_deadline = new Date(body.application_deadline)
-    }
-
     const parsedBody = offerSchema.safeParse(body);
         if (!parsedBody.success) {
           return NextResponse.json(

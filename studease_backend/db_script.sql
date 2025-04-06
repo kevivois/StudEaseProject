@@ -87,6 +87,8 @@ CREATE TABLE offers (
     contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE SET NULL,
     duration_id UUID REFERENCES engagement_durations(duration_id) ON DELETE SET NULL,
     application_deadline DATE,
+    start DATE NOT NULL,
+    end DATE DEFAULT NULL,
     work_location_type VARCHAR(20), -- presentiel,hybride,30% présentiel
     profile_description TEXT,
     required_skills TEXT[], -- not sure for now  

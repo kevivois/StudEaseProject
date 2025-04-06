@@ -19,11 +19,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       
       let {data,error} = await supabase.from('offers').select(`
         *
-      `).eq('offer_id', offerId).single();
-      
-      if (error) throw error;
-      
-      if(!data) throw Error("do not exist")
+      `).eq('offer_id', offerId).single().throwOnError();
+    
 
         let dbData = await getUserDataType(request)
 
@@ -38,7 +35,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
             const {status,application_message,documents} = parsedBody.data
 
-            let userId = session.user.id
+            let userId = dbData.user.user_id
             let offerId = params.id
 
             let {data:offerData,error:offerError} = await supabase.from('applications').insert({
@@ -53,12 +50,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
               throw new Error("Error while creating applications "+offerError?.message)
             }
             return NextResponse.json({offer:offerData});
-
-
-
-
         }else{
-          throw new Error("only user can apply to offer")
+          throw Error("only user can apply to offer")
         }
     } catch (error:any) {
       return NextResponse.json({ error: error.message }, { status: 500 });
