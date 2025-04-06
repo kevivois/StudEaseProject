@@ -13,11 +13,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
       if(!params.id){
         return NextResponse.json({ error: "no id" }, { status: 500 });
       }
-      let offerId = params.id
       
       let {data,error} = await supabase.from('offers').select(`
         *,industries(*),companies(*),job_types(*),locations(*),remuneration_types(*),engagement_durations(*),contract_types(*)
-      `).eq('offer_id', offerId).single();
+      `).eq('offer_id', params.id).single();
       
       if (error) throw error;
       

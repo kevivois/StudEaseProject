@@ -1,9 +1,9 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getUserOrCompany } from '@/lib/middleware';
 
-
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     try {
       const supabase = createRouteHandlerClient({ cookies });
       const { data: { session } } = await supabase.auth.getSession();
@@ -13,17 +13,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
       if(!params.id){
         return NextResponse.json({ error: "no id" }, { status: 500 });
       }
-      let {data,error} = await supabase.from('companies').select(`
-        *,auth.users(id,email,password),offers(*),
-      `).eq('company_id', params.id).single();
+      let {company} = await getUserOrCompany(request,params.id)
       
-      if (error) throw error;
-
-      if(!data) throw Error("do not exist")
+      if(!company){
+        return NextResponse.json({ error: 'Do not exist' }, { status: 403 });
+      }
 
       
   
-      return NextResponse.json({company:data});
+      return NextResponse.json({company:company});
     } catch (error:any) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

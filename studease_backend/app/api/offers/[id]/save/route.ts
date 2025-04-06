@@ -27,7 +27,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     .select('id')
     .eq('user_id', user.user_id)
     .eq('offer_id', offerId)
-    .maybeSingle();
+    .maybeSingle(); 
 
   if (fetchError) {
     return NextResponse.json({ error: 'Failed to check saved offer', details: fetchError.message }, { status: 500 });
