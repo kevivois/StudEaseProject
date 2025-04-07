@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from "zod";
 
 import { loginSchema } from "@/lib/schemas"; // Import du schéma
-import { handleCors } from '@/lib/middleware';
+import { getHeaders } from '@/lib/middleware-helper';
+
 
 export async function POST(request: NextRequest) {
-  handleCors(request);
+  ;
   const body = await request.json();
 
 
@@ -29,4 +30,8 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ user: data.user, message: "Login successful" });
+}
+
+export async function OPTIONS(request:NextRequest){
+  return NextResponse.json({},{status:200,headers:getHeaders()})
 }

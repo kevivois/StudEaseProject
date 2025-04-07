@@ -1,11 +1,11 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserOrCompany, handleCors } from '@/lib/middleware'; // Votre fonction middleware pour récupérer l'utilisateur ou l'entreprise
+import { getUserOrCompany, handleCors } from '@/lib/middleware-helper'; // Votre fonction middleware pour récupérer l'utilisateur ou l'entreprise
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     try {
-        await handleCors(request)
+        
         // Initialiser le client Supabase avec les cookies
         const supabase = createRouteHandlerClient({ cookies });
         // Récupérer la session de l'utilisateur connecté

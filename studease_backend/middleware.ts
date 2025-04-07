@@ -1,13 +1,18 @@
-// middleware.ts
-import { handleCors } from '@/lib/middleware';  // Import handleCors function
-import { NextRequest } from 'next/server';
+// Import handleCors function
+import { getHeaders } from './lib/middleware-helper';
+import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  const response = handleCors(request); // Call handleCors to add the CORS headers
-  return response;
+export async function middleware(request: NextRequest) {
+  if (request.method === 'OPTIONS') {
+    return NextResponse.json({},{headers:getHeaders(),status:200})
+  }else{
+    let res = NextResponse.next()
+    getHeaders().forEach((value,key) => {
+      res.headers.append(key,value)
+    })
+    return res
+  }
 }
-
-
 export const config = {
   matcher: '/api/:path*',
 }

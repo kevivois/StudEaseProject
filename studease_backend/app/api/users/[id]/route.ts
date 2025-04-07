@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserOrCompany } from '@/lib/middleware';
+import { getUserOrCompany } from '@/lib/middleware-helper';
 import {userUpdateSchema} from '@/lib/schemas'
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {

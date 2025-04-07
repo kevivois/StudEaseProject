@@ -1,6 +1,6 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export async function middlewareAuth(req: NextRequest) {
   const res = NextResponse.next();
@@ -96,17 +96,18 @@ export async function getUserOrCompany(req:NextRequest,id:any){
 
 }
 
-export async function handleCors(request:NextRequest) {
-    const res = NextResponse.next();
+export function getHeaders() {
+
+    let headers = new Headers()
   
     // Set CORS headers for all API routes
-    res.headers.append('Access-Control-Allow-Credentials', "true")
-    res.headers.append('Access-Control-Allow-Origin', 'http://localhost:5173') // frontend url
-    res.headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT,OPTIONS')
-    res.headers.append(
+    headers.append('Access-Control-Allow-Credentials', "true")
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:5173') // frontend url
+    headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT,OPTIONS')
+    headers.append(
         'Access-Control-Allow-Headers',
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version,Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization,'    )
 
   
-    return res;
+    return headers;
 }

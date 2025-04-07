@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { handleCors } from '@/lib/middleware';
+
 
 import { registerCompanySchema } from "@/lib/schemas"; // Import du schéma
 
@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
         company_website
       }]);
     if (response.error) {
+      await supabase.auth.admin.deleteUser(data.user.id)
       return NextResponse.json({ message: 'Erreur lors de la création de l\'entreprise', error: response.error.message },{status:404});
     }
 

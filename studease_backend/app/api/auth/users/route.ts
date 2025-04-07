@@ -2,10 +2,10 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { registerUserSchema } from "@/lib/schemas"; // Import du schéma
-import { handleCors } from '@/lib/middleware';
+
 /* signup auth user*/
 export async function POST(request: NextRequest) {
-  await handleCors(request)
+  
   try{
 
   const body = await request.json();
