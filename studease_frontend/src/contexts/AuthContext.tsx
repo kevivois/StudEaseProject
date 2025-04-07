@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       const userData = await api.auth.me(); // Assuming api.auth.me returns user data from the "users" table
-      setUser(userData);
+      setUser(userData.user);
     } catch (err) {
       setUser(null);
     } finally {
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       setError(null);
       const userData = await api.auth.login(email, password); // Assuming this function authenticates and returns the user
-      setUser(userData); // Assuming this user data matches the "users" table
+      setUser(userData.user); // Assuming this user data matches the "users" table
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
       throw err;
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         availability_start: data.availability_start,
         availability_end: data.availability_end
       });
-      setUser(userData); // Assuming userData contains the created user
+      setUser(userData.user); // Assuming userData contains the created user
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
       throw err;
@@ -128,7 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         company_logo_url: data.company_logo_url,
         company_description: data.company_description
       });
-      setUser(companyData); // Assuming companyData contains the created company
+      setUser(companyData.user); // Assuming companyData contains the created company
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
       throw err;

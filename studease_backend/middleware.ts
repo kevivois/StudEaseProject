@@ -1,4 +1,3 @@
-// Import handleCors function
 import { getHeaders } from './lib/middleware-helper';
 import { NextRequest, NextResponse } from 'next/server';
 

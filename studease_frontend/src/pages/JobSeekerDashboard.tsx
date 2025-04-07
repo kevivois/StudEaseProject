@@ -1,258 +1,204 @@
 import React, { useState } from 'react';
+import { Tabs, Tab, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SchoolIcon from '@mui/icons-material/School';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import OfferFilters from '../components/OfferFilters';
+import ApplicationModal from '../components/ApplicationModal';
+import ApplicationsList from '../components/ApplicationList';
+import { Offer, Application } from '../types/database';
 
 interface Props {
   profile?: boolean;
   type?: 'job' | 'internship' | 'project';
 }
 
-function JobSeekerDashboard({ profile = false, type = 'job' }: Props) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [locationTerm, setLocationTerm] = useState('');
-  const [activeTab, setActiveTab] = useState(profile ? 'profile' : 'search');
-
-  const getTitle = () => {
-    switch (type) {
-      case 'internship':
-        return 'Stages';
-      case 'project':
-        return 'Mandats/Projets';
-      default:
-        return 'Jobs étudiants';
+// Mock data - replace with actual API calls
+const mockApplications: Application[] = [
+  {
+    id: '1',
+    user_id: '1',
+    offer_id: '1',
+    status: 'en_cours',
+    application_message: 'Je suis très intéressé par ce poste...',
+    documents: ['CV.pdf', 'LM.pdf'],
+    applied_at: '2024-03-01T10:00:00Z',
+    updated_at: '2024-03-01T10:00:00Z',
+    employer_feedback: null,
+    application_progress: ['Candidature envoyée', 'CV validé', 'Entretien planifié'],
+    offer: {
+      offer_id: '1',
+      title: 'Développeur Full Stack',
+      company_id: '1',
+      job_type_id: '1',
+      location_id: '1',
+      remuneration_type_id: '1',
+      contract_type_id: '1',
+      duration_id: '1',
+      application_deadline: '2024-04-01',
+      start: '2024-05-01',
+      end: null,
+      work_location_type: 'hybrid',
+      profile_description: 'Nous recherchons un développeur...',
+      required_skills: ['React', 'Node.js'],
+      required_documents: ['CV', 'Lettre de motivation'],
+      benefits: ['Télétravail', 'Formation continue'],
+      application_steps: ['Entretien RH', 'Test technique'],
+      languages: ['Français', 'Anglais'],
+      activity_rate_min: '80',
+      activity_rate_max: '100',
+      working_days_hours_description: ['Lundi-Vendredi', '8h-17h'],
+      job_level: 'Junior',
+      is_working_hours_flexible: true,
+      contact_email: 'contact@company.com',
+      contact_name: 'John Doe',
+      documents_urls: [],
+      created_at: '2024-03-01T10:00:00Z',
+      updated_at: '2024-03-01T10:00:00Z',
+      company: {
+        company_id: '1',
+        auth_user_id: '1',
+        company_name: 'Tech Company SA',
+        company_logo_url: '',
+        company_type_id: '1',
+        company_address: 'Rue de Lausanne 1',
+        company_phone: '+41 21 000 00 00',
+        company_website: 'www.company.com',
+        company_description: 'Une entreprise innovante',
+        created_at: '2024-03-01T10:00:00Z'
+      }
     }
+  }
+];
+
+function JobSeekerDashboard() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    jobTypeId: '',
+    locationId: '',
+    contractTypeId: '',
+    industryIds: [] as string[],
+    searchTerm: '',
+    isFlexible: false,
+    activityRateMin: '',
+    activityRateMax: ''
+  });
+
+  const handleFilterChange = (name: string, value: any) => {
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const renderHero = () => (
-    <div className="bg-gradient-brand text-white py-16 px-4">
-      <div className="max-w-7xl mx-auto text-center">
-        <h1 className="text-4xl font-bold mb-4">
-          Trouvez le {type === 'internship' ? 'stage' : type === 'project' ? 'projet' : 'job'} idéal
-        </h1>
-        <p className="text-xl mb-8">
-          Accédez instantanément à des opportunités qualifiées dans votre domaine
-        </p>
-        <div className="max-w-3xl mx-auto bg-white rounded-lg p-4 shadow-lg">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Titre, mot-clé ou entreprise"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="flex-1 relative">
-              <LocationOnIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Ville ou région"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent"
-                value={locationTerm}
-                onChange={(e) => setLocationTerm(e.target.value)}
-              />
-            </div>
-            <button className="bg-primary text-white px-8 py-2 rounded-full hover:bg-primary-dark transition-colors">
-              Rechercher
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderProfile = () => (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <div className="flex items-center space-x-4 mb-6">
-        <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-          <PersonIcon className="w-12 h-12 text-primary" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold">Jean Dupont</h2>
-          <p className="text-gray-600">Étudiant en informatique</p>
-        </div>
-      </div>
-      
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Informations de contact</h3>
-          <div className="space-y-2">
-            <p><strong>Email:</strong> jean.dupont@example.com</p>
-            <p><strong>Téléphone:</strong> +41 XX XXX XX XX</p>
-            <p><strong>Localisation:</strong> Lausanne, Suisse</p>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Résumé professionnel</h3>
-          <p className="text-gray-700">
-            Étudiant en Master en informatique avec une spécialisation en développement web.
-            À la recherche d'opportunités pour mettre en pratique mes compétences.
-          </p>
-        </div>
-
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Compétences</h3>
-          <div className="flex flex-wrap gap-2">
-            {['React', 'TypeScript', 'Node.js', 'Python', 'SQL', 'Git'].map((skill) => (
-              <span key={skill} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <button className="w-full bg-primary text-white px-4 py-2 rounded-full hover:bg-primary-dark transition-colors">
-          Modifier le profil
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderContent = () => (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="w-full lg:w-64 space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <h3 className="font-semibold text-gray-900 mb-2">Type de contrat</h3>
-            <div className="space-y-2">
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded text-primary" />
-                <span className="ml-2 text-gray-700">Temps plein</span>
-              </label>
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded text-primary" />
-                <span className="ml-2 text-gray-700">Temps partiel</span>
-              </label>
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded text-primary" />
-                <span className="ml-2 text-gray-700">Stage</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <h3 className="font-semibold text-gray-900 mb-2">Niveau d'études</h3>
-            <div className="space-y-2">
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded text-primary" />
-                <span className="ml-2 text-gray-700">Bachelor</span>
-              </label>
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded text-primary" />
-                <span className="ml-2 text-gray-700">Master</span>
-              </label>
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded text-primary" />
-                <span className="ml-2 text-gray-700">Doctorat</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-900">{getTitle()}</h2>
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-600">Trier par:</span>
-              <button className="flex items-center text-gray-700 hover:text-primary">
-                Pertinence
-                <KeyboardArrowDownIcon className="h-4 w-4 ml-1" />
-              </button>
-            </div>
-          </div>
-
-          {[1, 2, 3].map((id) => (
-            <div key={id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <WorkIcon className="h-8 w-8 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 hover:text-primary">
-                        {type === 'internship' ? 'Stage en développement' : 
-                         type === 'project' ? 'Projet web React' : 
-                         'Développeur étudiant'}
-                      </h3>
-                      <p className="text-gray-600">Entreprise Tech SA</p>
-                    </div>
-                    <div className="flex space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-primary">
-                        <BookmarkAddIcon className="h-5 w-5" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-primary">
-                        <OpenInNewIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <LocationOnIcon className="h-4 w-4 mr-1" />
-                      Lausanne, VD
-                    </div>
-                    <div className="flex items-center">
-                      <SchoolIcon className="h-4 w-4 mr-1" />
-                      Master
-                    </div>
-                    <div className="flex items-center">
-                      <AccessTimeIcon className="h-4 w-4 mr-1" />
-                      Il y a 2 jours
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </main>
-  );
+  const handleApply = async (data: { message: string; documents: File[] }) => {
+    // Implement application submission logic here
+    console.log('Submitting application:', data);
+    setIsApplicationModalOpen(false);
+  };
 
   return (
-    <div>
-      {profile ? (
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex space-x-4 mb-6">
-            <button
-              className={`px-4 py-2 rounded-full ${
-                activeTab === 'profile'
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-              onClick={() => setActiveTab('profile')}
-            >
-              Profil
-            </button>
-            <button
-              className={`px-4 py-2 rounded-full ${
-                activeTab === 'applications'
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-              onClick={() => setActiveTab('applications')}
-            >
-              Mes candidatures
-            </button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Tabs
+          value={activeTab}
+          onChange={(_, newValue) => setActiveTab(newValue)}
+          className="mb-6"
+        >
+          <Tab label="Recherche d'offres" />
+          <Tab label="Mes candidatures" />
+          <Tab label="Mon profil" />
+        </Tabs>
+
+        {activeTab === 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-1">
+              <OfferFilters
+                jobTypes={[]}
+                locations={[]}
+                contractTypes={[]}
+                industries={[]}
+                filters={filters}
+                onFilterChange={handleFilterChange}
+              />
+            </div>
+            <div className="lg:col-span-3 space-y-4">
+              {/* Offer cards */}
+              {[1, 2, 3].map((id) => (
+                <div key={id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <WorkIcon className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 hover:text-primary">
+                            Développeur Full Stack
+                          </h3>
+                          <p className="text-gray-600">Tech Company SA</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            className="text-gray-400 hover:text-primary"
+                            startIcon={<BookmarkAddIcon />}
+                          >
+                            Sauvegarder
+                          </Button>
+                          <Button
+                            variant="contained"
+                            className="bg-primary hover:bg-primary-dark"
+                            onClick={() => {
+                              setSelectedOffer({} as Offer);
+                              setIsApplicationModalOpen(true);
+                            }}
+                          >
+                            Postuler
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+                        <div className="flex items-center">
+                          <LocationOnIcon className="h-4 w-4 mr-1" />
+                          Lausanne, VD
+                        </div>
+                        <div className="flex items-center">
+                          <SchoolIcon className="h-4 w-4 mr-1" />
+                          Master
+                        </div>
+                        <div className="flex items-center">
+                          <AccessTimeIcon className="h-4 w-4 mr-1" />
+                          Il y a 2 jours
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          {activeTab === 'profile' ? renderProfile() : renderContent()}
-        </div>
-      ) : (
-        <>
-          {renderHero()}
-          {renderContent()}
-        </>
-      )}
+        )}
+
+        {activeTab === 1 && (
+          <ApplicationsList applications={mockApplications} />
+        )}
+
+        {activeTab === 2 && (
+          <div className="max-w-3xl mx-auto">
+            {/* Profile content */}
+          </div>
+        )}
+      </div>
+
+      <ApplicationModal
+        open={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
+        offer={selectedOffer}
+        onSubmit={handleApply}
+      />
     </div>
   );
 }

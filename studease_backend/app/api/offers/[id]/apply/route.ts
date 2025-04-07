@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import {getUserDataType, handleCors} from '@/lib/middleware-helper'
+import {getUserDataType} from '@/lib/middleware-helper'
 import {applicationSchema} from '@/lib/schemas'
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {

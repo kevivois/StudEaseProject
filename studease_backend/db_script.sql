@@ -47,6 +47,7 @@ CREATE TABLE users (
     auth_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,  -- Référence directe à auth.users
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     phone_number varchar(100) NOT NULL,
     location_id uuid REFERENCES locations(location_id) ON DELETE SET NULL,
     profile_description TEXT,
@@ -66,6 +67,7 @@ CREATE TABLE company_types (
 CREATE TABLE companies (
     company_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     auth_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE, 
+    email VARCHAR(50) NOT NULL,
     company_name VARCHAR(255) UNIQUE NOT NULL,
     company_logo_url TEXT, -- Ajout du logo de l'entreprise
     company_type_id UUID NOT NULL REFERENCES company_types(company_type_id), 

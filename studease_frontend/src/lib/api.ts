@@ -77,7 +77,7 @@ export const api = {
         credentials: 'include',
       });
       return handleResponse(response);
-    },
+    }
   },
 
   // User endpoints

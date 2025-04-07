@@ -22,13 +22,14 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase.auth.signUp({ email, password });
 
   if(!data || !data.user || !data.user.id){
-    throw new Error("created user data is null : server Error ")
+    throw Error("created user data is null : server Error ")
   }
 
   const response = await supabase
       .from('users')
       .insert([{
         auth_user_id: data.user.id,  // Lier l'utilisateur créé à l'auth.users
+        email,
         first_name,
         last_name,
         profile_description,
@@ -53,6 +54,5 @@ export async function POST(request: NextRequest) {
 }
 
 export async function OPTIONS(req: NextRequest) {
-  await handleCors(req)
   return NextResponse.json({},{status:200});
 }

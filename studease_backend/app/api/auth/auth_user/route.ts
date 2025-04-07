@@ -7,15 +7,12 @@ import {updateUserSchema} from "@/lib/schemas"
 export async function GET(request: NextRequest) {
   
   try {
-    handleCors(request);
     const supabase = createRouteHandlerClient({ cookies });
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
-    // Fetch the authenticated user from auth.users table
     const { data, error } = await supabase
       .from('auth.users')
       .select('id, email')

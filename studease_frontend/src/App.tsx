@@ -5,8 +5,9 @@ import JobSeekerDashboard from './pages/JobSeekerDashboard';
 import EmployerDashboard from './pages/EmployerDashboard';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
-import ProtectedRoute from './components/ProtectedRoute';
+import UserOrCompanyProtected from './components/UserOrCompanyProtected'
 import { useAuth } from './contexts/AuthContext';
+import Profile from './pages/profile';
 
 function App() {
   const { user, logout } = useAuth();
@@ -21,26 +22,6 @@ function App() {
                 <SchoolIcon className="h-8 w-8 text-[#7fba3c]" />
                 <span className="ml-2 text-2xl font-bold text-gradient">StudEase</span>
               </Link>
-              <nav className="hidden md:flex space-x-8">
-                {user?.type === 'student' && (
-                  <>
-                    <Link to="/jobs" className="text-gray-700 hover:text-[#7fba3c]">
-                      Jobs étudiants
-                    </Link>
-                    <Link to="/internships" className="text-gray-700 hover:text-[#7fba3c]">
-                      Stages
-                    </Link>
-                    <Link to="/projects" className="text-gray-700 hover:text-[#7fba3c]">
-                      Projets
-                    </Link>
-                  </>
-                )}
-                {user?.type === 'company' && (
-                  <Link to="/employer" className="text-gray-700 hover:text-[#7fba3c]">
-                    Tableau de bord
-                  </Link>
-                )}
-              </nav>
               <div className="flex items-center space-x-4">
                 <button className="text-gray-700 hover:text-[#7fba3c]">FR</button>
                 {user ? (
@@ -50,8 +31,8 @@ function App() {
                       className="text-gray-700 hover:text-[#7fba3c]"
                     >
                       {user.type === 'student'
-                        ? `${user.firstName} ${user.lastName}`
-                        : user.companyName}
+                        ? `${user.first_name} ${user.last_name}`
+                        : user.company_name}
                     </Link>
                     <button
                       onClick={() => logout()}
@@ -76,56 +57,16 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
-          {/* Student routes */}
           <Route
             path="/"
             element={
-              <ProtectedRoute userType="student">
-                <JobSeekerDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/jobs"
-            element={
-              <ProtectedRoute userType="student">
-                <JobSeekerDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/internships"
-            element={
-              <ProtectedRoute userType="student">
-                <JobSeekerDashboard type="internship" />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              <ProtectedRoute userType="student">
-                <JobSeekerDashboard type="project" />
-              </ProtectedRoute>
+              <UserOrCompanyProtected CompanyComponent={EmployerDashboard} StudentComponent={JobSeekerDashboard}/>
             }
           />
           <Route
             path="/profile"
             element={
-              <ProtectedRoute userType="student">
-                <JobSeekerDashboard profile={true} />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Employer routes */}
-          <Route
-            path="/employer"
-            element={
-              <ProtectedRoute userType="company">
-                <EmployerDashboard />
-              </ProtectedRoute>
+              <Profile />
             }
           />
         </Routes>

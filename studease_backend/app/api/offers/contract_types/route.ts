@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { getUserDataType, handleCors } from '@/lib/middleware-helper';
+import { getUserDataType } from '@/lib/middleware-helper';
 import { z } from 'zod';
 
 import {contractTypeSchema} from "@/lib/schemas"

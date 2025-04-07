@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { registerCompanySchema } from "@/lib/schemas"; // Import du schéma
 
 export async function POST(request: NextRequest) {
-  handleCors(request);
   try{
     const supabase = createRouteHandlerClient({ cookies });
     const body = await request.json();
@@ -36,6 +35,7 @@ export async function POST(request: NextRequest) {
       .from('companies')
       .insert([{
         auth_user_id: data?.user?.id,  // Utilisation de l'ID de auth.users
+        email,
         company_name,
         company_type_id,
         company_address,

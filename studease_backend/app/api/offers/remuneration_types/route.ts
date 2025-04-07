@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import {remunerationTypeSchema} from "@/lib/schemas"
-import { getUserDataType, handleCors } from '@/lib/middleware-helper';
+import { getUserDataType } from '@/lib/middleware-helper';
 
 export async function GET(request:NextRequest) {
   

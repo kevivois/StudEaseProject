@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 import {offerSchema} from  "@/lib/schemas"
-import {getUserDataType, handleCors} from "@/lib/middleware-helper"
+import {getUserDataType} from "@/lib/middleware-helper"
 export async function POST(request: NextRequest) {
   
   try {

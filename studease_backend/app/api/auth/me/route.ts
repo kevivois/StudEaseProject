@@ -1,8 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import {updateUserSchema} from "@/lib/schemas"
-import { getUserDataType, handleCors } from '@/lib/middleware-helper';
+import { getUserDataType } from '@/lib/middleware-helper';
 
 
 export async function GET(request: NextRequest) {
@@ -20,7 +19,7 @@ export async function GET(request: NextRequest) {
     let type=user?"student":"company"
     let returnData = user? user : company
 
-    return NextResponse.json({ user:returnData,type });
+    return NextResponse.json({ user:{...returnData,type:type} });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

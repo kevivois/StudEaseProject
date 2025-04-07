@@ -19,82 +19,91 @@ export async function middlewareAuth(req: NextRequest) {
   return res;
 }
 
-export async function getUserDataType(req:NextRequest){
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+export async function getUserDataType(req: NextRequest) {
+  try {
+    const supabase = createMiddlewareClient({ req, res: NextResponse.next() });
+    const { data: { session } } = await supabase.auth.getSession();
 
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if(!session){
-    return {user:null,company:null}
-  }
-  let userReturnData:any = null
-  let companyReturnData:any = null
-  const {data:userData,error:userError} = await supabase.from("users").select(` *,
-      auth.users(id,email),
-      saved_offers(*),
-      applications(*)`).eq("auth_user_id",session.user.id).single()
-  
-  if(userError){
-    throw userError
-  }
-  
-  if(!userData){
-    const {data:companyData,error:companyError} = await supabase.from("companies").select(`*,auth.users(id,email,password),offers(*)`).eq("auth_user_id",session.user.id).single()
-    companyReturnData = companyData
-    if(companyError){
-      throw companyError
+    // Si la session n'existe pas, retournez directement null pour l'utilisateur et l'entreprise
+    if (!session) {
+      return { user: null, company: null };
     }
 
 
-  }else{
-    userReturnData = userData
-  }
-  if(!userReturnData && companyReturnData){
-    throw new Error ("id isnt a company or a user")
-  }
-  return {user:userReturnData,company:companyReturnData}
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("*, saved_offers(*), applications(*)")
+      .eq("auth_user_id", session.user.id)
+      .single();
 
-}
-
-
-export async function getUserOrCompany(req:NextRequest,id:any){
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
-
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if(!session){
-    return {user:null,company:null}
-  }
-  let userReturnData = null
-  let companyReturnData = null
-  const {data:userData,error:userError} = await supabase.from("users").select(` *,
-      auth.users(id,email),
-      saved_offers(*),
-      applications(*)`).eq("user_id",id).single()
-  
-  if(userError){
-    throw userError
-  }
-  
-  if(!userData){
-    const {data:companyData,error:companyError} = await supabase.from("companies").select(`*,auth.users(id,email,password),offers(*)`).eq("company_id",id).single()
-    companyReturnData = companyData
-    if(companyError){
-      throw companyError
+    if (userError) {
+      throw userError;
     }
 
+    // Si les données de l'utilisateur n'ont pas été trouvées, on tente de récupérer les données de l'entreprise
+    if (!userData) {
+      const { data: companyData, error: companyError } = await supabase
+        .from("companies")
+        .select("*, offers(*)")
+        .eq("auth_user_id", session.user.id)
+        .single();
 
-  }else{
-    userReturnData = userData
-  }
-  if(!userReturnData && companyReturnData){
-    throw new Error ("id isnt a company or a user")
-  }
-  return {user:userReturnData,company:companyReturnData}
+      if (companyError) {
+        throw companyError;
+      }
 
+      return { user: null,company:{type:"company",...companyData} };
+    }
+
+    return { user:{...userData,type:"student"}, company: null };
+  } catch (error) {
+    console.error("Error in getUserDataType:", error);
+    return { user: null, company: null }; // Retour par défaut en cas d'erreur
+  }
 }
+
+export async function getUserOrCompany(req: NextRequest, id: string) {
+  try {
+    const supabase = createMiddlewareClient({ req, res: NextResponse.next() });
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      return { user: null, company: null };
+    }
+
+    // Tentez de récupérer les données de l'utilisateur avec l'ID fourni
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("*, saved_offers(*), applications(*)")
+      .eq("user_id", id)
+      .single();
+
+    if (userError) {
+      throw userError;
+    }
+
+    if (userData) {
+      return { user: {type:"student",...userData}, company: null };
+    }
+
+    // Si l'utilisateur n'a pas été trouvé, tentez de récupérer les données de l'entreprise
+    const { data: companyData, error: companyError } = await supabase
+      .from("companies")
+      .select("*, offers(*)")
+      .eq("company_id", id)
+      .single();
+
+    if (companyError) {
+      throw companyError;
+    }
+
+    return { user: null, company:{type:"company",...companyData} };
+  } catch (error) {
+    console.error("Error in getUserOrCompany:", error);
+    return { user: null, company: null }; // Retour par défaut en cas d'erreur
+  }
+}
+
 
 export function getHeaders() {
 
