@@ -12,10 +12,38 @@ function StudentDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [locationTerm, setLocationTerm] = useState('');
   const [filtersSelected, setFilters] = useState(false);
-  const [jobOffers, setJobOffers] = useState([]);
+  const [jobOffers, setJobOffers] = useState([
+    {
+      id: 1,
+      title: 'Frontend Developer Intern',
+      company: 'TechSpark',
+      location: 'Geneva',
+      type: 'Stage',
+      postedDate: '2025-04-01',
+      description: 'Work on React-based projects with a dynamic dev team.',
+    },
+    {
+      id: 2,
+      title: 'Part-Time Barista',
+      company: 'Coffee Haven',
+      location: 'Sion',
+      type: 'Job étudiant',
+      postedDate: '2025-03-28',
+      description: 'Flexible hours for students who love coffee.',
+    },
+    {
+      id: 3,
+      title: 'Marketing Assistant (Remote)',
+      company: 'BrandNow',
+      location: 'Remote',
+      type: 'Télétravail possible',
+      postedDate: '2025-04-03',
+      description: 'Assist in digital marketing campaigns and analytics.',
+    },
+  ]);
 
   return (
-    <>
+    <div className='bg-gradient-to-br from-[#9dd05e] to-[#49b4b2]'>
       <Header />
 
       {/* Page Title */}
@@ -176,8 +204,27 @@ function StudentDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Job Offer Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {jobOffers.map((offer) => (
+            <div
+              key={offer.id}
+              className="bg-white shadow-md rounded-lg p-5 border border-gray-200"
+            >
+              <h3 className="text-xl font-semibold text-gray-800">{offer.title}</h3>
+              <p className="text-gray-600">{offer.company} – {offer.location}</p>
+              <span className="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">{offer.type}</span>
+              <p className="mt-3 text-sm text-gray-700">{offer.description}</p>
+              <p className="mt-2 text-xs text-gray-400">Posted on {offer.postedDate}</p>
+              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+                Apply
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
