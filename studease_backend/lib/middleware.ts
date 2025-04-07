@@ -28,8 +28,8 @@ export async function getUserDataType(req:NextRequest){
   if(!session){
     return {user:null,company:null}
   }
-  let userReturnData = null
-  let companyReturnData = null
+  let userReturnData:any = null
+  let companyReturnData:any = null
   const {data:userData,error:userError} = await supabase.from("users").select(` *,
       auth.users(id,email),
       saved_offers(*),
@@ -94,4 +94,19 @@ export async function getUserOrCompany(req:NextRequest,id:any){
   }
   return {user:userReturnData,company:companyReturnData}
 
+}
+
+export async function handleCors(request:NextRequest) {
+    const res = NextResponse.next();
+  
+    // Set CORS headers for all API routes
+    res.headers.append('Access-Control-Allow-Credentials', "true")
+    res.headers.append('Access-Control-Allow-Origin', 'http://localhost:5173') // frontend url
+    res.headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT,OPTIONS')
+    res.headers.append(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version,Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization,'    )
+
+  
+    return res;
 }

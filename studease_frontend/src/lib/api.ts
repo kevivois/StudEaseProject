@@ -1,11 +1,11 @@
 // API base URL
-export const API_BASE_URL = 'http://localhost:3002';
+export const API_BASE_URL = 'http://localhost:3000/api';
 
 // Helper to handle API responses
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'Une erreur est survenue');
+    throw Error(error.message)
   }
   return response.json();
 };
@@ -23,15 +23,19 @@ export const api = {
       });
       return handleResponse(response);
     },
-    register: async (data: {
+
+    registerUser: async (data: {
       email: string;
       password: string;
-      userType: 'student' | 'company';
-      firstName?: string;
-      lastName?: string;
-      companyName?: string;
+      first_name: string;
+      last_name: string;
+      phone_number:string;
+      profile_description?: string;
+      skills?: string[];
+      availability_start?:Date
+      availability_end?:Date
     }) => {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/users`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -39,6 +43,27 @@ export const api = {
       });
       return handleResponse(response);
     },
+
+    registerCompany: async (data: {
+      email: string;
+      password: string;
+      company_name: string;
+      company_type_id: string;
+      company_address: string;
+      company_phone: string;
+      company_website: string;
+      company_logo_url?:string;
+      company_description?:string;
+    }) => {
+      const response = await fetch(`${API_BASE_URL}/auth/companies/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return handleResponse(response);
+    },
+
     logout: async () => {
       const response = await fetch(`${API_BASE_URL}/auth/logout`, {
         method: 'POST',
@@ -46,6 +71,7 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     me: async () => {
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         credentials: 'include',
@@ -65,8 +91,23 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     getProfile: async (userId: string) => {
       const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getApplications: async (userId: string) => {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/applications`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getSavedOffers: async (userId: string) => {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/saved_offers`, {
         credentials: 'include',
       });
       return handleResponse(response);
@@ -84,9 +125,77 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     getProfile: async (companyId: string) => {
       const response = await fetch(`${API_BASE_URL}/companies/${companyId}`, {
         credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getOffers: async (companyId: string) => {
+      const response = await fetch(`${API_BASE_URL}/companies/${companyId}/offers`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    createLocation: async (data: { name: string, description: string }) => {
+      const response = await fetch(`${API_BASE_URL}/locations`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return handleResponse(response);
+    },
+
+    createJobType: async (data: { name: string, description: string }) => {
+      const response = await fetch(`${API_BASE_URL}/offers/job_types`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return handleResponse(response);
+    },
+
+    createContractType: async (data: { name: string, description: string }) => {
+      const response = await fetch(`${API_BASE_URL}/offers/contract_types`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return handleResponse(response);
+    },
+
+    createEngagementDuration: async (data: { name: string, description: string }) => {
+      const response = await fetch(`${API_BASE_URL}/offers/engagement_durations`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return handleResponse(response);
+    },
+
+    createIndustry: async (data: { name: string, description: string }) => {
+      const response = await fetch(`${API_BASE_URL}/offers/industries`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return handleResponse(response);
+    },
+
+    createRemunerationType: async (data: { name: string, description: string }) => {
+      const response = await fetch(`${API_BASE_URL}/offers/remuneration_types`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
       return handleResponse(response);
     },
@@ -103,6 +212,7 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     update: async (offerId: string, data: any) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}`, {
         method: 'PUT',
@@ -112,6 +222,7 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     delete: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}`, {
         method: 'DELETE',
@@ -119,21 +230,32 @@ export const api = {
       });
       return handleResponse(response);
     },
-    getAll: async (params: any = {}) => {
-      const searchParams = new URLSearchParams(params);
-      const response = await fetch(`${API_BASE_URL}/offers?${searchParams}`, {
-        credentials: 'include',
-      });
-      return handleResponse(response);
-    },
+
     getById: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}`, {
         credentials: 'include',
       });
       return handleResponse(response);
     },
+
     getByCompany: async (companyId: string) => {
       const response = await fetch(`${API_BASE_URL}/companies/${companyId}/offers`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    save: async (offerId: string) => {
+      const response = await fetch(`${API_BASE_URL}/offers/${offerId}/save`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    unsave: async (offerId: string) => {
+      const response = await fetch(`${API_BASE_URL}/offers/${offerId}/save`, {
+        method: 'DELETE',
         credentials: 'include',
       });
       return handleResponse(response);
@@ -151,6 +273,7 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     update: async (applicationId: string, data: any) => {
       const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
         method: 'PUT',
@@ -160,21 +283,23 @@ export const api = {
       });
       return handleResponse(response);
     },
-    getByUser: async () => {
-      const response = await fetch(`${API_BASE_URL}/applications/user`, {
-        credentials: 'include',
-      });
-      return handleResponse(response);
-    },
+
     getByOffer: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}/applications`, {
         credentials: 'include',
       });
       return handleResponse(response);
     },
+
+    getByUser: async (userId: string) => {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/applications`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
   },
 
-  // Saved offers endpoints
+  // Saved offers endpoints (inside user)
   savedOffers: {
     save: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}/save`, {
@@ -183,6 +308,7 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     unsave: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}/save`, {
         method: 'DELETE',
@@ -190,6 +316,7 @@ export const api = {
       });
       return handleResponse(response);
     },
+
     getAll: async () => {
       const response = await fetch(`${API_BASE_URL}/saved-offers`, {
         credentials: 'include',

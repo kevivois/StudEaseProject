@@ -1,28 +1,27 @@
-import { handleCors } from '@/lib/middleware';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
- 
+import {updateUserSchema} from "@/lib/schemas"
+import { getUserDataType, handleCors } from '@/lib/middleware';
+
 
 export async function GET(request: NextRequest) {
-  await handleCors(request)
   try {
+    await handleCors(request)
     const supabase = createRouteHandlerClient({ cookies });
-
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
-    const { data, error } = await supabase
-      .from('companies')
-      .select('*');
 
-    if (error) throw error;
+    let {user,company} = await getUserDataType(request)
 
-    return NextResponse.json(data);
-  } catch (error:any) {
+    let type=user?"student":"company"
+    let returnData = user? user : company
+
+    return NextResponse.json({ user:returnData,type });
+  } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

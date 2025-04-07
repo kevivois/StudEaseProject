@@ -1,12 +1,12 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
-/* signup for companies */
+import { NextRequest, NextResponse } from 'next/server';
+import { handleCors } from '@/lib/middleware';
 
 import { registerCompanySchema } from "@/lib/schemas"; // Import du schéma
 
-export async function POST(request: Request) {
-
+export async function POST(request: NextRequest) {
+  handleCors(request);
   try{
     const supabase = createRouteHandlerClient({ cookies });
     const body = await request.json();

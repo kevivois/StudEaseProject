@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { getUserDataType } from '@/lib/middleware'; // adapte ce chemin selon ton projet
+import { getUserDataType, handleCors } from '@/lib/middleware'; // adapte ce chemin selon ton projet
 import { z } from 'zod';
 
 import {locationSchema} from "@/lib/schemas"
 
 export async function GET(request: NextRequest) {
+  await handleCors(request)
   const supabase = createRouteHandlerClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
 
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  await handleCors(request)
   const supabase = createRouteHandlerClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
 

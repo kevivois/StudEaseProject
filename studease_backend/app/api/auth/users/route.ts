@@ -1,10 +1,11 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { registerUserSchema } from "@/lib/schemas"; // Import du schéma
+import { handleCors } from '@/lib/middleware';
 /* signup auth user*/
-export async function POST(request: Request) {
-
+export async function POST(request: NextRequest) {
+  await handleCors(request)
   try{
 
   const body = await request.json();
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-  const { email, password, first_name, last_name, profile_description, skills } = parsedBody.data
+  const { email, password, first_name, last_name, profile_description, skills,phone_number } = parsedBody.data
   const supabase = createRouteHandlerClient({ cookies });
   const { data, error } = await supabase.auth.signUp({ email, password });
 
@@ -31,9 +32,11 @@ export async function POST(request: Request) {
         first_name,
         last_name,
         profile_description,
-        skills
+        skills,
+        phone_number
       }]);
     if (response.error) {
+      await supabase.auth.admin.deleteUser(data.user.id)
       return NextResponse.json({ message: 'Erreur lors de la création de l\'utilisateur', error: response.error.message },{status:404});
     }
 
@@ -47,4 +50,9 @@ export async function POST(request: Request) {
   } catch(error:any){
     return NextResponse.json({error:error.message},{status:404})
   }
+}
+
+export async function OPTIONS(req: NextRequest) {
+  await handleCors(req)
+  return NextResponse.json({},{status:200});
 }

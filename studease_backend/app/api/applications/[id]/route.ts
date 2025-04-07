@@ -1,9 +1,10 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import {getUserDataType} from '@/lib/middleware'
+import {getUserDataType, handleCors} from '@/lib/middleware'
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+    await handleCors(request)
     try {
       const supabase = createRouteHandlerClient({ cookies });
       const { data: { session } } = await supabase.auth.getSession();
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         offers (
           id,
           company_id
-        )
+        ),users(user_id,email)
       `)
       .eq('id', params.id)
       .single();
