@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
 
   const {user:realUser,company} = await getUserDataType(request)
 
-  let returnData = realUser==null?realUser:company
-  let type=realUser==null?"student":"company"
+  let returnData = realUser==null?company:realUser
+  let type=realUser==null?"company":"student"
 
   return NextResponse.json({ user:{...data.user,returnData,type:type}, message: "Login successful" });
 }
