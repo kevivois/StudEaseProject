@@ -7,7 +7,7 @@ const handleResponse = async (response: Response) => {
     const error = await response.json().catch(() => ({}));
     throw Error(error.message)
   }
-  return response.json();
+  return await response.json();
 };
 
 // API client with authentication
@@ -29,11 +29,11 @@ export const api = {
       password: string;
       first_name: string;
       last_name: string;
-      phone_number:string;
+      phone_number: string;
       profile_description?: string;
       skills?: string[];
-      availability_start?:Date
-      availability_end?:Date
+      availability_start?: Date;
+      availability_end?: Date;
     }) => {
       const response = await fetch(`${API_BASE_URL}/auth/users`, {
         method: 'POST',
@@ -52,10 +52,10 @@ export const api = {
       company_address: string;
       company_phone: string;
       company_website: string;
-      company_logo_url?:string;
-      company_description?:string;
+      company_logo_url?: string;
+      company_description?: string;
     }) => {
-      const response = await fetch(`${API_BASE_URL}/auth/companies/`, {
+      const response = await fetch(`${API_BASE_URL}/auth/companies`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -139,69 +139,83 @@ export const api = {
       });
       return handleResponse(response);
     },
+  },
 
-    createLocation: async (data: { name: string, description: string }) => {
-      const response = await fetch(`${API_BASE_URL}/locations`, {
-        method: 'POST',
+  // Company types
+  companyTypes: {
+    getAll: async () => {
+      const response = await fetch(`${API_BASE_URL}/companies/company_types`, {
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      return handleResponse(response);
-    },
-
-    createJobType: async (data: { name: string, description: string }) => {
-      const response = await fetch(`${API_BASE_URL}/offers/job_types`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      return handleResponse(response);
-    },
-
-    createContractType: async (data: { name: string, description: string }) => {
-      const response = await fetch(`${API_BASE_URL}/offers/contract_types`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      return handleResponse(response);
-    },
-
-    createEngagementDuration: async (data: { name: string, description: string }) => {
-      const response = await fetch(`${API_BASE_URL}/offers/engagement_durations`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      return handleResponse(response);
-    },
-
-    createIndustry: async (data: { name: string, description: string }) => {
-      const response = await fetch(`${API_BASE_URL}/offers/industries`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      return handleResponse(response);
-    },
-
-    createRemunerationType: async (data: { name: string, description: string }) => {
-      const response = await fetch(`${API_BASE_URL}/offers/remuneration_types`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
       });
       return handleResponse(response);
     },
   },
 
-  // Offer endpoints
+  // Offer metadata
+  offerMetadata: {
+    getAllLocations: async () => {
+      const response = await fetch(`${API_BASE_URL}/locations`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getAllContractTypes: async () => {
+      const response = await fetch(`${API_BASE_URL}/offers/contract_types`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getAllEngagementDurations: async () => {
+      const response = await fetch(`${API_BASE_URL}/offers/engagement_durations`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getAllIndustries: async () => {
+      const response = await fetch(`${API_BASE_URL}/offers/industries`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getAllJobTypes: async () => {
+      const response = await fetch(`${API_BASE_URL}/offers/job_types`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+
+    getAllRemunerationTypes: async () => {
+      const response = await fetch(`${API_BASE_URL}/offers/remuneration_types`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+  },
+
+  // File upload and access
+  files: {
+    upload: async (formData: FormData) => {
+      const response = await fetch(`${API_BASE_URL}/files/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+      return handleResponse(response);
+    },
+
+    getSignedUrl: async (filePath: string) => {
+      const response = await fetch(`${API_BASE_URL}/files/${filePath}/signed-url`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+  },
+
+  // Offers
   offers: {
     create: async (data: any) => {
       const response = await fetch(`${API_BASE_URL}/offers`, {
@@ -262,7 +276,7 @@ export const api = {
     },
   },
 
-  // Application endpoints
+  // Applications
   applications: {
     create: async (offerId: string, data: any) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}/applications`, {
@@ -299,7 +313,7 @@ export const api = {
     },
   },
 
-  // Saved offers endpoints (inside user)
+  // Saved offers (redundant but included for clarity)
   savedOffers: {
     save: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}/save`, {

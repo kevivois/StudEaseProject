@@ -11,10 +11,10 @@ export async function GET(request: NextRequest) {
   
   const supabase = createRouteHandlerClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
-
+  /*
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  }*/
 
   const { data, error } = await supabase
     .from('company_types')

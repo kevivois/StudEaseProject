@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext'; // Import du hook useAuth
+import { useAuth } from '../../contexts/AuthContext';
+import { api } from '../../lib/api';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { registerUser, registerCompany } = useAuth(); // Accéder aux méthodes du contexte
+  const { registerUser, registerCompany } = useAuth();
   const [userType, setUserType] = useState<'student' | 'company'>('student');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,37 +14,52 @@ export default function Register() {
   const [phone_number, setPhoneNumber] = useState('');
   const [company_name, setCompanyName] = useState('');
   const [company_type_id, setCompanyTypeId] = useState('');
+  const [company_type_label, setCompanyTypeLabel] = useState('');
   const [company_address, setCompanyAddress] = useState('');
   const [company_phone, setCompanyPhone] = useState('');
   const [company_website, setCompanyWebsite] = useState('');
   const [availability_start, setAvailabilityStart] = useState('');
   const [availability_end, setAvailabilityEnd] = useState('');
+  const [companyTypes, setCompanyTypes] = useState<{ company_type_id: string; label: string }[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const formatDateForInput = (date: Date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
 
   const handleDateChangeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = new Date(e.target.value);
-    setAvailabilityStart(formatDateForInput(selectedDate)); // Store only the date (no time)
+    setAvailabilityStart(formatDateForInput(selectedDate));
   };
+
   const handleDateChangeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = new Date(e.target.value);
-    setAvailabilityEnd(formatDateForInput(selectedDate)); // Store only the date (no time)
+    setAvailabilityEnd(formatDateForInput(selectedDate));
   };
 
   const convertStringToDate = (dateString: string): Date => {
-    // Ensure the string is in 'yyyy-MM-dd' format
     const [year, month, day] = dateString.split('-');
-    
-    // Note: month is 0-indexed in the Date constructor
     return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
   };
+
+  useEffect(() => {
+    if (userType === 'company') {
+      const fetchCompanyTypes = async () => {
+        try {
+          const data = await api.companyTypes.getAll();
+          setCompanyTypes(data.data);
+        } catch (error) {
+          console.error("Erreur lors du chargement des types d'entreprise :", error);
+        }
+      };
+
+      fetchCompanyTypes();
+    }
+  }, [userType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,18 +68,16 @@ export default function Register() {
       setLoading(true);
 
       if (userType === 'student') {
-        // Enregistrer un étudiant
         await registerUser({
           email,
           password,
           first_name,
           last_name,
           phone_number,
-          availability_start:convertStringToDate(availability_start), // Added availability start date
-          availability_end:convertStringToDate(availability_end),   // Added availability end date
+          availability_start: convertStringToDate(availability_start),
+          availability_end: convertStringToDate(availability_end),
         });
       } else {
-        // Enregistrer une entreprise
         await registerCompany({
           email,
           password,
@@ -132,9 +146,6 @@ export default function Register() {
 
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="email" className="sr-only">
-                Adresse email
-              </label>
               <input
                 id="email"
                 name="email"
@@ -143,15 +154,12 @@ export default function Register() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 placeholder="Adresse email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="sr-only">
-                Mot de passe
-              </label>
               <input
                 id="password"
                 name="password"
@@ -160,7 +168,7 @@ export default function Register() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 placeholder="Mot de passe"
               />
             </div>
@@ -168,9 +176,6 @@ export default function Register() {
             {userType === 'student' ? (
               <>
                 <div>
-                  <label htmlFor="firstName" className="sr-only">
-                    Prénom
-                  </label>
                   <input
                     id="firstName"
                     name="firstName"
@@ -179,14 +184,11 @@ export default function Register() {
                     required
                     value={first_name}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Prénom"
                   />
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="sr-only">
-                    Nom
-                  </label>
                   <input
                     id="lastName"
                     name="lastName"
@@ -195,14 +197,11 @@ export default function Register() {
                     required
                     value={last_name}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Nom"
                   />
                 </div>
                 <div>
-                  <label htmlFor="phone" className="sr-only">
-                    Numéro de téléphone
-                  </label>
                   <input
                     id="phone"
                     name="phone"
@@ -210,50 +209,36 @@ export default function Register() {
                     required
                     value={phone_number}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Numéro de téléphone"
                   />
                 </div>
-
-                {/* Availability Fields */}
                 <div>
-                  <label htmlFor="availabilityStart" className="sr-only">
-                    Disponibilité début
-                  </label>
                   <input
                     id="availabilityStart"
                     name="availabilityStart"
                     type="date"
                     required
-                    value={availability_start ? availability_start : ''}
+                    value={availability_start}
                     onChange={handleDateChangeStart}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                    placeholder="Date et heure de début de disponibilité"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="availabilityEnd" className="sr-only">
-                    Disponibilité fin
-                  </label>
                   <input
                     id="availabilityEnd"
                     name="availabilityEnd"
                     type="date"
                     required
-                    value={availability_end ? availability_end : ''}
+                    value={availability_end}
                     onChange={handleDateChangeEnd}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                    placeholder="Date et heure de fin de disponibilité"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                   />
                 </div>
               </>
             ) : (
               <>
                 <div>
-                  <label htmlFor="companyName" className="sr-only">
-                    Nom de l'entreprise
-                  </label>
                   <input
                     id="companyName"
                     name="companyName"
@@ -262,29 +247,34 @@ export default function Register() {
                     required
                     value={company_name}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Nom de l'entreprise"
                   />
                 </div>
                 <div>
-                  <label htmlFor="companyTypeId" className="sr-only">
-                    Type d'entreprise
-                  </label>
-                  <input
+                  <select
                     id="companyTypeId"
                     name="companyTypeId"
-                    type="text"
                     required
-                    value={company_type_id}
-                    onChange={(e) => setCompanyTypeId(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                    placeholder="Type d'entreprise"
-                  />
+                    value={company_type_label}
+                    onChange={(e) => {
+                      const selectedOption = e.target.selectedOptions[0]
+                      setCompanyTypeLabel(e.target.value)
+                      setCompanyTypeId(selectedOption.getAttribute('id')?? '')
+                    }}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                  >
+                    <option  key="-" value="" disabled id="-">
+                      Sélectionnez un type d'entreprise
+                    </option>
+                    {companyTypes.length > 0 ?  companyTypes.map((type) => (
+                      <option key={type.company_type_id} value={type.label} id={type.company_type_id}>
+                        {type.label}
+                      </option>
+                    )) : null}
+                  </select>
                 </div>
                 <div>
-                  <label htmlFor="companyAddress" className="sr-only">
-                    Adresse de l'entreprise
-                  </label>
                   <input
                     id="companyAddress"
                     name="companyAddress"
@@ -292,14 +282,11 @@ export default function Register() {
                     required
                     value={company_address}
                     onChange={(e) => setCompanyAddress(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Adresse de l'entreprise"
                   />
                 </div>
                 <div>
-                  <label htmlFor="companyPhone" className="sr-only">
-                    Téléphone de l'entreprise
-                  </label>
                   <input
                     id="companyPhone"
                     name="companyPhone"
@@ -307,14 +294,11 @@ export default function Register() {
                     required
                     value={company_phone}
                     onChange={(e) => setCompanyPhone(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Téléphone"
                   />
                 </div>
                 <div>
-                  <label htmlFor="companyWebsite" className="sr-only">
-                    Site web de l'entreprise
-                  </label>
                   <input
                     id="companyWebsite"
                     name="companyWebsite"
@@ -322,7 +306,7 @@ export default function Register() {
                     required
                     value={company_website}
                     onChange={(e) => setCompanyWebsite(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                     placeholder="Site web de l'entreprise"
                   />
                 </div>

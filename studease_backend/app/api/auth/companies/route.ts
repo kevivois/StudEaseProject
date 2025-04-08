@@ -58,3 +58,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({error:error.message},{status:404})
   }
 }
+
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({},{status:200});
+}

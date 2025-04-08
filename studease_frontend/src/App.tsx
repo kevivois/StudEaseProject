@@ -7,7 +7,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import UserOrCompanyProtected from './components/UserOrCompanyProtected'
 import { useAuth } from './contexts/AuthContext';
-import Profile from './pages/profile';
+import Profile from './pages/Profile';
 
 function App() {
   const { user, logout } = useAuth();
