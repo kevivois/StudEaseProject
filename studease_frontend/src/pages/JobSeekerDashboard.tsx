@@ -9,7 +9,7 @@ import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import OfferFilters from '../components/OfferFilters';
 import ApplicationModal from '../components/ApplicationModal';
-import ApplicationsList from '../components/ApplicationList';
+import ApplicationsList from '../components/ApplicationsList';
 import { Offer, Application } from '../types/database';
 
 interface Props {

@@ -21,6 +21,8 @@ export default function ProtectedRoute({ children, userType }: Props) {
 
   if (userType && user.type !== userType) {
     return <Navigate to="/" replace />;
+  }else if(!userType){
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

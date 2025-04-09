@@ -14,16 +14,6 @@ const handleResponse = async (response: Response) => {
 export const api = {
   // Auth endpoints
   auth: {
-    login: async (email: string, password: string) => {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      return handleResponse(response);
-    },
-
     registerUser: async (data: {
       email: string;
       password: string;
@@ -77,7 +67,23 @@ export const api = {
         credentials: 'include',
       });
       return handleResponse(response);
-    }
+    },
+    login: async (email: string, password: string) => {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if(response.ok){
+        const meResponse = await fetch(`${API_BASE_URL}/auth/me`, {
+          credentials: 'include',
+        });
+        return handleResponse(meResponse)
+      }else{
+        return handleResponse(response);
+      }
+    },
   },
 
   // User endpoints
@@ -311,6 +317,12 @@ export const api = {
       });
       return handleResponse(response);
     },
+    getByCompany: async(companyId:string) => {
+      const response = await fetch(`${API_BASE_URL}/companies/${companyId}/applications`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    }
   },
 
   // Saved offers (redundant but included for clarity)

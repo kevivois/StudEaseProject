@@ -1,19 +1,19 @@
 import React from 'react';
 import {
-    Typography,
-    Card,
-    CardContent,
-    Chip,
-    Button,
-  } from '@mui/material';
-  import {
-    Timeline,
-    TimelineItem,
-    TimelineSeparator,
-    TimelineConnector,
-    TimelineContent,
-    TimelineDot,
-  } from '@mui/lab';
+  Typography,
+  Card,
+  CardContent,
+  Chip,
+  Button
+} from '@mui/material';
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot
+} from '@mui/lab';
 import { Application } from '../types/database';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnIcon from '@mui/icons-material/LocationOn';

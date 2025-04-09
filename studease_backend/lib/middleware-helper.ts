@@ -36,9 +36,6 @@ export async function getUserDataType(req: NextRequest) {
       .eq("auth_user_id", session.user.id)
       .single();
 
-    if (userError) {
-      throw userError;
-    }
 
     // Si les données de l'utilisateur n'ont pas été trouvées, on tente de récupérer les données de l'entreprise
     if (!userData) {
@@ -48,8 +45,8 @@ export async function getUserDataType(req: NextRequest) {
         .eq("auth_user_id", session.user.id)
         .single();
 
-      if (companyError) {
-        throw companyError;
+      if (companyError && userError) {
+        throw Error(companyError.message + "|"+userError.message);
       }
 
       return { user: null,company:{type:"company",...companyData} };

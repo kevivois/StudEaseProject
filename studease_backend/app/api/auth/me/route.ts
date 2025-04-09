@@ -16,10 +16,7 @@ export async function GET(request: NextRequest) {
 
     let {user,company} = await getUserDataType(request)
 
-    let type=user?"student":"company"
-    let returnData = user? user : company
-
-    return NextResponse.json({ user:{...returnData,type:type} });
+    return NextResponse.json({ user:user==null? company : user });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

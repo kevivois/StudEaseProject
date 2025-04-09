@@ -32,12 +32,8 @@ export async function POST(request: NextRequest) {
 
   await supabase.auth.setSession(data.session);
 
-  const {user:realUser,company} = await getUserDataType(request)
 
-  let returnData = realUser==null?company:realUser
-  let type=realUser==null?"company":"student"
-
-  return NextResponse.json({ user:{...data.user,returnData,type:type}, message: "Login successful" });
+  return NextResponse.json({message: "Login successful" });
 }
 
 export async function OPTIONS(request:NextRequest){
