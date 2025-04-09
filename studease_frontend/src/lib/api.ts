@@ -14,6 +14,12 @@ const handleResponse = async (response: Response) => {
 export const api = {
   // Auth endpoints
   auth: {
+    getAuthUser: async () => {
+      const response = await fetch(`${API_BASE_URL}/auth/auth_user`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
     registerUser: async (data: {
       email: string;
       password: string;

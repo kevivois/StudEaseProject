@@ -104,7 +104,6 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
       setError('Erreur lors du chargement des données');
     }
   };
-
   const loadOffer = async () => {
     try {
       const offer = await api.offers.getById(offerId!);
@@ -349,7 +348,6 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
           </Box>
         )}
       </div>
-
       <FormControlLabel
         control={
           <Checkbox
