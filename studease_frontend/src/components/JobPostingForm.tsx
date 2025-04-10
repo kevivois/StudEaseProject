@@ -22,6 +22,7 @@ import { api } from '../lib/api';
 import { Offer } from '../types/database';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface Props {
   offerId?: string;
@@ -40,7 +41,6 @@ type MetadataType = {
 export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  let location = useLocation()
   let navigate = useNavigate()
 
   const handleBackClick = () => {
@@ -82,8 +82,6 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   });
 
   const [activeStep, setActiveStep] = useState(0);
-  const [expanded, setExpanded] = useState([false, false, false, false]);
-
 
   const steps = [
     "Informations sur l'entreprise",
@@ -127,7 +125,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
       };
   
       setMetadata(metadata);
-    } catch (err) {
+    } catch (err: any) {
       setError("Erreur lors du chargement des données");
       console.error(err);
     }
@@ -137,7 +135,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     try {
       const offer = await api.offers.getById(offerId!);
       setFormData(offer);
-    } catch (err) {
+    } catch (err: any) {
       setError("Erreur lors du chargement de l'offre");
     }
   };
@@ -145,7 +143,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const handleSelectChange = (field: string) => (
     event: SelectChangeEvent<string>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: event.target.value,
     }));
@@ -154,7 +152,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const handleInputChange = (field: string) => (
     event: React.ChangeEvent<HTMLInputElement | { value: unknown }>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: event.target.value,
     }));
@@ -164,7 +162,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     event: SelectChangeEvent<string[]>
   ) => {
     const value = event.target.value;
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: typeof value === 'string' ? value.split(',') : value as unknown as string,
     }));
@@ -180,12 +178,12 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
         formData.append('files', file);
       });
 
-      const response = await api.files.upload(formData);
-      setFormData((prev) => ({
+      const response: any = await api.files.upload(formData);
+      setFormData((prev: any) => ({
         ...prev,
         documents_urls: [...(prev.documents_urls || []), ...response.urls],
       }));
-    } catch (err) {
+    } catch (err: any) {
       setError('Erreur lors du téléchargement des fichiers');
     }
   };
@@ -196,8 +194,16 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     setError(null);
 
     try {
-      await onSubmit(formData);
-    } catch (err) {
+      // Convert Dayjs objects back to date strings before submitting
+      const submitData = {
+        ...formData,
+        application_deadline: formData.application_deadline ? dayjs(formData.application_deadline).format('YYYY-MM-DD') : null,
+        start: formData.start ? dayjs(formData.start).format('YYYY-MM-DD') : null,
+        end: formData.end ? dayjs(formData.end).format('YYYY-MM-DD') : null,
+        working_days_hours_description: formData.working_days_hours_description ? formData.working_days_hours_description.join('\n') : null,
+      };
+      await onSubmit(submitData);
+    } catch (err: any) {
       setError("Erreur lors de l'enregistrement de l'offre");
     } finally {
       setLoading(false);
@@ -205,11 +211,11 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   };
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep((prevStep: any) => prevStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+    setActiveStep((prevStep: any) => prevStep - 1);
   };
 
   if (loading) {
@@ -277,7 +283,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             <Select value={formData.duration_id} onChange={handleSelectChange('duration_id')}>
               {metadata.durations.map((d: any) => (
                 <MenuItem key={d.duration_id} value={d.duration_id}>
-                  {d.duration_name}
+                  {d.duration_label}
                 </MenuItem>
               ))}
             </Select>
@@ -354,7 +360,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             control={
               <Checkbox
                 checked={formData.is_working_hours_flexible || false}
-                onChange={(e) =>
+                onChange={(e: any) =>
                   setFormData({ ...formData, is_working_hours_flexible: e.target.checked })
                 }
               />

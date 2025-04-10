@@ -77,6 +77,8 @@ export const offerSchema = z.object({
   contract_type_id: z.string().uuid(),
   profile_description: z.string().optional(),
   required_skills: z.array(z.string()).optional().default([]),
+  activity_rate_min:z.number(),
+  activity_rate_max:z.number(),
   required_documents: z.array(z.string()).optional().default([]),
   benefits: z.array(z.string()).optional().default([]),
   application_steps: z.array(z.string()).optional().default([]),

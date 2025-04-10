@@ -1,13 +1,10 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Paper } from '@mui/material';
 import JobPostingForm from '../components/JobPostingForm';
 import { api } from '../lib/api';
-import { useAuth } from '../contexts/AuthContext';
 
 export default function CreateJobPosting() {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const handleSubmit = async (data: any) => {
     try {
