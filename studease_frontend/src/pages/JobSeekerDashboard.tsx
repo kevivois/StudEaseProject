@@ -1,21 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Tabs, Tab, Button } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SchoolIcon from '@mui/icons-material/School';
 import WorkIcon from '@mui/icons-material/Work';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import OfferFilters from '../components/OfferFilters';
 import ApplicationModal from '../components/ApplicationModal';
 import ApplicationsList from '../components/ApplicationsList';
 import { Offer, Application } from '../types/database';
 
-interface Props {
-  profile?: boolean;
-  type?: 'job' | 'internship' | 'project';
-}
 
 // Mock data - replace with actual API calls
 const mockApplications: Application[] = [
