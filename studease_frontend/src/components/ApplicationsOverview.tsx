@@ -62,7 +62,7 @@ export default function ApplicationsOverview({
       </Typography>
 
       <div className="grid gap-6">
-        {applications.map((application) => (
+        {Array.isArray(applications) && applications.map((application) => (
           <Card key={application.id} className="hover:shadow-md transition-shadow">
             <CardContent>
               <div className="flex items-start gap-4">
@@ -104,7 +104,7 @@ export default function ApplicationsOverview({
                     </div>
                   </div>
 
-                  {application.application_progress.length > 0 && (
+                  {Array.isArray(application.application_progress)  && (
                     <>
                       <Divider className="my-4" />
                       <div>

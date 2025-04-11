@@ -22,6 +22,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         }
 
         // Récupérer l'entreprise associée à cet ID
+        
         let { company } = await getUserOrCompany(request, params.id);
 
         // Si l'entreprise n'existe pas, renvoyer une erreur 403 (interdit)

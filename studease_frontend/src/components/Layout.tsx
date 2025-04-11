@@ -53,11 +53,10 @@ export default function Layout() {
           </div>
         </div>
       </header>
-
       {/* Contenu principal */}
       <main>
         <Outlet />
       </main>
-    </>
+      </>
   );
 }

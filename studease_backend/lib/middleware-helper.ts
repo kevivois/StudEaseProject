@@ -75,9 +75,6 @@ export async function getUserOrCompany(req: NextRequest, id: string) {
       .eq("user_id", id)
       .single();
 
-    if (userError) {
-      throw userError;
-    }
 
     if (userData) {
       return { user: {type:"student",...userData}, company: null };
@@ -90,8 +87,8 @@ export async function getUserOrCompany(req: NextRequest, id: string) {
       .eq("company_id", id)
       .single();
 
-    if (companyError) {
-      throw companyError;
+    if (companyError && userError) {
+      throw Error("user or company does not exist")
     }
 
     return { user: null, company:{type:"company",...companyData} };

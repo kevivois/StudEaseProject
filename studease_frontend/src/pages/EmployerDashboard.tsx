@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Tabs, Tab, Alert, CircularProgress } from '@mui/material';
 import { api } from '../lib/api';
 import JobPostingsList from '../components/JobPostingsList';
@@ -8,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 function EmployerDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [activeTab, setActiveTab] = useState<'postings' | 'applications'>('postings');
   const [jobPostings, setJobPostings] = useState<Offer[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -15,40 +17,36 @@ function EmployerDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadDashboardData();
-  }, [user]);
-
-  const loadDashboardData = async () => {
-    try {
+    if (user?.company_id) {
       setLoading(true);
       setError(null);
 
-      // Load job postings
-      if (user?.id) {
-        const [offersResponse, applicationsResponse] = await Promise.all([
-          api.offers.getByCompany(user.id),
-          // Fetch applications for all company offers
-          api.applications.getByCompany(user.id) // This should be modified to get company applications
-        ]);
+      const fetchData = async () => {
+        try {
+          const offersResponse = await api.offers.getByCompany(user.company_id);
+          setJobPostings(offersResponse);
 
-        setJobPostings(offersResponse);
-        setApplications(applicationsResponse);
-      }
-    } catch (err) {
-      setError('Erreur lors du chargement des données');
-      console.error('Dashboard loading error:', err);
-    } finally {
-      setLoading(false);
+          if (activeTab === 'applications' && applications.length === 0) {
+            const applicationsResponse = await api.applications.getByCompany(user.company_id);
+            setApplications(applicationsResponse);
+          }
+        } catch (err: any) {
+          if (err.response?.status === 404) {
+            setError("Ressource non trouvée. Veuillez vérifier votre connexion.");
+          } else {
+            setError('Erreur lors du chargement des données: ' + (err.message || 'Une erreur inconnue est survenue'));
+            console.error('Dashboard loading error:', err);
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
     }
-  };
+  }, [user, activeTab, applications.length]);
 
-  const handleEditPosting = async (posting: Offer) => {
-    try {
-      // Navigate to edit page or open modal
-      window.location.href = `/employer/offers/${posting.offer_id}/edit`;
-    } catch (err) {
-      console.error('Error editing posting:', err);
-    }
+  const handleEditPosting = (posting: Offer) => {
+    navigate(`/employer/offers/${posting.offer_id}/edit`); // Use navigate
   };
 
   const handleDeletePosting = async (postingId: string) => {
@@ -57,38 +55,59 @@ function EmployerDashboard() {
     }
 
     try {
+      setJobPostings(prev => prev.filter(posting => posting.offer_id !== postingId)); // Optimistic update
       await api.offers.delete(postingId);
-      setJobPostings(prev => prev.filter(posting => posting.offer_id !== postingId));
     } catch (err) {
       console.error('Error deleting posting:', err);
+      // Revert optimistic update or re-fetch
+      loadDashboardData();
     }
   };
 
   const handleViewApplication = (application: Application) => {
-    // Navigate to application detail page
-    window.location.href = `/employer/applications/${application.id}`;
+    navigate(`/employer/applications/${application.id}`); // Use navigate
   };
 
   const handleUpdateApplicationStatus = async (applicationId: string, status: string) => {
     try {
-      await api.applications.update(applicationId, { status });
       setApplications(prev =>
         prev.map(app =>
           app.id === applicationId ? { ...app, status } : app
         )
-      );
+      ); // Optimistic update
+      await api.applications.update(applicationId, { status });
     } catch (err) {
       console.error('Error updating application status:', err);
+      // Revert optimistic update or re-fetch
+      loadDashboardData();
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <CircularProgress />
-      </div>
-    );
-  }
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      if (user?.id) {
+        const offersResponse = await api.offers.getByCompany(user.id);
+        setJobPostings(offersResponse);
+        if (activeTab === 'applications') {
+          const applicationsResponse = await api.applications.getByCompany(user.id);
+          setApplications(applicationsResponse);
+        }
+      }
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setError("Ressource non trouvée. Veuillez vérifier votre connexion.");
+      } else {
+        setError('Erreur lors du chargement des données: ' + (err.message || 'Une erreur inconnue est survenue'));
+        console.error('Dashboard loading error:', err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -102,6 +121,8 @@ function EmployerDashboard() {
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
             onClick={() => setActiveTab('postings')}
+            aria-selected={activeTab === 'postings'}
+            aria-controls="postings-panel"
           >
             Offres
           </button>
@@ -111,7 +132,14 @@ function EmployerDashboard() {
                 ? 'bg-primary text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
-            onClick={() => setActiveTab('applications')}
+            onClick={() => {
+              setActiveTab('applications');
+              if (applications.length === 0) {
+                loadDashboardData();
+              }
+            }}
+            aria-selected={activeTab === 'applications'}
+            aria-controls="applications-panel"
           >
             Candidatures
           </button>
@@ -124,19 +152,25 @@ function EmployerDashboard() {
         </Alert>
       )}
 
-      {activeTab === 'postings' ? (
-        <JobPostingsList
-          jobPostings={jobPostings}
-          onEdit={handleEditPosting}
-          onDelete={handleDeletePosting}
-        />
-      ) : (
-        <ApplicationsOverview
-          applications={applications}
-          onViewApplication={handleViewApplication}
-          onUpdateStatus={handleUpdateApplicationStatus}
-        />
-      )}
+      <div id="postings-panel" hidden={activeTab !== 'postings'}>
+        {activeTab === 'postings' && (
+          <JobPostingsList
+            jobPostings={jobPostings}
+            onEdit={handleEditPosting}
+            onDelete={handleDeletePosting}
+          />
+        )}
+      </div>
+
+      <div id="applications-panel" hidden={activeTab !== 'applications'}>
+        {activeTab === 'applications' && (
+          <ApplicationsOverview
+            applications={applications}
+            onViewApplication={handleViewApplication}
+            onUpdateStatus={handleUpdateApplicationStatus}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -2,10 +2,10 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { companyId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const supabase = createRouteHandlerClient({ cookies });
 
-  const companyId = params.companyId;
+  const companyId = params.id;
 
   const {
     data: { session },
@@ -18,14 +18,14 @@ export async function GET(request: NextRequest, { params }: { params: { companyI
   // Étape 1 : Récupérer les offres de la company
   const { data: offers, error: offersError } = await supabase
     .from('offers')
-    .select('id')
+    .select('offer_id')
     .eq('company_id', companyId);
 
   if (offersError) {
     return NextResponse.json({ error: offersError.message }, { status: 500 });
   }
 
-  const offerIds = offers?.map((o) => o.id);
+  const offerIds = offers?.map((o) => o.offer_id);
   if (!offerIds || offerIds.length === 0) {
     return NextResponse.json({ applications: [] });
   }

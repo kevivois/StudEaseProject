@@ -79,7 +79,7 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
             </TableRow>
           </TableHead>
           <TableBody>
-            {jobPostings.map((posting) => (
+            {Array.isArray(jobPostings) && jobPostings.map((posting) => (
               <TableRow key={posting.offer_id} className="hover:bg-gray-50">
                 <TableCell>
                   <Typography variant="body1" className="font-medium">
