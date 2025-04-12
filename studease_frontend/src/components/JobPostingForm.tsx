@@ -17,12 +17,13 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Divider,
 } from '@mui/material';
 import { api } from '../lib/api';
-import { Offer } from '../types/database';
+import { Offer, Industry } from '../types/database';
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import dayjs, { Dayjs } from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 interface Props {
   offerId?: string;
@@ -33,7 +34,7 @@ type MetadataType = {
   jobTypes: any[];
   locations: any[];
   contractTypes: any[];
-  industries: any[];
+  industries: Industry[];
   remunerationTypes: any[];
   durations: any[];
 };
@@ -41,11 +42,8 @@ type MetadataType = {
 export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  let navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleBackClick = () => {
-    navigate('/employer');  // Utilisation de `navigate` pour rediriger vers /employers
-  };
   const [metadata, setMetadata] = useState<MetadataType>({
     jobTypes: [],
     locations: [],
@@ -54,6 +52,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     remunerationTypes: [],
     durations: [],
   });
+
   const [formData, setFormData] = useState<Partial<Offer>>({
     title: '',
     job_type_id: '',
@@ -64,30 +63,32 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     application_deadline: '',
     start: '',
     end: '',
-    work_location_type: '',
+    work_location_type: 'on_site',
     profile_description: '',
     required_skills: [],
     required_documents: ['CV', 'Lettre de motivation'],
     benefits: [],
-    application_steps: [],
+    application_steps: ['Entretien RH', 'Test technique', 'Entretien final'],
     languages: [],
-    activity_rate_min: '',
-    activity_rate_max: '',
+    activity_rate_min: '20',
+    activity_rate_max: '100',
     working_days_hours_description: [],
-    job_level: '',
+    job_level: 'junior',
     is_working_hours_flexible: false,
     contact_email: '',
     contact_name: '',
     documents_urls: [],
+    industry_ids: [], // Add this field to store industry IDs
   });
 
   const [activeStep, setActiveStep] = useState(0);
 
   const steps = [
-    "Informations sur l'entreprise",
-    "Détails du poste",
-    "Profil recherché",
+    "Informations de base",
+    "Description du poste",
+    "Compétences et prérequis",
     "Conditions de travail",
+    "Contact et documents"
   ];
 
   useEffect(() => {
@@ -143,7 +144,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const handleSelectChange = (field: string) => (
     event: SelectChangeEvent<string>
   ) => {
-    setFormData((prev: any) => ({
+    setFormData((prev:any) => ({
       ...prev,
       [field]: event.target.value,
     }));
@@ -152,19 +153,19 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const handleInputChange = (field: string) => (
     event: React.ChangeEvent<HTMLInputElement | { value: unknown }>
   ) => {
-    setFormData((prev: any) => ({
+    setFormData((prev:any) => ({
       ...prev,
       [field]: event.target.value,
     }));
   };
 
-  const handleArrayInputChangeSelect = (field: string) => (
+  const handleArrayInputChange = (field: string) => (
     event: SelectChangeEvent<string[]>
   ) => {
     const value = event.target.value;
-    setFormData((prev: any) => ({
+    setFormData((prev:any) => ({
       ...prev,
-      [field]: typeof value === 'string' ? value.split(',') : value as unknown as string,
+      [field]: typeof value === 'string' ? value.split(',') : value,
     }));
   };
 
@@ -178,8 +179,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
         formData.append('files', file);
       });
 
-      const response: any = await api.files.upload(formData);
-      setFormData((prev: any) => ({
+      const response = await api.files.upload(formData);
+      setFormData((prev:any) => ({
         ...prev,
         documents_urls: [...(prev.documents_urls || []), ...response.urls],
       }));
@@ -194,13 +195,11 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     setError(null);
 
     try {
-      // Convert Dayjs objects back to date strings before submitting
       const submitData = {
         ...formData,
         application_deadline: formData.application_deadline ? dayjs(formData.application_deadline).format('YYYY-MM-DD') : null,
         start: formData.start ? dayjs(formData.start).format('YYYY-MM-DD') : null,
         end: formData.end ? dayjs(formData.end).format('YYYY-MM-DD') : null,
-        working_days_hours_description: formData.working_days_hours_description ? formData.working_days_hours_description.join('\n') : null,
       };
       await onSubmit(submitData);
     } catch (err: any) {
@@ -211,11 +210,11 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   };
 
   const handleNext = () => {
-    setActiveStep((prevStep: any) => prevStep + 1);
+    setActiveStep((prevStep) => prevStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep: any) => prevStep - 1);
+    setActiveStep((prevStep) => prevStep - 1);
   };
 
   if (loading) {
@@ -225,9 +224,17 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   return (
     <Box component="form" onSubmit={handleSubmit} className="space-y-6">
       {error && <Alert severity="error">{error}</Alert>}
-      <Button onClick={() => handleBackClick()}>Retour</Button>
+      
+      <div className="flex justify-between items-center">
+        <Button onClick={() => navigate('/employer')} variant="outlined">
+          Retour
+        </Button>
+        <Typography variant="h5" component="h2">
+          {offerId ? "Modifier l'offre" : "Créer une nouvelle offre"}
+        </Typography>
+      </div>
 
-      <Stepper activeStep={activeStep} alternativeLabel>
+      <Stepper activeStep={activeStep} alternativeLabel className="mb-8">
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -235,162 +242,402 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
         ))}
       </Stepper>
 
-      {activeStep === 0 && (
-        <>
-          <TextField
-            label="Titre du poste"
-            fullWidth
-            required
-            value={formData.title}
-            onChange={handleInputChange('title')}
-          />
+      <div className="space-y-6">
+        {activeStep === 0 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Informations de base
+            </Typography>
+            <TextField
+              label="Titre du poste"
+              fullWidth
+              required
+              value={formData.title}
+              onChange={handleInputChange('title')}
+            />
 
-          <FormControl fullWidth required>
-            <InputLabel>Type de travail</InputLabel>
-            <Select value={formData.job_type_id} onChange={handleSelectChange('job_type_id')}>
-              {metadata.jobTypes.map((jt: any) => (
-                <MenuItem key={jt.job_type_id} value={jt.job_type_id}>
-                  {jt.job_type_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <FormControl fullWidth required>
+              <InputLabel>Type de travail</InputLabel>
+              <Select value={formData.job_type_id} onChange={handleSelectChange('job_type_id')}>
+                {metadata.jobTypes.map((jt: any) => (
+                  <MenuItem key={jt.job_type_id} value={jt.job_type_id}>
+                    {jt.job_type_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          <FormControl fullWidth required>
-            <InputLabel>Lieu</InputLabel>
-            <Select value={formData.location_id} onChange={handleSelectChange('location_id')}>
-              {metadata.locations.map((loc: any) => (
-                <MenuItem key={loc.location_id} value={loc.location_id}>
-                  {`${loc.city}, ${loc.region}`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <FormControl fullWidth required>
+              <InputLabel>Type de contrat</InputLabel>
+              <Select value={formData.contract_type_id} onChange={handleSelectChange('contract_type_id')}>
+                {metadata.contractTypes.map((ct: any) => (
+                  <MenuItem key={ct.contract_type_id} value={ct.contract_type_id}>
+                    {ct.contract_type_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          <FormControl fullWidth required>
-            <InputLabel>Type de contrat</InputLabel>
-            <Select value={formData.contract_type_id} onChange={handleSelectChange('contract_type_id')}>
-              {metadata.contractTypes.map((ct: any) => (
-                <MenuItem key={ct.contract_type_id} value={ct.contract_type_id}>
-                  {ct.contract_type_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <FormControl fullWidth required>
+              <InputLabel>Niveau du poste</InputLabel>
+              <Select value={formData.job_level} onChange={handleSelectChange('job_level')}>
+                <MenuItem value="junior">Junior</MenuItem>
+                <MenuItem value="intermediate">Intermédiaire</MenuItem>
+                <MenuItem value="senior">Senior</MenuItem>
+              </Select>
+            </FormControl>
+          </>
+        )}
 
-          <FormControl fullWidth required>
-            <InputLabel>Durée</InputLabel>
-            <Select value={formData.duration_id} onChange={handleSelectChange('duration_id')}>
-              {metadata.durations.map((d: any) => (
-                <MenuItem key={d.duration_id} value={d.duration_id}>
-                  {d.duration_label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        {activeStep === 1 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Description du poste
+            </Typography>
+            <TextField
+              label="Description détaillée"
+              multiline
+              rows={4}
+              fullWidth
+              required
+              value={formData.profile_description}
+              onChange={handleInputChange('profile_description')}
+              placeholder="Décrivez les responsabilités, les objectifs et le contexte du poste..."
+            />
 
-          <Button variant="contained" color="primary" onClick={handleNext}>
-            Suivant
-          </Button>
-        </>
-      )}
+            <FormControl fullWidth>
+              <InputLabel>Secteurs d'activité</InputLabel>
+              <Select
+                multiple
+                value={formData.industry_ids || []}
+                onChange={handleArrayInputChange('industry_ids')}
+                input={<OutlinedInput label="Secteurs d'activité" />}
+                renderValue={(selected: string[]) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => {
+                      const industry = metadata.industries.find(i => i.industry_id === value);
+                      return (
+                        <Chip key={value} label={industry?.industry_name || value} />
+                      );
+                    })}
+                  </Box>
+                )}
+              >
+                {metadata.industries.map((industry) => (
+                  <MenuItem key={industry.industry_id} value={industry.industry_id}>
+                    {industry.industry_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-      {activeStep === 1 && (
-        <>
-          <TextField
-            label="Date de début"
-            type="date"
-            value={formData.start ?? ''}
-            onChange={handleInputChange('start')}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-            required
-          />
+            <FormControl fullWidth>
+              <InputLabel>Avantages</InputLabel>
+              <Select
+                multiple
+                value={formData.benefits || []}
+                onChange={handleArrayInputChange('benefits')}
+                input={<OutlinedInput label="Avantages" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                <MenuItem value="Formation continue">Formation continue</MenuItem>
+                <MenuItem value="Télétravail possible">Télétravail possible</MenuItem>
+                <MenuItem value="Horaires flexibles">Horaires flexibles</MenuItem>
+                <MenuItem value="13ème salaire">13ème salaire</MenuItem>
+              </Select>
+            </FormControl>
+          </>
+        )}
 
-          <TextField
-            label="Date de fin"
-            type="date"
-            value={formData.end ?? ''}
-            onChange={handleInputChange('end')}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-          />
+        {activeStep === 2 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Compétences et prérequis
+            </Typography>
+            <FormControl fullWidth>
+              <InputLabel>Compétences requises</InputLabel>
+              <Select
+                multiple
+                value={formData.required_skills || []}
+                onChange={handleArrayInputChange('required_skills')}
+                input={<OutlinedInput label="Compétences requises" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                <MenuItem value="React">React</MenuItem>
+                <MenuItem value="TypeScript">TypeScript</MenuItem>
+                <MenuItem value="Node.js">Node.js</MenuItem>
+                <MenuItem value="Python">Python</MenuItem>
+                <MenuItem value="Java">Java</MenuItem>
+              </Select>
+            </FormControl>
 
-          <TextField
-            label="Date limite de candidature"
-            type="date"
-            value={formData.application_deadline ?? ''}
-            onChange={handleInputChange('application_deadline')}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-          />
+            <FormControl fullWidth>
+              <InputLabel>Langues</InputLabel>
+              <Select
+                multiple
+                value={formData.languages || []}
+                onChange={handleArrayInputChange('languages')}
+                input={<OutlinedInput label="Langues" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                <MenuItem value="Français">Français</MenuItem>
+                <MenuItem value="Anglais">Anglais</MenuItem>
+                <MenuItem value="Allemand">Allemand</MenuItem>
+                <MenuItem value="Italien">Italien</MenuItem>
+              </Select>
+            </FormControl>
 
-          <Button variant="contained" color="primary" onClick={handleBack}>
-            Précédent
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleNext}>
-            Suivant
-          </Button>
-        </>
-      )}
+            <FormControl fullWidth>
+              <InputLabel>Documents requis</InputLabel>
+              <Select
+                multiple
+                value={formData.required_documents || []}
+                onChange={handleArrayInputChange('required_documents')}
+                input={<OutlinedInput label="Documents requis" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                <MenuItem value="CV">CV</MenuItem>
+                <MenuItem value="Lettre de motivation">Lettre de motivation</MenuItem>
+                <MenuItem value="Diplômes">Diplômes</MenuItem>
+                <MenuItem value="Certificats">Certificats</MenuItem>
+              </Select>
+            </FormControl>
+          </>
+        )}
 
-      {activeStep === 2 && (
-        <>
-          <TextField
-            label="Description du profil recherché"
-            multiline
-            rows={4}
-            fullWidth
-            value={formData.profile_description}
-            onChange={handleInputChange('profile_description')}
-          />
+        {activeStep === 3 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Conditions de travail
+            </Typography>
+            <FormControl fullWidth required>
+              <InputLabel>Lieu de travail</InputLabel>
+              <Select value={formData.location_id} onChange={handleSelectChange('location_id')}>
+                {metadata.locations.map((loc: any) => (
+                  <MenuItem key={loc.location_id} value={loc.location_id}>
+                    {`${loc.city}, ${loc.region}`}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          <Button variant="contained" color="primary" onClick={handleBack}>
-            Précédent
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleNext}>
-            Suivant
-          </Button>
-        </>
-      )}
+            <FormControl fullWidth required>
+              <InputLabel>Type de lieu de travail</InputLabel>
+              <Select
+                value={formData.work_location_type}
+                onChange={handleSelectChange('work_location_type')}
+              >
+                <MenuItem value="on_site">Sur site</MenuItem>
+                <MenuItem value="remote">Télétravail</MenuItem>
+                <MenuItem value="hybrid">Hybride</MenuItem>
+              </Select>
+            </FormControl>
 
-      {activeStep === 3 && (
-        <>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formData.is_working_hours_flexible || false}
-                onChange={(e: any) =>
-                  setFormData({ ...formData, is_working_hours_flexible: e.target.checked })
-                }
+            <div className="grid grid-cols-2 gap-4">
+              <TextField
+                label="Taux d'activité minimum (%)"
+                type="number"
+                required
+                value={formData.activity_rate_min}
+                onChange={handleInputChange('activity_rate_min')}
+                inputProps={{ min: 0, max: 100 }}
               />
-            }
-            label="Horaires flexibles"
-          />
 
-          <TextField
-            label="Taux d'activité minimum (%)"
-            type="number"
-            value={formData.activity_rate_min}
-            onChange={handleInputChange('activity_rate_min')}
-            fullWidth
-          />
+              <TextField
+                label="Taux d'activité maximum (%)"
+                type="number"
+                required
+                value={formData.activity_rate_max}
+                onChange={handleInputChange('activity_rate_max')}
+                inputProps={{ min: 0, max: 100 }}
+              />
+            </div>
 
-          <TextField
-            label="Taux d'activité maximum (%)"
-            type="number"
-            value={formData.activity_rate_max}
-            onChange={handleInputChange('activity_rate_max')}
-            fullWidth
-          />
-          <Button variant="contained" color="primary" onClick={handleBack}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.is_working_hours_flexible}
+                  onChange={(e) =>
+                    setFormData((prev:any) => ({
+                      ...prev,
+                      is_working_hours_flexible: e.target.checked,
+                    }))
+                  }
+                />
+              }
+              label="Horaires flexibles"
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <TextField
+                label="Date de début"
+                type="date"
+                value={formData.start}
+                onChange={handleInputChange('start')}
+                InputLabelProps={{ shrink: true }}
+                required
+              />
+
+              <TextField
+                label="Date de fin"
+                type="date"
+                value={formData.end}
+                onChange={handleInputChange('end')}
+                InputLabelProps={{ shrink: true }}
+              />
+            </div>
+
+            <TextField
+              label="Date limite de candidature"
+              type="date"
+              value={formData.application_deadline}
+              onChange={handleInputChange('application_deadline')}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+              required
+            />
+          </>
+        )}
+
+        {activeStep === 4 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Contact et documents
+            </Typography>
+            <TextField
+              label="Nom du contact"
+              fullWidth
+              required
+              value={formData.contact_name}
+              onChange={handleInputChange('contact_name')}
+            />
+
+            <TextField
+              label="Email du contact"
+              type="email"
+              fullWidth
+              required
+              value={formData.contact_email}
+              onChange={handleInputChange('contact_email')}
+            />
+
+            <FormControl fullWidth>
+              <InputLabel>Étapes du processus de recrutement</InputLabel>
+              <Select
+                multiple
+                value={formData.application_steps || []}
+                onChange={handleArrayInputChange('application_steps')}
+                input={<OutlinedInput label="Étapes du processus de recrutement" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                <MenuItem value="Entretien RH">Entretien RH</MenuItem>
+                <MenuItem value="Test technique">Test technique</MenuItem>
+                <MenuItem value="Entretien technique">Entretien technique</MenuItem>
+                <MenuItem value="Entretien final">Entretien final</MenuItem>
+              </Select>
+            </FormControl>
+
+            <div>
+              <Typography variant="subtitle1" gutterBottom>
+                Documents de l'entreprise
+              </Typography>
+              <input
+                type="file"
+                multiple
+                onChange={handleFileUpload}
+                accept=".pdf,.doc,.docx"
+                className="hidden"
+                id="company-documents"
+              />
+              <label htmlFor="company-documents">
+                <Button variant="outlined" component="span">
+                  Télécharger des documents
+                </Button>
+              </label>
+              {formData.documents_urls && formData.documents_urls.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  {formData.documents_urls.map((url:any, index:any) => (
+                    <Chip
+                      key={index}
+                      label={url.split('/').pop()}
+                      onDelete={() => {
+                        setFormData((prev:any) => ({
+                          ...prev,
+                          documents_urls: prev.documents_urls?.filter((_:any, i:any) => i !== index),
+                        }));
+                      }}
+                      sx={{ m: 0.5 }}
+                    />
+                  ))}
+                </Box>
+              )}
+            </div>
+          </>
+        )}
+
+        <Divider className="my-6" />
+
+        <div className="flex justify-between">
+          <Button
+            onClick={handleBack}
+            disabled={activeStep === 0}
+            variant="outlined"
+          >
             Précédent
           </Button>
-          <Button type="submit" variant="contained" color="primary">
-            {offerId ? 'Mettre à jour l’offre' : 'Publier l’offre'}
-          </Button>
-        </>
-      )}
+          <div className="space-x-2">
+            {activeStep === steps.length - 1 ? (
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="bg-primary hover:bg-primary-dark"
+              >
+                {offerId ? "Mettre à jour l'offre" : "Publier l'offre"}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNext}
+                variant="contained"
+                color="primary"
+                className="bg-primary hover:bg-primary-dark"
+              >
+                Suivant
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
     </Box>
   );
 }

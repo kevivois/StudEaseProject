@@ -92,6 +92,7 @@ export interface Offer {
   updated_at: string;
   company?: Company;
   industries?: Industry[];
+  industry_ids?:string[];
 }
 
 export interface Application {
