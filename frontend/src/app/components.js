@@ -3,7 +3,6 @@
 import React from "react";
 import { useRouter } from 'next/navigation';
 import PersonIcon from '@mui/icons-material/Person';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -48,15 +47,9 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
-            <span className="ml-2 text-2xl font-bold text-blue-600">StudEase</span>
+            <span className="ml-2 text-2xl font-bold text-[#7fba3c]">StudEase</span>
           </div>
           <div className="flex items-center space-x-4">
-            <IconButton
-              className="bg-gray-200 p-3 rounded-full hover:bg-gray-400 transition duration-300"
-              style={{ width: '48px', height: '48px' }}
-            >
-              <NotificationsIcon className="text-black" />
-            </IconButton>
             <IconButton
               className="bg-gray-200 p-3 rounded-full hover:bg-gray-400 transition duration-300"
               onClick={handleOpenUserMenu}

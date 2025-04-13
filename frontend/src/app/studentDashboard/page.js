@@ -43,7 +43,7 @@ function StudentDashboard() {
   ]);
 
   return (
-    <div className='bg-gradient-to-br from-[#9dd05e] to-[#49b4b2]'>
+    <div className="bg-gradient-to-br from-[#7fba3c]/10 to-[#008080]/10">
       <Header />
 
       {/* Page Title */}
@@ -83,7 +83,7 @@ function StudentDashboard() {
               onChange={(e) => setLocationTerm(e.target.value)}
             />
           </div>
-          <button className="bg-blue-600 text-white px-8 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center">
+          <button className="bg-[#7fba3c] text-white px-8 py-2 rounded-md hover:bg-[#6aa32f] flex items-center justify-center">
             Search
           </button>
           <IconButton onClick={() => setFilters(!filtersSelected)}>
@@ -217,8 +217,8 @@ function StudentDashboard() {
               <span className="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">{offer.type}</span>
               <p className="mt-3 text-sm text-gray-700">{offer.description}</p>
               <p className="mt-2 text-xs text-gray-400">Posted on {offer.postedDate}</p>
-              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-                Apply
+              <button className="mt-4 w-full bg-[#7fba3c] text-white py-2 rounded-md hover:bg-[#6aa32f] transition">
+                Postuler
               </button>
             </div>
           ))}

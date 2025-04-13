@@ -37,7 +37,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#7fba3c]/10 to-[#008080]/10">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
@@ -75,7 +75,7 @@ export default function Signup() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+            className="w-full bg-[#7fba3c] text-white py-2 rounded-lg hover:bg-[#6aa32f] transition"
           >
             Sign Up
           </button>
