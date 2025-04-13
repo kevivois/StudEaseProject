@@ -239,6 +239,34 @@ export const api = {
       return handleResponse(response);
     },
 
+    filter: async (filters: {
+      jobTypeId?: string[];
+      locationId?: string[];
+      contractTypeId?: string[];
+      industryIds?: string[];
+      searchTerm?: string;
+      isFlexible?: boolean;
+      activityRateMin?: string;
+      activityRateMax?: string;
+      workingHoursSearch?: string;
+    } = {}) => {
+      const response = await fetch(`${API_BASE_URL}/offers/filter`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(filters),
+      });
+      return handleResponse(response);
+    },
+    getAll:async() => {
+      const response = await fetch(`${API_BASE_URL}/offers`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      return handleResponse(response);
+    },
+
     update: async (offerId: string, data: any) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}`, {
         method: 'PUT',
@@ -291,7 +319,7 @@ export const api = {
   // Applications
   applications: {
     create: async (offerId: string, data: any) => {
-      const response = await fetch(`${API_BASE_URL}/offers/${offerId}/applications`, {
+      const response = await fetch(`${API_BASE_URL}/offers/${offerId}/apply`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -343,14 +371,15 @@ export const api = {
 
     unsave: async (offerId: string) => {
       const response = await fetch(`${API_BASE_URL}/offers/${offerId}/save`, {
-        method: 'DELETE',
+        method: 'POST',
         credentials: 'include',
       });
       return handleResponse(response);
     },
 
-    getAll: async () => {
-      const response = await fetch(`${API_BASE_URL}/saved-offers`, {
+    getAll: async (userId:string) => {
+      
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/saved_offers`, {
         credentials: 'include',
       });
       return handleResponse(response);

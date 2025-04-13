@@ -21,10 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     .select(`
       *,
       offers (
-        offer_id,
-        title,
-        company_id,
-        location_id
+       *,industries:offer_industries(industries(*)),companies(*),job_types(*),locations(*),remuneration_types(*),engagement_durations(*),contract_types(*)
       )
     `)
     .eq('user_id', params.id)

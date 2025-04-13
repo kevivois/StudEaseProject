@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         offers (
           id,
           company_id
-        ),users(user_id,email)
+        ),users(user_id,email),offers(*,companies(*),locations(*))
       `)
       .eq('id', params.id)
       .single();

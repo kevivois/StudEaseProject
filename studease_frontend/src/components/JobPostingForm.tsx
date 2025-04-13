@@ -18,12 +18,14 @@ import {
   Step,
   StepLabel,
   Divider,
+  IconButton
 } from '@mui/material';
 import { api } from '../lib/api';
 import { Offer, Industry } from '../types/database';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { AddCard, DeleteOutline } from '@mui/icons-material';
 
 interface Props {
   offerId?: string;
@@ -53,6 +55,32 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     durations: [],
   });
 
+  const [newWorkingHours, setNewWorkingHours] = useState('');
+
+  const handleAddWorkingHours = () => {
+    if(newWorkingHours == '') return
+    setFormData((prev: any) => ({
+      ...prev,
+      working_days_hours_description: [
+        ...(prev.working_days_hours_description || []),
+        newWorkingHours,
+      ],
+    }));
+    // Reset the input fields
+    setNewWorkingHours(
+     ''
+    );
+  };
+  const handleRemoveWorkingHours = (index: number) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      working_days_hours_description: prev.working_days_hours_description.filter(
+        (_: any, i: number) => i !== index
+      ),
+    }));
+  };
+
+
   const [formData, setFormData] = useState<Partial<Offer>>({
     title: '',
     job_type_id: '',
@@ -61,8 +89,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     remuneration_type_id: '',
     duration_id: '',
     application_deadline: '',
-    start: '',
-    end: '',
+    startDate: '',
+    endDate: '',
     work_location_type: 'on_site',
     profile_description: '',
     required_skills: [],
@@ -70,15 +98,16 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     benefits: [],
     application_steps: ['Entretien RH', 'Test technique', 'Entretien final'],
     languages: [],
-    activity_rate_min: '20',
-    activity_rate_max: '100',
+    activity_rate_min: 20,
+    activity_rate_max: 100,
     working_days_hours_description: [],
     job_level: 'junior',
     is_working_hours_flexible: false,
     contact_email: '',
     contact_name: '',
     documents_urls: [],
-    industry_ids: [], // Add this field to store industry IDs
+    max_appliants:1,
+    industries: [], // Add this field to store industry IDs
   });
 
   const [activeStep, setActiveStep] = useState(0);
@@ -86,7 +115,6 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const steps = [
     "Informations de base",
     "Description du poste",
-    "Compétences et prérequis",
     "Conditions de travail",
     "Contact et documents"
   ];
@@ -134,8 +162,37 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
 
   const loadOffer = async () => {
     try {
-      const offer = await api.offers.getById(offerId!);
-      setFormData(offer);
+      let data = await api.offers.getById(offerId!);
+      data = data.offer 
+      const formData: Partial<Offer> = {
+        title: data.title,
+        job_type_id: data.job_type_id,
+        location_id: data.location_id,
+        contract_type_id: data.contract_type_id,
+        remuneration_type_id: data.remuneration_type_id,
+        duration_id: data.duration_id,
+        application_deadline: data.application_deadline,
+        startDate: data.start,  // correspondance personnalisée
+        endDate: data.end,      // correspondance personnalisée
+        work_location_type: data.work_location_type || 'on_site',
+        profile_description: data.profile_description,
+        required_skills: data.required_skills || [],
+        required_documents: data.required_documents || ['CV', 'Lettre de motivation'],
+        benefits: data.benefits || [],
+        application_steps: data.application_steps || ['Entretien RH', 'Test technique', 'Entretien final'],
+        languages: data.languages || [],
+        activity_rate_min: parseInt(data.activity_rate_min),
+        activity_rate_max: parseInt(data.activity_rate_max),
+        working_days_hours_description: data.working_days_hours_description || [],
+        job_level: data.job_level,
+        is_working_hours_flexible: data.is_working_hours_flexible,
+        contact_email: data.contact_email,
+        contact_name: data.contact_name,
+        documents_urls: data.documents_urls || [],
+        max_appliants: data.max_appliants || 1,
+        industries: data.industries?.map((i:any) => i.industries?.industry_id) || [], // extraction des IDs d'industries
+      };
+      setFormData(formData);
     } catch (err: any) {
       setError("Erreur lors du chargement de l'offre");
     }
@@ -150,6 +207,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     }));
   };
 
+
+  
+
   const handleInputChange = (field: string) => (
     event: React.ChangeEvent<HTMLInputElement | { value: unknown }>
   ) => {
@@ -159,8 +219,27 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     }));
   };
 
-  const handleArrayInputChange = (field: string) => (
+  const handleNumberInputChange = (field: string) => (
+    event: React.ChangeEvent<HTMLInputElement | { value: unknown }>
+  ) => {
+    setFormData((prev:any) => ({
+      ...prev,
+      [field]: Number(event.target.value),
+    }));
+  };
+
+
+  const handleArrayInputChangeSelect = (field: string) => (
     event: SelectChangeEvent<string[]>
+  ) => {
+    const value = event.target.value;
+    setFormData((prev:any) => ({
+      ...prev,
+      [field]: typeof value === 'string' ? value.split(',') : value,
+    }));
+  };
+  const handleArrayInputChange = (field: string) => (
+    event: React.ChangeEvent<HTMLInputElement | { value: unknown }>
   ) => {
     const value = event.target.value;
     setFormData((prev:any) => ({
@@ -198,8 +277,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
       const submitData = {
         ...formData,
         application_deadline: formData.application_deadline ? dayjs(formData.application_deadline).format('YYYY-MM-DD') : null,
-        start: formData.start ? dayjs(formData.start).format('YYYY-MM-DD') : null,
-        end: formData.end ? dayjs(formData.end).format('YYYY-MM-DD') : null,
+        startDate: formData.startDate ? dayjs(formData.startDate).format('YYYY-MM-DD') : null,
+        endDate: formData.endDate ? dayjs(formData.endDate).format('YYYY-MM-DD') : null,
       };
       await onSubmit(submitData);
     } catch (err: any) {
@@ -222,11 +301,11 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} className="space-y-6">
+    <Box component="form" className="space-y-6">
       {error && <Alert severity="error">{error}</Alert>}
       
       <div className="flex justify-between items-center">
-        <Button onClick={() => navigate('/employer')} variant="outlined">
+        <Button onClick={() => navigate('/employer')} variant="outlined" type="button">
           Retour
         </Button>
         <Typography variant="h5" component="h2">
@@ -309,8 +388,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <InputLabel>Secteurs d'activité</InputLabel>
               <Select
                 multiple
-                value={formData.industry_ids || []}
-                onChange={handleArrayInputChange('industry_ids')}
+                value={formData.industries || []}
+                onChange={handleArrayInputChangeSelect('industries')}
                 input={<OutlinedInput label="Secteurs d'activité" />}
                 renderValue={(selected: string[]) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -336,7 +415,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <Select
                 multiple
                 value={formData.benefits || []}
-                onChange={handleArrayInputChange('benefits')}
+                onChange={handleArrayInputChangeSelect('benefits')}
                 input={<OutlinedInput label="Avantages" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -352,43 +431,12 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 <MenuItem value="13ème salaire">13ème salaire</MenuItem>
               </Select>
             </FormControl>
-          </>
-        )}
-
-        {activeStep === 2 && (
-          <>
-            <Typography variant="h6" gutterBottom>
-              Compétences et prérequis
-            </Typography>
-            <FormControl fullWidth>
-              <InputLabel>Compétences requises</InputLabel>
-              <Select
-                multiple
-                value={formData.required_skills || []}
-                onChange={handleArrayInputChange('required_skills')}
-                input={<OutlinedInput label="Compétences requises" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-              >
-                <MenuItem value="React">React</MenuItem>
-                <MenuItem value="TypeScript">TypeScript</MenuItem>
-                <MenuItem value="Node.js">Node.js</MenuItem>
-                <MenuItem value="Python">Python</MenuItem>
-                <MenuItem value="Java">Java</MenuItem>
-              </Select>
-            </FormControl>
-
             <FormControl fullWidth>
               <InputLabel>Langues</InputLabel>
               <Select
                 multiple
                 value={formData.languages || []}
-                onChange={handleArrayInputChange('languages')}
+                onChange={handleArrayInputChangeSelect('languages')}
                 input={<OutlinedInput label="Langues" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -410,7 +458,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <Select
                 multiple
                 value={formData.required_documents || []}
-                onChange={handleArrayInputChange('required_documents')}
+                onChange={handleArrayInputChangeSelect('required_documents')}
                 input={<OutlinedInput label="Documents requis" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -426,10 +474,10 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 <MenuItem value="Certificats">Certificats</MenuItem>
               </Select>
             </FormControl>
-          </>
+            </>
         )}
 
-        {activeStep === 3 && (
+        {activeStep === 2 && (
           <>
             <Typography variant="h6" gutterBottom>
               Conditions de travail
@@ -446,16 +494,24 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
             <FormControl fullWidth required>
-              <InputLabel>Type de lieu de travail</InputLabel>
-              <Select
+              <TextField
+              placeholder='Type de lieu de travail (remote)'
                 value={formData.work_location_type}
-                onChange={handleSelectChange('work_location_type')}
+                onChange={handleInputChange('work_location_type')}
               >
-                <MenuItem value="on_site">Sur site</MenuItem>
-                <MenuItem value="remote">Télétravail</MenuItem>
-                <MenuItem value="hybrid">Hybride</MenuItem>
+              </TextField>
+            </FormControl>
+            <FormControl fullWidth >
+              <InputLabel>Durée</InputLabel>
+              <Select value={formData.duration_id} onChange={handleSelectChange('duration_id')}>
+                {metadata.durations.map((dr: any) => (
+                  <MenuItem key={dr.duration_id} value={dr.duration_id}>
+                    {dr.duration_label}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
+
 
             <div className="grid grid-cols-2 gap-4">
               <TextField
@@ -463,7 +519,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 type="number"
                 required
                 value={formData.activity_rate_min}
-                onChange={handleInputChange('activity_rate_min')}
+                onChange={handleNumberInputChange('activity_rate_min')}
                 inputProps={{ min: 0, max: 100 }}
               />
 
@@ -472,7 +528,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 type="number"
                 required
                 value={formData.activity_rate_max}
-                onChange={handleInputChange('activity_rate_max')}
+                onChange={handleNumberInputChange('activity_rate_max')}
                 inputProps={{ min: 0, max: 100 }}
               />
             </div>
@@ -492,12 +548,61 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               label="Horaires flexibles"
             />
 
+              <div className="flex gap-4 items-end">
+                <TextField
+                  label="Jour(s) - horaires"
+                  placeholder='Lundi  08:00 - 18:00'
+                  type="text"
+                  value={newWorkingHours}
+                  onChange={(e) => setNewWorkingHours(e.target.value)}
+                  InputLabelProps={{ shrink: true }}
+                />
+
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={handleAddWorkingHours}
+                  startIcon={<AddCard />}
+                >
+                  Ajouter
+                </Button>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                {formData.working_days_hours_description?.map((hours: string, index: number) => (
+                  <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                    <span>{hours}</span>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleRemoveWorkingHours(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <DeleteOutline />
+                    </IconButton>
+                  </div>
+                ))}
+              </div>
+
+              <FormControl fullWidth required>
+              <InputLabel>Type de remuneration</InputLabel>
+              <Select
+                value={formData.remuneration_type_id}
+                onChange={handleSelectChange('remuneration_type_id')}
+              >
+                {Array.isArray(metadata.remunerationTypes) && metadata.remunerationTypes.map((rm: any) => (
+                  <MenuItem key={rm.remuneration_type_id} value={rm.remuneration_type_id}>
+                    {rm.remuneration_type_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <div className="grid grid-cols-2 gap-4">
               <TextField
                 label="Date de début"
                 type="date"
-                value={formData.start}
-                onChange={handleInputChange('start')}
+                value={formData.startDate}
+                onChange={handleInputChange('startDate')}
                 InputLabelProps={{ shrink: true }}
                 required
               />
@@ -505,8 +610,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <TextField
                 label="Date de fin"
                 type="date"
-                value={formData.end}
-                onChange={handleInputChange('end')}
+                value={formData.endDate}
+                onChange={handleInputChange('endDate')}
                 InputLabelProps={{ shrink: true }}
               />
             </div>
@@ -523,7 +628,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
           </>
         )}
 
-        {activeStep === 4 && (
+        {activeStep === 3 && (
           <>
             <Typography variant="h6" gutterBottom>
               Contact et documents
@@ -550,7 +655,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <Select
                 multiple
                 value={formData.application_steps || []}
-                onChange={handleArrayInputChange('application_steps')}
+                onChange={handleArrayInputChangeSelect('application_steps')}
                 input={<OutlinedInput label="Étapes du processus de recrutement" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -565,7 +670,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 <MenuItem value="Entretien technique">Entretien technique</MenuItem>
                 <MenuItem value="Entretien final">Entretien final</MenuItem>
               </Select>
-            </FormControl>
+            
 
             <div>
               <Typography variant="subtitle1" gutterBottom>
@@ -602,6 +707,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 </Box>
               )}
             </div>
+            </FormControl>
           </>
         )}
 
@@ -612,16 +718,18 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             onClick={handleBack}
             disabled={activeStep === 0}
             variant="outlined"
+            type="button"
           >
             Précédent
           </Button>
           <div className="space-x-2">
-            {activeStep === steps.length - 1 ? (
+            {activeStep === steps.length -1 ? (
               <Button
-                type="submit"
+                type= 'button'
                 variant="contained"
                 color="primary"
                 className="bg-primary hover:bg-primary-dark"
+                onClick={(e) => handleSubmit(e)}
               >
                 {offerId ? "Mettre à jour l'offre" : "Publier l'offre"}
               </Button>
@@ -630,6 +738,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 onClick={handleNext}
                 variant="contained"
                 color="primary"
+                type="button"
                 className="bg-primary hover:bg-primary-dark"
               >
                 Suivant

@@ -89,7 +89,7 @@ CREATE TABLE offers (
     contract_type_id UUID REFERENCES contract_types(contract_type_id) ON DELETE SET NULL,
     duration_id UUID REFERENCES engagement_durations(duration_id) ON DELETE SET NULL,
     application_deadline DATE,
-    start DATE NOT NULL,
+    start DATE NULL,
     end DATE DEFAULT NULL,
     work_location_type VARCHAR(20), -- presentiel,hybride,30% présentiel
     profile_description TEXT,
@@ -106,8 +106,9 @@ CREATE TABLE offers (
     contact_email VARCHAR(255), -- Contact pour postuler
     contact_name VARCHAR(255), -- Contact pour postuler
     documents_urls TEXT[],
+    max_appliants INT DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
 
 -- Table des relations entre les utilisateurs et les offres sauvegardées (saved_offers)

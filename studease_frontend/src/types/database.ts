@@ -71,8 +71,8 @@ export interface Offer {
   contract_type_id: string;
   duration_id: string;
   application_deadline: string;
-  start: string;
-  end: string | null;
+  startDate: string;
+  endDate: string | null;
   work_location_type: string;
   profile_description: string;
   required_skills: string[];
@@ -80,9 +80,9 @@ export interface Offer {
   benefits: string[];
   application_steps: string[];
   languages: string[];
-  activity_rate_min: string;
-  activity_rate_max: string;
-  working_days_hours_description: string[];
+  activity_rate_min: number;
+  activity_rate_max: number;
+  working_days_hours_description?: string[];
   job_level: string;
   is_working_hours_flexible: boolean;
   contact_email: string;
@@ -91,8 +91,9 @@ export interface Offer {
   created_at: string;
   updated_at: string;
   company?: Company;
-  industries?: Industry[];
-  industry_ids?:string[];
+  industries?: string[];
+  max_appliants:number;
+  applications:Application[];
 }
 
 export interface Application {

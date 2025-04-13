@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         // Récupérer les offres associées à cette entreprise
         const { data: offers, error } = await supabase
             .from('offers') // Table des offres
-            .select('*,applications(*)') // Sélectionner toutes les colonnes
+            .select('*,applications(*),industries:offer_industries(industries(*)),locations(*),remuneration_types(*),contract_types(*),engagement_durations(*)') // Sélectionner toutes les colonnes
             .eq('company_id', params.id) // Filtrer par company_id
             .order('created_at', { ascending: false }); // Trier par date de création, décroissant
         

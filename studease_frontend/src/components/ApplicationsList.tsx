@@ -4,7 +4,10 @@ import {
   Card,
   CardContent,
   Chip,
-  Button
+  Button,
+  Tooltip,
+  Divider,
+  Box,
 } from '@mui/material';
 import {
   Timeline,
@@ -12,15 +15,20 @@ import {
   TimelineSeparator,
   TimelineConnector,
   TimelineContent,
-  TimelineDot
+  TimelineDot,
 } from '@mui/lab';
-import { Application } from '../types/database';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BusinessIcon from '@mui/icons-material/Business';
+import WorkIcon from '@mui/icons-material/Work';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import DescriptionIcon from '@mui/icons-material/Description';
+import MoneyIcon from '@mui/icons-material/Money';
+import SchoolIcon from '@mui/icons-material/School';
+import TranslateIcon from '@mui/icons-material/Translate';
 
 interface Props {
-  applications: Application[];
+  applications: any[];
 }
 
 const getStatusColor = (status: string) => {
@@ -56,19 +64,18 @@ const getStatusLabel = (status: string) => {
 export default function ApplicationsList({ applications }: Props) {
   return (
     <div className="space-y-6">
-      {applications.map((application) => (
+      {Array.isArray(applications) ? applications.map((application) => (
         <Card key={application.id} className="overflow-visible">
           <CardContent className="space-y-4">
+            {/* Header with Title and Status */}
             <div className="flex justify-between items-start">
               <div>
                 <Typography variant="h6" component="h3">
-                  {application.offer?.title}
+                  {application.offers?.title}
                 </Typography>
                 <div className="flex items-center gap-2 text-gray-600 text-sm mt-1">
                   <BusinessIcon className="w-4 h-4" />
-                  <span>{application.offer?.company?.company_name}</span>
-                  <LocationOnIcon className="w-4 h-4 ml-2" />
-                  <span>Lausanne, VD</span>
+                  <span>{application.offers?.companies?.company_name}</span>
                 </div>
               </div>
               <Chip
@@ -77,6 +84,106 @@ export default function ApplicationsList({ applications }: Props) {
               />
             </div>
 
+            <Divider />
+
+            {/* Job Details */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-2 text-gray-600">
+                <LocationOnIcon className="w-4 h-4" />
+                <Typography variant="body2">
+                  {application.offers?.locations?.city}, {application.offers?.locations?.region}
+                  <span className="text-gray-500 ml-1">({application.offers?.work_location_type})</span>
+                </Typography>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <WorkIcon className="w-4 h-4" />
+                <Typography variant="body2">
+                  {application.offers?.contract_types?.contract_type_name}
+                </Typography>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <SchoolIcon className="w-4 h-4" />
+                <Typography variant="body2">
+                  {application.offers?.job_level}
+                </Typography>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <MoneyIcon className="w-4 h-4" />
+                <Typography variant="body2">
+                  {application.offers?.remuneration_types?.remuneration_type_name}
+                </Typography>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <AccessTimeIcon className="w-4 h-4" />
+                <Typography variant="body2">
+                  {`${application.offers?.activity_rate_min}% - ${application.offers?.activity_rate_max}%`}
+                </Typography>
+              </div>
+
+              {application.offers?.engagement_durations && (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <CalendarTodayIcon className="w-4 h-4" />
+                  <Typography variant="body2">
+                    {application.offers.engagement_durations.duration_label}
+                  </Typography>
+                </div>
+              )}
+            </div>
+
+            {/* Industries */}
+            {application.offers?.industries && application.offers.industries.length > 0 && (
+              <div>
+                <Typography variant="subtitle2" gutterBottom>
+                  Secteurs d'activité
+                </Typography>
+                <div className="flex flex-wrap gap-2">
+                  {application.offers.industries.map((industry: any) => (
+                    <Chip
+                      key={industry.industries.industry_id}
+                      label={industry.industries.industry_name}
+                      size="small"
+                      className="bg-blue-100 text-blue-800"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Languages */}
+            {application.offers?.languages && application.offers.languages.length > 0 && (
+              <div>
+                <Typography variant="subtitle2" gutterBottom>
+                  Langues requises
+                </Typography>
+                <div className="flex flex-wrap gap-2">
+                  {application.offers.languages.map((language: string, index: number) => (
+                    <Chip
+                      key={index}
+                      icon={<TranslateIcon className="w-4 h-4" />}
+                      label={language}
+                      size="small"
+                      className="bg-purple-100 text-purple-800"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Application Message */}
+            <div>
+              <Typography variant="subtitle2" gutterBottom>
+                Message de candidature
+              </Typography>
+              <Typography variant="body2" className="text-gray-700 bg-gray-50 p-4 rounded-lg">
+                {application.application_message}
+              </Typography>
+            </div>
+
+            {/* Application Date */}
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <AccessTimeIcon className="w-4 h-4" />
               <span>
@@ -84,18 +191,19 @@ export default function ApplicationsList({ applications }: Props) {
               </span>
             </div>
 
-            {application.application_progress.length > 0 && (
+            {/* Application Progress */}
+            {application.offers?.application_steps && application.offers.application_steps.length > 0 && (
               <div className="mt-4">
                 <Typography variant="subtitle2" className="mb-2">
-                  Progression de la candidature
+                  Étapes du recrutement
                 </Typography>
                 <Timeline>
-                  {application.application_progress.map((step, index) => (
+                  {application.offers.application_steps.map((step: string, index: number) => (
                     <TimelineItem key={index}>
                       <TimelineSeparator>
-                        <TimelineDot className="bg-primary" />
-                        {index < application.application_progress.length - 1 && (
-                          <TimelineConnector className="bg-primary" />
+                        <TimelineDot className={index === 0 ? "bg-primary" : "bg-gray-300"} />
+                        {index < application.offers.application_steps.length - 1 && (
+                          <TimelineConnector className="bg-gray-300" />
                         )}
                       </TimelineSeparator>
                       <TimelineContent>{step}</TimelineContent>
@@ -105,17 +213,19 @@ export default function ApplicationsList({ applications }: Props) {
               </div>
             )}
 
+            {/* Employer Feedback */}
             {application.employer_feedback && (
               <div className="mt-4">
                 <Typography variant="subtitle2" className="mb-2">
                   Retour du recruteur
                 </Typography>
-                <Typography variant="body2" className="text-gray-700">
+                <Typography variant="body2" className="text-gray-700 bg-gray-50 p-4 rounded-lg">
                   {application.employer_feedback}
                 </Typography>
               </div>
             )}
 
+            {/* Actions */}
             <div className="flex justify-end gap-2 mt-4">
               <Button
                 variant="outlined"
@@ -134,7 +244,7 @@ export default function ApplicationsList({ applications }: Props) {
             </div>
           </CardContent>
         </Card>
-      ))}
+      )) : null}
     </div>
   );
 }

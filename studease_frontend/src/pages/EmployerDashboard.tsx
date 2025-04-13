@@ -11,7 +11,7 @@ function EmployerDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate(); // Initialize useNavigate
   const [activeTab, setActiveTab] = useState<'postings' | 'applications'>('postings');
-  const [jobPostings, setJobPostings] = useState<Offer[]>([]);
+  const [jobPostings, setJobPostings] = useState<any[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +24,7 @@ function EmployerDashboard() {
       const fetchData = async () => {
         try {
           const offersResponse = await api.offers.getByCompany(user.company_id);
-          setJobPostings(offersResponse);
+          setJobPostings(offersResponse.offers);
 
           if (activeTab === 'applications' && applications.length === 0) {
             const applicationsResponse = await api.applications.getByCompany(user.company_id);

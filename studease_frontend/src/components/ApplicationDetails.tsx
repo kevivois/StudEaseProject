@@ -24,7 +24,7 @@ import { api } from '../lib/api';
 interface Props {
   open: boolean;
   onClose: () => void;
-  application: Application;
+  application: any;
   onStatusUpdate: (applicationId: string, status: string) => void;
 }
 
@@ -89,20 +89,20 @@ export default function ApplicationDetails({
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={`${application.user?.first_name} ${application.user?.last_name}`}
+                  primary={`${application.users?.first_name} ${application.users?.last_name}`}
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon>
                   <EmailIcon />
                 </ListItemIcon>
-                <ListItemText primary={application.user?.email} />
+                <ListItemText primary={application.users?.email} />
               </ListItem>
               <ListItem>
                 <ListItemIcon>
                   <PhoneIcon />
                 </ListItemIcon>
-                <ListItemText primary={application.user?.phone_number} />
+                <ListItemText primary={application.users?.phone_number} />
               </ListItem>
             </List>
           </div>
@@ -125,7 +125,7 @@ export default function ApplicationDetails({
               Documents
             </Typography>
             <List>
-              {application.documents.map((doc, index) => (
+              {application.documents.map((doc:any, index:any) => (
                 <ListItem
                   key={index}
                   button

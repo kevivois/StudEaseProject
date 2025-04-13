@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import CreateJobPosting from "./components/CreateJobPosting"
 import EditJobPosting from "./components/EditJobPosting"
 import UserOrCompanyProtected from './components/UserOrCompanyProtected';
+import JobOfferDetails from './components/JobOfferDetails';
 function App() {
   return (
     <BrowserRouter>
@@ -54,6 +55,14 @@ function App() {
               element={
                 <ProtectedRoute userType="company">
                   <EditJobPosting />
+                </ProtectedRoute>
+              }
+            />
+          <Route
+              path="/employer/offers/:id"
+              element={
+                <ProtectedRoute userType="company">
+                  <JobOfferDetails />
                 </ProtectedRoute>
               }
             />
