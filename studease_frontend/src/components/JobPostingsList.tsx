@@ -68,7 +68,7 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
                   <div className="font-medium">{posting.title}</div>
                 </TableCell>
                 <TableCell>
-                  <div className="text-sm">{posting.locations.city}, {posting.locations.region} {posting.locations.country}</div>
+                  <div className="text-sm">{posting.locations.region} {posting.locations.country}</div>
                 </TableCell>
                 <TableCell>
                   <div className="text-sm">{posting.contract_types.contract_type_name}</div>

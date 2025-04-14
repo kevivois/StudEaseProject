@@ -30,7 +30,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import TranslateIcon from '@mui/icons-material/Translate';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { api } from '../lib/api';
-import { Offer, Application } from '../types/database';
+import { useNavigate } from 'react-router-dom';
 import ApplicationDetails from '../components/ApplicationDetails';
 
 export default function JobOfferDetails() {
@@ -40,6 +40,7 @@ export default function JobOfferDetails() {
   const [error, setError] = useState<string | null>(null);
   const [selectedApplication, setSelectedApplication] = useState<any | null>(null);
   const [applications,setApplications] = useState<any | null>(null);
+  let navigate = useNavigate()
 
   useEffect(() => {
     const loadOffer = async () => {
@@ -89,6 +90,9 @@ export default function JobOfferDetails() {
   return (
     <Box className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Paper className="p-8 space-y-8">
+      <Button onClick={() => navigate('/employer')} variant="outlined" type="button">
+          Retour
+        </Button>
         {/* Header */}
         <div className="space-y-4">
           <Typography variant="h4" component="h1" className="font-bold">
@@ -105,7 +109,7 @@ export default function JobOfferDetails() {
             <Grid item xs={12} sm={6} md={3}>
               <div className="flex items-center gap-2">
                 <LocationOnIcon className="text-gray-400" />
-                <Typography>{offer.locations?.city}, {offer.locations?.region}</Typography>
+                <Typography> {offer.locations?.region}</Typography>
               </div>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>

@@ -15,11 +15,11 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import PersonIcon from '@mui/icons-material/Person';
 import OfferCard from '../components/OfferCard';
 import ApplicationModal from '../components/ApplicationModal';
-import ProfileSection from '../components/ProfileSelection';
+import StudentProfile from "../components/StudentProfile"
 import OfferFilters from '../components/OfferFilters';
 import ApplicationsList from '../components/ApplicationsList';
 import { api } from '../lib/api';
-import { Offer, Application, User, JobType, Location, ContractType, Industry } from '../types/database';
+import { Offer, Application, User } from '../types/database';
 import { useAuth } from '../contexts/AuthContext';
 
 interface TabPanelProps {
@@ -212,9 +212,9 @@ export default function JobSeekerDashboard() {
   };
 
   const handleUpdateProfile = async (data: Partial<User>) => {
-    try {
-      if (!profile?.user_id) return;
-      const updatedProfile = await api.users.updateProfile(profile.user_id, data);
+    try { 
+      if (!user?.user_id) return;
+      const updatedProfile = await api.users.updateProfile(user.user_id, data);
       setProfile(updatedProfile);
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -315,10 +315,7 @@ export default function JobSeekerDashboard() {
           <div className="flex justify-center">
             <CircularProgress />
           </div>
-        ) : error.profile ? (
-          <Alert severity="error">{error.profile}</Alert>
-        ) : (
-          profile && <ProfileSection profile={profile} onUpdate={handleUpdateProfile} />
+        ) : (<StudentProfile onUpdate={handleUpdateProfile} />
         )}
       </TabPanel>
 

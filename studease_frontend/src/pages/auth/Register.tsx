@@ -213,28 +213,6 @@ export default function Register() {
                     placeholder="Numéro de téléphone"
                   />
                 </div>
-                <div>
-                  <input
-                    id="availabilityStart"
-                    name="availabilityStart"
-                    type="date"
-                    required
-                    value={availability_start}
-                    onChange={handleDateChangeStart}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <input
-                    id="availabilityEnd"
-                    name="availabilityEnd"
-                    type="date"
-                    required
-                    value={availability_end}
-                    onChange={handleDateChangeEnd}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                  />
-                </div>
               </>
             ) : (
               <>

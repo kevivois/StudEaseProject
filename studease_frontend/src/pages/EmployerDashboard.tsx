@@ -3,14 +3,13 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Tabs, Tab, Alert, CircularProgress } from '@mui/material';
 import { api } from '../lib/api';
 import JobPostingsList from '../components/JobPostingsList';
-import ApplicationsOverview from '../components/ApplicationsOverview';
-import { Offer, Application } from '../types/database';
+import { Offer, Application, Company } from '../types/database';
 import { useAuth } from '../contexts/AuthContext';
-
+import CompanyProfileSection from '../components/CompanyProfile';
 function EmployerDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate(); // Initialize useNavigate
-  const [activeTab, setActiveTab] = useState<'postings' | 'applications'>('postings');
+  const [activeTab, setActiveTab] = useState<'postings' | 'profile'>('postings');
   const [jobPostings, setJobPostings] = useState<any[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,11 +24,6 @@ function EmployerDashboard() {
         try {
           const offersResponse = await api.offers.getByCompany(user.company_id);
           setJobPostings(offersResponse.offers);
-
-          if (activeTab === 'applications' && applications.length === 0) {
-            const applicationsResponse = await api.applications.getByCompany(user.company_id);
-            setApplications(applicationsResponse);
-          }
         } catch (err: any) {
           if (err.response?.status === 404) {
             setError("Ressource non trouvée. Veuillez vérifier votre connexion.");
@@ -48,6 +42,10 @@ function EmployerDashboard() {
   const handleEditPosting = (posting: Offer) => {
     navigate(`/employer/offers/${posting.offer_id}/edit`); // Use navigate
   };
+
+  const handleProfileUpdate = async (data:any) => {
+    await api.companies.updateProfile(user.company_id,data)
+  }
 
   const handleDeletePosting = async (postingId: string) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette offre ?')) {
@@ -91,7 +89,7 @@ function EmployerDashboard() {
       if (user?.id) {
         const offersResponse = await api.offers.getByCompany(user.id);
         setJobPostings(offersResponse);
-        if (activeTab === 'applications') {
+        if (activeTab === 'profile') {
           const applicationsResponse = await api.applications.getByCompany(user.id);
           setApplications(applicationsResponse);
         }
@@ -128,20 +126,17 @@ function EmployerDashboard() {
           </button>
           <button
             className={`px-4 py-2 rounded-full ${
-              activeTab === 'applications'
+              activeTab === 'profile'
                 ? 'bg-primary text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
             onClick={() => {
-              setActiveTab('applications');
-              if (applications.length === 0) {
-                loadDashboardData();
-              }
+              setActiveTab('profile');
             }}
-            aria-selected={activeTab === 'applications'}
-            aria-controls="applications-panel"
+            aria-selected={activeTab === 'profile'}
+            aria-controls="profile-panel"
           >
-            Candidatures
+            Profile
           </button>
         </div>
       </div>
@@ -162,13 +157,9 @@ function EmployerDashboard() {
         )}
       </div>
 
-      <div id="applications-panel" hidden={activeTab !== 'applications'}>
-        {activeTab === 'applications' && (
-          <ApplicationsOverview
-            applications={applications}
-            onViewApplication={handleViewApplication}
-            onUpdateStatus={handleUpdateApplicationStatus}
-          />
+      <div id="applications-panel" hidden={activeTab !== 'profile'}>
+        {activeTab === 'profile' && (
+          <CompanyProfileSection onUpdate={handleProfileUpdate} />
         )}
       </div>
     </div>
