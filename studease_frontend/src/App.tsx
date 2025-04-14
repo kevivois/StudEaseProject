@@ -67,6 +67,9 @@ function App() {
               }
             />
           </Route>
+          <Route path="*" element={
+            <div>not found</div>
+          }></Route>
         </Routes>
       </div>
     </BrowserRouter>
