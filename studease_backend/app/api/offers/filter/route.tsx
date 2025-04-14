@@ -63,9 +63,8 @@ export async function POST(request: NextRequest) {
     }
 
     if (workingHoursSearch) {
-      query = query.textSearch('working_days_hours_description', workingHoursSearch, {
-        type: 'plain',
-      });
+      query = query
+        .filter('working_days_hours_description', 'cs', `{${workingHoursSearch}}`);
     }
 
     if (searchTerm) {

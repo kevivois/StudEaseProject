@@ -169,7 +169,7 @@ export const locationSchema = z.object({
 export const applicationSchema = z.object({
   id: z.string().uuid().optional(),
   status: z.string().default("en attente"),
-  application_message: z.string().min(10,'application_message has to be more than 10 characters'),
+  application_message: z.string().min(1,'application_message has to be more than 10 characters'),
   documents: z.array(z.string()).optional().default([]),
   applied_at: z.string().optional(),
   updated_at: z.string().optional(),

@@ -34,14 +34,6 @@ function App() {
               <Profile />
             }
           />
-          <Route
-              path="/employers/offers/new"
-              element={
-                <ProtectedRoute userType="student">
-                  <JobSeekerDashboard />
-                </ProtectedRoute>
-              }
-            />
              <Route
               path="/employer/offers/new"
               element={

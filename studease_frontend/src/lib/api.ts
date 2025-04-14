@@ -1,5 +1,5 @@
 // API base URL
-export const API_BASE_URL = 'http://localhost:3000/api';
+export const API_BASE_URL = 'https://studease-api.jevs.ch/api';
 
 // Helper to handle API responses
 const handleResponse = async (response: Response) => {
