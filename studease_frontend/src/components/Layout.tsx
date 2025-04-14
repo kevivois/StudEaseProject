@@ -17,11 +17,8 @@ export default function Layout() {
               <SchoolIcon className="h-8 w-8 text-[#7fba3c]" />
               <span className="ml-2 text-2xl font-bold text-gradient">StudEase</span>
             </Link>
-
             {/* Menu de navigation */}
             <div className="flex items-center space-x-4">
-              <button className="text-gray-700 hover:text-[#7fba3c]">FR</button>
-
               {/* Si l'utilisateur est connecté, affiche les options de profil et déconnexion */}
               {user ? (
                 <div className="flex items-center space-x-4">

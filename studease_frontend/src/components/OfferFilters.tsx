@@ -169,7 +169,7 @@ export default function OfferFilters({
                 return (
                   <Chip
                     key={value}
-                    label={`${location?.city}, ${location?.region}`}
+                    label={`${location?.region}`}
                     className="bg-primary/10 text-primary"
                   />
                 );
@@ -179,7 +179,7 @@ export default function OfferFilters({
         >
           {Array.isArray(metadata.locations) ? metadata.locations.map((location:any) => (
             <MenuItem key={location.location_id} value={location.location_id}>
-              {`${location.city}, ${location.region}`}
+              {`${location.region}`}
             </MenuItem>
           )):null}
         </Select>

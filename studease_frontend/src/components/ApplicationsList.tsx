@@ -91,7 +91,7 @@ export default function ApplicationsList({ applications }: Props) {
               <div className="flex items-center gap-2 text-gray-600">
                 <LocationOnIcon className="w-4 h-4" />
                 <Typography variant="body2">
-                  {application.offers?.locations?.city}, {application.offers?.locations?.region}
+                  {application.offers?.locations?.region}
                   <span className="text-gray-500 ml-1">({application.offers?.work_location_type})</span>
                 </Typography>
               </div>
@@ -227,12 +227,14 @@ export default function ApplicationsList({ applications }: Props) {
 
             {/* Actions */}
             <div className="flex justify-end gap-2 mt-4">
+              {/*
               <Button
                 variant="outlined"
                 className="border-primary text-primary hover:bg-primary/10"
               >
                 Voir les détails
               </Button>
+              */}
               {application.status === 'en_attente' && (
                 <Button
                   variant="outlined"

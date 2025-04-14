@@ -163,7 +163,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const loadOffer = async () => {
     try {
       let data = await api.offers.getById(offerId!);
-      data = data.offer 
+      data = data.offer.offer
       const formData: Partial<Offer> = {
         title: data.title,
         job_type_id: data.job_type_id,
@@ -365,6 +365,17 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 <MenuItem value="senior">Senior</MenuItem>
               </Select>
             </FormControl>
+            <FormControl fullWidth required>
+            <TextField
+              label="Nombre de places recherchée"
+              fullWidth
+              required
+              inputProps={{ min: 1 }} 
+              type="number"
+              value={formData.max_appliants}
+              onChange={handleNumberInputChange('max_appliants')}
+            />
+            </FormControl>
           </>
         )}
 
@@ -487,7 +498,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <Select value={formData.location_id} onChange={handleSelectChange('location_id')}>
                 {metadata.locations.map((loc: any) => (
                   <MenuItem key={loc.location_id} value={loc.location_id}>
-                    {`${loc.city}, ${loc.region}`}
+                    {`${loc.region}`}
                   </MenuItem>
                 ))}
               </Select>

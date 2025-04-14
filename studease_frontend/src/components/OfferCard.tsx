@@ -47,7 +47,7 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
                 ? 'Télétravail'
                 : offer.work_location_type === 'hybrid'
                 ? 'Hybride'
-                : `${offer.locations?.city}, ${offer.locations?.region}`}
+                : `${offer.locations?.region}`}
             </Typography>
           </div>
 
