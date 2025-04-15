@@ -122,13 +122,13 @@ export default function JobSeekerDashboard() {
   };
 
   const loadProfile = async () => {
-    if (!user?.id) return;
+    if (!user?.user_id) return;
 
     try {
       setLoading(prev => ({ ...prev, profile: true }));
       setError(prev => ({ ...prev, profile: null }));
-      const profileData = await api.users.getProfile(user.id);
-      setProfile(profileData);
+      const profileData = await api.users.getProfile(user.user_id);
+      setProfile(profileData.user);
     } catch (err) {
       setError(prev => ({ ...prev, profile: 'Error loading profile' }));
       console.error('Error loading profile:', err);
@@ -215,7 +215,7 @@ export default function JobSeekerDashboard() {
     try { 
       if (!user?.user_id) return;
       const updatedProfile = await api.users.updateProfile(user.user_id, data);
-      setProfile(updatedProfile);
+      setProfile(updatedProfile.user);
     } catch (error) {
       console.error('Error updating profile:', error);
       throw error;
@@ -315,7 +315,7 @@ export default function JobSeekerDashboard() {
           <div className="flex justify-center">
             <CircularProgress />
           </div>
-        ) : (<StudentProfile onUpdate={handleUpdateProfile} />
+        ) : (<StudentProfile profile={profile} onUpdate={handleUpdateProfile} />
         )}
       </TabPanel>
 

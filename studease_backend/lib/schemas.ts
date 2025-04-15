@@ -9,12 +9,12 @@ export const registerUserSchema = z.object({
   password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
   first_name: z.string().min(2, "Prénom requis"),
   last_name: z.string().min(2, "Nom requis"),
-  phone_number: z.string().min(10, "Numéro de téléphone requis").optional(),
-  location_id: z.string().uuid().nullable().optional(),
+  phone_number: z.string().min(4, "Numéro de téléphone requis").optional(),
   profile_description: z.string().optional().default(''),
   skills: z.array(z.string()).optional().default([]),
   availability_start: z.string().optional().nullable(),
   availability_end: z.string().optional().nullable(),
+  birthdate:z.string().date(),
 });
 export const registerCompanySchema = z.object({
   email: z.string().email("Email invalide"),
@@ -38,14 +38,14 @@ export const userSchema = z.object({
   first_name: z.string().min(2, "Le prénom est requis"),
   last_name: z.string().min(2, "Le nom est requis"),
   phone_number: z.string().min(6, "Numéro de téléphone requis").optional(),
-  location_id: z.string().uuid().nullable().optional(),
   profile_description: z.string().optional(),
   skills: z.array(z.string()).optional(),
-  availability_start: z.string().optional(), // Format ISO
-  availability_end: z.string().optional(),
+  availability_start: z.string().optional().nullable(), // Format ISO
+  availability_end: z.string().optional().nullable(),
+  birthdate:z.string().date(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
-}).strict();
+});
 
 // ✅ COMPANIES
 export const companySchema = z.object({
@@ -61,7 +61,7 @@ export const companySchema = z.object({
   company_website: z.string().url().optional(),
   company_description: z.string().optional(),
   created_at: z.string().optional(),
-}).strict();
+})
 
 // ✅ OFFERS
 export const offerSchema = z.object({
@@ -92,7 +92,7 @@ export const offerSchema = z.object({
   max_appliants:z.number(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
-}).strict();
+})
 
 export const offerUpdateSchema = z.object({
   title: z.string().min(2, "Titre requis"),
@@ -123,7 +123,7 @@ export const offerUpdateSchema = z.object({
   industries:z.array(z.string().uuid()).optional(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
-}).strict();
+})
 
 
 export const createOfferSchema = z.object({
@@ -155,7 +155,7 @@ export const createOfferSchema = z.object({
   documents_urls: z.array(z.string()).optional().default([]),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
-}).strict();
+})
 
 // ✅ LOCATIONS
 export const locationSchema = z.object({
@@ -163,7 +163,7 @@ export const locationSchema = z.object({
   country: z.string().optional(),
   region: z.string().optional(),
   city: z.string().optional(),
-}).strict();
+})
 
 // ✅ APPLICATIONS
 export const applicationSchema = z.object({
@@ -175,37 +175,37 @@ export const applicationSchema = z.object({
   updated_at: z.string().optional(),
   employer_feedback: z.string().optional(),
   application_progress: z.array(z.string()).optional(),
-}).strict();
+})
 
 // ✅ JOB TYPES
 export const jobTypeSchema = z.object({
   job_type_id: z.string().uuid().optional(),
   job_type_name: z.string().min(2, "Nom du type d'emploi requis"),
-}).strict();
+})
 
 // ✅ REMUNERATION TYPES
 export const remunerationTypeSchema = z.object({
   remuneration_type_id: z.string().uuid().optional(),
   remuneration_type_name: z.string().min(2, "Nom du type de rémunération requis"),
-}).strict();
+})
 
 // ✅ ENGAGEMENT DURATIONS
 export const engagementDurationSchema = z.object({
   duration_id: z.string().uuid().optional(),
   duration_label: z.string().min(2, "Label requis"),
   is_flexible: z.boolean().default(false),
-}).strict();
+})
 
 export const userUpdateSchema = z.object({
   first_name: z.string().optional(),
   last_name: z.string().optional(),
   phone_number: z.string().optional(),
-  location_id: z.string().uuid().optional(),
   profile_description: z.string().optional(),
-  skills: z.array(z.string()).optional(),
-  availability_start: z.string().optional(), // ISO Date
-  availability_end: z.string().optional(),
-}).strict();
+  skills: z.array(z.string()).optional().default([]).nullable(),
+  availability_start: z.string().date().optional().nullable(),
+  birthdate:z.string().date(),
+  availability_end: z.string().date().optional().nullable()
+})
 
 
 
@@ -213,19 +213,19 @@ export const userUpdateSchema = z.object({
 export const industrySchema = z.object({
   industry_id: z.string().uuid().optional(),
   industry_name: z.string().min(2, "Nom de l'industrie requis"),
-}).strict();
+})
 
 // ✅ CONTRACT TYPES
 export const contractTypeSchema = z.object({
   contract_type_id: z.string().uuid().optional(),
   contract_type_name: z.string().min(2, "Nom du type de contrat requis"),
-}).strict();
+})
 
 // ✅ COMPANY TYPES
 export const companyTypeSchema = z.object({
   company_type_id: z.string().uuid().optional(),
   label: z.string().min(2, "Label requis"),
-}).strict();
+})
 
 // ✅ SAVED OFFERS
 export const savedOfferSchema = z.object({
@@ -233,21 +233,21 @@ export const savedOfferSchema = z.object({
   user_id: z.string().uuid(),
   offer_id: z.string().uuid(),
   saved_at: z.string().optional(),
-}).strict();
+})
 
 // ✅ OFFER INDUSTRIES
 export const offerIndustrySchema = z.object({
   id: z.string().uuid().optional(),
   offer_id: z.string().uuid(),
   industry_id: z.string().uuid(),
-}).strict();
+})
 
 // ✅ OFFER CONTRACT TYPES
 export const offerContractTypeSchema = z.object({
   id: z.string().uuid().optional(),
   offer_id: z.string().uuid(),
   contract_type_id: z.string().uuid(),
-}).strict();
+})
 
 
 export const companyUpdateSchema = z.object({
@@ -259,7 +259,7 @@ export const companyUpdateSchema = z.object({
   company_description: z.string().optional(),
 });
 
-export const updateUserSchema = z.object({
+export const authUserUpdate = z.object({
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
 });

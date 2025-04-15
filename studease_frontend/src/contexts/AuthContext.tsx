@@ -15,8 +15,7 @@ interface AuthContextType {
     location_id?: string;
     profile_description?: string;
     skills?: string[];
-    availability_start?: Date; // date in format 'YYYY-MM-DD'
-    availability_end?: Date;   // date in format 'YYYY-MM-DD'
+    birthdate:Date
   }) => Promise<void>;
   registerCompany: (data: {
     email: string;

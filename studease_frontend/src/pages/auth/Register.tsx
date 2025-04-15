@@ -18,8 +18,7 @@ export default function Register() {
   const [company_address, setCompanyAddress] = useState('');
   const [company_phone, setCompanyPhone] = useState('');
   const [company_website, setCompanyWebsite] = useState('');
-  const [availability_start, setAvailabilityStart] = useState('');
-  const [availability_end, setAvailabilityEnd] = useState('');
+  const [birthdate, setBirthDate] = useState('');
   const [companyTypes, setCompanyTypes] = useState<{ company_type_id: string; label: string }[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,15 +30,11 @@ export default function Register() {
     return `${year}-${month}-${day}`;
   };
 
-  const handleDateChangeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChangeBirthdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = new Date(e.target.value);
-    setAvailabilityStart(formatDateForInput(selectedDate));
+    setBirthDate(formatDateForInput(selectedDate));
   };
 
-  const handleDateChangeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = new Date(e.target.value);
-    setAvailabilityEnd(formatDateForInput(selectedDate));
-  };
 
   const convertStringToDate = (dateString: string): Date => {
     const [year, month, day] = dateString.split('-');
@@ -74,8 +69,7 @@ export default function Register() {
           first_name,
           last_name,
           phone_number,
-          availability_start: convertStringToDate(availability_start),
-          availability_end: convertStringToDate(availability_end),
+          birthdate:convertStringToDate(birthdate)
         });
       } else {
         await registerCompany({
@@ -213,6 +207,17 @@ export default function Register() {
                     placeholder="Numéro de téléphone"
                   />
                 </div>
+                <div>
+                   <input
+                     id="birthdate"
+                     name="birthdate"
+                     type="date"
+                     required
+                     value={birthdate}
+                     onChange={handleDateChangeBirthdate}
+                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                   />
+                 </div>
               </>
             ) : (
               <>
