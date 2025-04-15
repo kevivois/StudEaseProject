@@ -47,7 +47,6 @@ export default function JobOfferDetails() {
       try {
         setLoading(true);
         let data = (await api.offers.getById(id!)).offer;
-        console.log(data.applications)
         setOffer(data.offer);
         setApplications(data.applications)
       } catch (err) {
@@ -61,6 +60,23 @@ export default function JobOfferDetails() {
       loadOffer();
     }
   }, [id]);
+
+  const reloadApplication = async (application_id:string) => {
+    try {
+      setLoading(true);
+      let data = await api.applications.getById(application_id)
+      setApplications((prev:any) =>
+        prev.map((app:any) =>
+          app.id === application_id ? data.application : app
+        )
+      );
+    } catch (err) {
+      setError("Erreur lors du rechargement de l'offre");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleUpdateApplicationStatus = async (applicationId: string, status: string) => {
     try {
@@ -415,6 +431,7 @@ export default function JobOfferDetails() {
         <ApplicationDetails
           open={!!selectedApplication}
           onClose={() => setSelectedApplication(null)}
+          reloadApplication={reloadApplication}
           application={selectedApplication}
           onStatusUpdate={handleUpdateApplicationStatus}
         />

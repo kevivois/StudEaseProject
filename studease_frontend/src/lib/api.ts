@@ -5,6 +5,7 @@ export const API_BASE_URL = 'http://localhost:3000/api'; // https://studease-api
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
+    console.log(error.message)
     throw Error(error.message)
   }
   return await response.json();
@@ -356,7 +357,13 @@ export const api = {
         credentials: 'include',
       });
       return handleResponse(response);
-    }
+    },
+    getById: async (applicationId: string) => {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
   },
 
   // Saved offers (redundant but included for clarity)

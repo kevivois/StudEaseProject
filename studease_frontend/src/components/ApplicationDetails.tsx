@@ -18,7 +18,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
-import { Application } from '../types/database';
+
 import { api } from '../lib/api';
 
 interface Props {
@@ -26,6 +26,7 @@ interface Props {
   onClose: () => void;
   application: any;
   onStatusUpdate: (applicationId: string, status: string) => void;
+  reloadApplication : (applicationId:string) => Promise<void>
 }
 
 export default function ApplicationDetails({
@@ -33,10 +34,10 @@ export default function ApplicationDetails({
   onClose,
   application,
   onStatusUpdate,
+  reloadApplication,
 }: Props) {
   const [feedback, setFeedback] = useState(application.employer_feedback || '');
   const [loading, setLoading] = useState(false);
-
   const handleSaveFeedback = async () => {
     try {
       setLoading(true);
@@ -44,6 +45,7 @@ export default function ApplicationDetails({
         employer_feedback: feedback,
       });
       onClose();
+      await reloadApplication(application.id)
     } catch (error) {
       console.error('Error saving feedback:', error);
     } finally {
