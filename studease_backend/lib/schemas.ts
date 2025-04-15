@@ -11,10 +11,10 @@ export const registerUserSchema = z.object({
   last_name: z.string().min(2, "Nom requis"),
   phone_number: z.string().min(10, "Numéro de téléphone requis").optional(),
   location_id: z.string().uuid().nullable().optional(),
-  profile_description: z.string().optional(),
-  skills: z.array(z.string()).optional(),
-  availability_start: z.string().optional(),
-  availability_end: z.string().optional(),
+  profile_description: z.string().optional().default(''),
+  skills: z.array(z.string()).optional().default([]),
+  availability_start: z.string().optional().nullable(),
+  availability_end: z.string().optional().nullable(),
 });
 export const registerCompanySchema = z.object({
   email: z.string().email("Email invalide"),
