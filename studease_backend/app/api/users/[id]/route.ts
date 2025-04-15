@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserOrCompany } from '@/lib/middleware-helper';
+import { getUserDataType, getUserOrCompany } from '@/lib/middleware-helper';
 import {userUpdateSchema} from '@/lib/schemas'
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
@@ -32,11 +32,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const { data: userData, error: userError } = await supabase
-    .from('users')
-    .select('user_id, auth_user_id')
-    .eq('user_id', params.id).eq("auth_user_id",session.user.id)
-    .single().throwOnError();
+
+  const {user,company} = await getUserDataType(request)
+  if(!user || user.user_id != params.id){
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
 
   const body = await request.json();
   const parsed = userUpdateSchema.safeParse(body);

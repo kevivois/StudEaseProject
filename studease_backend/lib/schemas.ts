@@ -207,6 +207,8 @@ export const userUpdateSchema = z.object({
   availability_end: z.string().optional(),
 }).strict();
 
+
+
 // ✅ INDUSTRIES
 export const industrySchema = z.object({
   industry_id: z.string().uuid().optional(),
