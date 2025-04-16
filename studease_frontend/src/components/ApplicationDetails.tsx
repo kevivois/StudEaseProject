@@ -13,6 +13,8 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  ListItemButton,
+  Link,
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PersonIcon from '@mui/icons-material/Person';
@@ -20,6 +22,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 
 import { api } from '../lib/api';
+import { InsertDriveFile } from '@mui/icons-material';
 
 interface Props {
   open: boolean;
@@ -55,8 +58,8 @@ export default function ApplicationDetails({
 
   const handleDownloadDocument = async (documentUrl: string) => {
     try {
-      const signedUrl = await api.files.getSignedUrl(documentUrl);
-      window.open(signedUrl, '_blank');
+      const fileUrl = api.files.getFullUrl(documentUrl);
+      window.open(fileUrl, '_blank');
     } catch (error) {
       console.error('Error downloading document:', error);
     }
@@ -121,24 +124,26 @@ export default function ApplicationDetails({
           </div>
 
           <Divider />
-
+              
           <div>
             <Typography variant="subtitle1" gutterBottom>
               Documents
             </Typography>
             <List>
               {application.documents.map((doc:any, index:any) => (
-                <ListItem
-                  key={index}
-                  button
-                  onClick={() => handleDownloadDocument(doc)}
-                >
-                  <ListItemIcon>
-                    <DescriptionIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={doc.split('/').pop()} />
-                </ListItem>
-              ))}
+                  <ListItem key={index} disablePadding>
+                    <ListItemIcon>
+                      <InsertDriveFile color="action" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Link href={api.files.getFullUrl(doc)} target="_blank" rel="noopener noreferrer" underline="hover">
+                          {doc.split("/").pop()}
+                        </Link>
+                      }
+                    />
+                  </ListItem>
+                ))}
             </List>
           </div>
 

@@ -220,12 +220,11 @@ export const api = {
       return handleResponse(response);
     },
 
-    getSignedUrl: async (filePath: string) => {
-      const response = await fetch(`${API_BASE_URL}/files/${filePath}/signed-url`, {
-        credentials: 'include',
-      });
-      return handleResponse(response);
-    },
+    getFullUrl: (filePath: string) => {
+      const encodedPath = encodeURIComponent(filePath);
+      const url = `${API_BASE_URL}/files/${encodedPath}`;
+      return url
+    }
   },
 
   // Offers

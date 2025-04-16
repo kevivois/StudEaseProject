@@ -17,6 +17,7 @@ import {
   ListItemText,
   Avatar,
   Button,
+  ListItemButton,
 } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -41,6 +42,15 @@ export default function JobOfferDetails() {
   const [selectedApplication, setSelectedApplication] = useState<any | null>(null);
   const [applications,setApplications] = useState<any | null>(null);
   let navigate = useNavigate()
+
+  const handleDownloadDocument = async (documentUrl: string) => {
+    try {
+      const fileUrl = api.files.getFullUrl(documentUrl);
+      window.open(fileUrl, '_blank');
+    } catch (error) {
+      console.error('Error downloading document:', error);
+    }
+  };
 
   useEffect(() => {
     const loadOffer = async () => {
@@ -226,6 +236,31 @@ export default function JobOfferDetails() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* company documents */}
+
+              <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Documents mis en ligne
+                    </Typography>
+                    <div>
+                      <List>
+                        {offer.documents_urls && Array.isArray(offer.documents_urls) && offer.documents_urls.map((doc:any, index:any) => (
+                          <ListItemButton
+                            key={index}
+                            onClick={() => handleDownloadDocument(api.files.getFullUrl(doc))}
+                          >
+                            <ListItemIcon>
+                              <DescriptionIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={doc.split('/').pop()} />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </div>
+                    </CardContent>
+                  </Card>
 
               {/* Applications */}
               <Card>

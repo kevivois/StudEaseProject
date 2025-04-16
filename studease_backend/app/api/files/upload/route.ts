@@ -12,20 +12,22 @@ export async function POST(req: NextRequest) {
   }
 
   const formData = await req.formData();
-  const files = formData.getAll('files') as  File[];
+  const files = formData.getAll('files').filter(
+    (f): f is File => f instanceof File
+  );
 
-  if (!files) {
+  if (!files || files.length === 0) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 });
   }
 
   let {user,company} = await getUserDataType(req)
 
-  const urlId = user ? `user/${user.user_id}` : ` company/${company!.company_id}`
+  const urlId = user!=null ? `user/${session.user.id}` : `company/${session.user.id}`
 
   let returnUrls = []
 
   for(let file of files){
-    const filePath = `${urlId}/${file.name}`;
+    const filePath = `${urlId}/${encodeURIComponent(file.name)}`;
 
     const { error: uploadError } = await supabase.storage
       .from('documents')
@@ -37,16 +39,7 @@ export async function POST(req: NextRequest) {
     if (uploadError) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
-
-    // Générer un URL temporaire pour accès
-    const { data: signedData, error: signedError } = await supabase.storage
-      .from('documents')
-      .createSignedUrl(filePath, 60 * 60);
-
-    if (signedError) {
-      return NextResponse.json({ error: signedError.message }, { status: 500 });
-    }
-    returnUrls.push({ url: signedData.signedUrl, path: filePath })
+    returnUrls.push(filePath)
   }
 
   return NextResponse.json({data:returnUrls});

@@ -200,7 +200,7 @@ export default function JobSeekerDashboard() {
       // Then create application with document URLs
       const applicationData = {
         application_message: data.message,
-        documents: uploadResponse? uploadResponse.urls : [],
+        documents: uploadResponse? uploadResponse.data : [],
       };
 
       await api.applications.create(selectedOffer.offer_id, applicationData);

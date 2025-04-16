@@ -261,7 +261,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
       const response = await api.files.upload(formData);
       setFormData((prev:any) => ({
         ...prev,
-        documents_urls: [...(prev.documents_urls || []), ...response.urls],
+        documents_urls: [...(prev.documents_urls || []), ...response.data],
       }));
     } catch (err: any) {
       setError('Erreur lors du téléchargement des fichiers');

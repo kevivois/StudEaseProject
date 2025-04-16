@@ -3,6 +3,7 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import mime from 'mime-types'; // npm install mime-types
+import { getUserDataType } from '@/lib/middleware-helper';
 export async function GET(req: NextRequest, { params }: { params: { path: string[] } }) {
   const supabase = createRouteHandlerClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
@@ -11,24 +12,29 @@ export async function GET(req: NextRequest, { params }: { params: { path: string
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  const filePath = decodeURIComponent(params.path.join("/")); // path = users/UUID/filename.pdf
+  const filePath = decodeURIComponent(params.path.join("/"));
 
-  const { data, error } = await supabase.storage
+  let {user,company} = await getUserDataType(req)
+  const rootPath = user!=null ? `user/${session.user.id}` : `company/${session.user.id}`;
+  console.log(rootPath,filePath)
+  if (!filePath.startsWith(rootPath)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+  const { data: fileData, error } = await supabase.storage
     .from('documents')
-    .download(filePath)
+    .download(filePath);
 
-  if (error || !data) {
+  if (error || !fileData) {
     return NextResponse.json({ error: 'File not found' }, { status: 404 });
   }
   const mimeType = mime.lookup(filePath) || 'application/octet-stream';
-  const response = new NextResponse(data, {
+  const filename = filePath.split('/').pop();
+  return new NextResponse(fileData.stream(), {
     status: 200,
     headers: {
-      'Content-Type': mimeType, // Important !
-      'Content-Disposition': `inline; filename="${params.path.at(-1)}"`,
-      'Cache-Control': 'private, max-age=0, no-cache',
+      'Content-Type': mimeType,
+      'Content-Disposition': `inline; filename="${filename}"`, // or "attachment" to force download
+      'Cache-Control': 'no-store',
     },
   });
-
-  return response;
 }

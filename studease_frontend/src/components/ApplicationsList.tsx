@@ -8,6 +8,12 @@ import {
   Tooltip,
   Divider,
   Box,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListItem,
+  Link
 } from '@mui/material';
 import {
   Timeline,
@@ -26,7 +32,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import MoneyIcon from '@mui/icons-material/Money';
 import SchoolIcon from '@mui/icons-material/School';
 import TranslateIcon from '@mui/icons-material/Translate';
-
+import { api } from "../lib/api"
+import { InsertDriveFile } from '@mui/icons-material';
 interface Props {
   applications: any[];
 }
@@ -62,6 +69,16 @@ const getStatusLabel = (status: string) => {
 };
 
 export default function ApplicationsList({ applications }: Props) {
+
+  const handleDownloadDocument = async (documentUrl: string) => {
+      try {
+        const fileUrl = api.files.getFullUrl(documentUrl);
+        window.open(fileUrl, '_blank');
+      } catch (error) {
+        console.error('Error downloading document:', error);
+      }
+    };
+
   return (
     <div className="space-y-6">
       {Array.isArray(applications) ? applications.map((application) => (
@@ -172,6 +189,37 @@ export default function ApplicationsList({ applications }: Props) {
                 </div>
               </div>
             )}
+
+            {/* documents */}
+
+            {application.documents && Array.isArray(application.documents) && application.documents.length > 0 && (
+  <div>
+    <Typography variant="subtitle1" gutterBottom>
+      Documents
+    </Typography>
+    <List>
+      {application.documents.map((doc: string, index: number) => {
+        const fileName = doc.split('/').pop(); // Juste le nom du fichier
+        const fileUrl = api.files.getFullUrl(doc);
+
+                return (
+                  <ListItem key={index} disablePadding>
+                    <ListItemIcon>
+                      <InsertDriveFile color="action" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Link href={fileUrl} target="_blank" rel="noopener noreferrer" underline="hover">
+                          {fileName}
+                        </Link>
+                      }
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
+        )}
 
             {/* Application Message */}
             <div>
