@@ -36,10 +36,6 @@ export default function Register() {
   };
 
 
-  const convertStringToDate = (dateString: string): Date => {
-    const [year, month, day] = dateString.split('-');
-    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-  };
 
   useEffect(() => {
     if (userType === 'company') {
@@ -69,7 +65,7 @@ export default function Register() {
           first_name,
           last_name,
           phone_number,
-          birthdate:convertStringToDate(birthdate)
+          birthdate:birthdate
         });
       } else {
         await registerCompany({

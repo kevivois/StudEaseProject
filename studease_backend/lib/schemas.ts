@@ -12,8 +12,8 @@ export const registerUserSchema = z.object({
   phone_number: z.string().min(4, "Numéro de téléphone requis").optional(),
   profile_description: z.string().optional().default(''),
   skills: z.array(z.string()).optional().default([]),
-  availability_start: z.string().optional().nullable(),
-  availability_end: z.string().optional().nullable(),
+  availability_start: z.string().date().optional().nullable(),
+  availability_end: z.string().date().optional().nullable(),
   birthdate:z.string().date(),
 });
 export const registerCompanySchema = z.object({
@@ -40,8 +40,8 @@ export const userSchema = z.object({
   phone_number: z.string().min(6, "Numéro de téléphone requis").optional(),
   profile_description: z.string().optional(),
   skills: z.array(z.string()).optional(),
-  availability_start: z.string().optional().nullable(), // Format ISO
-  availability_end: z.string().optional().nullable(),
+  availability_start: z.string().date().optional().nullable(), // Format ISO
+  availability_end: z.string().date().optional().nullable(),
   birthdate:z.string().date(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),

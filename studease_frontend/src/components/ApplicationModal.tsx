@@ -55,7 +55,7 @@ export default function ApplicationModal({ open, onClose, offer, onSubmit }: Pro
         <div>
           <Typography variant="h6">Postuler pour : {offer.title}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {offer.company?.company_name}
+            {offer.companies.company_name}
           </Typography>
         </div>
       </DialogTitle>

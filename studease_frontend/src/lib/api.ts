@@ -29,9 +29,11 @@ export const api = {
       phone_number: string;
       profile_description?: string;
       skills?: string[];
-      availability_start?: Date;
-      availability_end?: Date;
+      availability_start?: String;
+      availability_end?: String;
+      birthdate:String;
     }) => {
+      console.log(data,JSON.stringify(data))
       const response = await fetch(`${API_BASE_URL}/auth/users`, {
         method: 'POST',
         credentials: 'include',
