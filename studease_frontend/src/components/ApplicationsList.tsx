@@ -70,9 +70,9 @@ const getStatusLabel = (status: string) => {
 
 export default function ApplicationsList({ applications }: Props) {
 
-  const handleDownloadDocument = async (documentUrl: string) => {
+  const handleDownloadDocument = async (applicationId:string,documentUrl: string) => {
       try {
-        const fileUrl = api.files.getFullUrl(documentUrl);
+        const fileUrl = api.applications.files.getFullUrl(applicationId,documentUrl);
         window.open(fileUrl, '_blank');
       } catch (error) {
         console.error('Error downloading document:', error);
@@ -200,7 +200,7 @@ export default function ApplicationsList({ applications }: Props) {
     <List>
       {application.documents.map((doc: string, index: number) => {
         const fileName = doc.split('/').pop(); // Juste le nom du fichier
-        const fileUrl = api.files.getFullUrl(doc);
+        const fileUrl = api.applications.files.getFullUrl(application.id,doc);
 
                 return (
                   <ListItem key={index} disablePadding>

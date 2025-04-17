@@ -106,6 +106,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     contact_email: '',
     contact_name: '',
     documents_urls: [],
+    documents:[],
     max_appliants:1,
     industries: [], // Add this field to store industry IDs
   });
@@ -251,21 +252,10 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
-
-    try {
-      const formData = new FormData();
-      Array.from(files).forEach((file) => {
-        formData.append('files', file);
-      });
-
-      const response = await api.files.upload(formData);
-      setFormData((prev:any) => ({
-        ...prev,
-        documents_urls: [...(prev.documents_urls || []), ...response.data],
-      }));
-    } catch (err: any) {
-      setError('Erreur lors du téléchargement des fichiers');
-    }
+    setFormData((prev:any) => ({
+      ...prev,
+      documents: [...(prev.documents || []), ...files],
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -691,7 +681,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 type="file"
                 multiple
                 onChange={handleFileUpload}
-                accept=".pdf,.doc,.docx"
+                accept="*"
                 className="hidden"
                 id="company-documents"
               />
@@ -710,6 +700,23 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                         setFormData((prev:any) => ({
                           ...prev,
                           documents_urls: prev.documents_urls?.filter((_:any, i:any) => i !== index),
+                        }));
+                      }}
+                      sx={{ m: 0.5 }}
+                    />
+                  ))}
+                </Box>
+              )}
+              {formData.documents && formData.documents.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  {formData.documents.map((doc:any, index:any) => (
+                    <Chip
+                      key={index}
+                      label={doc.name}
+                      onDelete={() => {
+                        setFormData((prev:any) => ({
+                          ...prev,
+                          documents: prev.documents?.filter((_:any, i:any) => i !== index),
                         }));
                       }}
                       sx={{ m: 0.5 }}

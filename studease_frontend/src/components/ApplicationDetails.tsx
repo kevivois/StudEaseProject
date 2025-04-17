@@ -58,7 +58,7 @@ export default function ApplicationDetails({
 
   const handleDownloadDocument = async (documentUrl: string) => {
     try {
-      const fileUrl = api.files.getFullUrl(documentUrl);
+      const fileUrl = api.applications.files.getFullUrl(application.id,documentUrl);
       window.open(fileUrl, '_blank');
     } catch (error) {
       console.error('Error downloading document:', error);
@@ -137,7 +137,7 @@ export default function ApplicationDetails({
                     </ListItemIcon>
                     <ListItemText
                       primary={
-                        <Link href={api.files.getFullUrl(doc)} target="_blank" rel="noopener noreferrer" underline="hover">
+                        <Link href={api.applications.files.getFullUrl(application.id,doc)} target="_blank" rel="noopener noreferrer" underline="hover">
                           {doc.split("/").pop()}
                         </Link>
                       }

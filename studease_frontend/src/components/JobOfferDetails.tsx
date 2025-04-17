@@ -18,6 +18,8 @@ import {
   Avatar,
   Button,
   ListItemButton,
+  Link as MuiLink,
+  Stack,
 } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -45,8 +47,7 @@ export default function JobOfferDetails() {
 
   const handleDownloadDocument = async (documentUrl: string) => {
     try {
-      const fileUrl = api.files.getFullUrl(documentUrl);
-      window.open(fileUrl, '_blank');
+      window.open(documentUrl, '_blank');
     } catch (error) {
       console.error('Error downloading document:', error);
     }
@@ -249,7 +250,7 @@ export default function JobOfferDetails() {
                         {offer.documents_urls && Array.isArray(offer.documents_urls) && offer.documents_urls.map((doc:any, index:any) => (
                           <ListItemButton
                             key={index}
-                            onClick={() => handleDownloadDocument(api.files.getFullUrl(doc))}
+                            onClick={() => handleDownloadDocument(api.offers.files.getFullUrl(id!,doc))}
                           >
                             <ListItemIcon>
                               <DescriptionIcon />
@@ -319,21 +320,29 @@ export default function JobOfferDetails() {
 
                                 {application.documents?.length > 0 && (
                                   <div className="mt-2">
-                                    <Typography variant="subtitle2" gutterBottom>
-                                      Documents fournis:
-                                    </Typography>
-                                    <div className="flex flex-wrap gap-2">
-                                      {application.documents.map((doc:any, index:any) => (
-                                        <Chip
-                                          key={index}
-                                          icon={<DescriptionIcon />}
-                                          label={doc.split('/').pop()}
-                                          onClick={() => window.open(doc, '_blank')}
-                                          className="cursor-pointer"
-                                        />
-                                      ))}
+                                    <Typography variant="subtitle1" gutterBottom>
+                                        Documents
+                                      </Typography>
+                                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                                        {application.documents.map((doc: string, index: number) => (
+                                          <MuiLink
+                                            key={index}
+                                            href={api.applications.files.getFullUrl(application.id, doc)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            underline="none"
+                                            sx={{ mb: 1 }}
+                                          >
+                                            <Chip
+                                              icon={<DescriptionIcon />}
+                                              label={doc.split('/').pop()}
+                                              clickable
+                                              className="cursor-pointer"
+                                            />
+                                          </MuiLink>
+                                        ))}
+                                      </Stack>
                                     </div>
-                                  </div>
                                 )}
 
                                 <div className="flex justify-end gap-2 mt-4">

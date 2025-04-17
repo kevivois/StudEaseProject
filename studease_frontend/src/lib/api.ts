@@ -208,7 +208,7 @@ export const api = {
       return handleResponse(response);
     },
   },
-
+  /*
   // File upload and access
   files: {
     upload: async (formData: FormData) => {
@@ -225,7 +225,7 @@ export const api = {
       const url = `${API_BASE_URL}/files/${encodedPath}`;
       return url
     }
-  },
+  },*/
 
   // Offers
   offers: {
@@ -314,6 +314,22 @@ export const api = {
       });
       return handleResponse(response);
     },
+    files: {
+      upload: async (offerId:string,formData: FormData) => {
+        const response = await fetch(`${API_BASE_URL}/offers/${offerId}/files/upload`, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+        return handleResponse(response);
+      },
+  
+      getFullUrl: (offerId:string,filePath: string) => {
+        const encodedPath = encodeURIComponent(filePath);
+        const url = `${API_BASE_URL}/offers/${offerId}/files/${encodedPath}`;
+        return url
+      }
+    }
   },
 
   // Applications
@@ -363,6 +379,22 @@ export const api = {
       });
       return handleResponse(response);
     },
+    files: {
+      upload: async (applicationId:string,formData: FormData) => {
+        const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/files/upload`, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+        return handleResponse(response);
+      },
+  
+      getFullUrl: (applicationId:string,filePath: string) => {
+        const encodedPath = encodeURIComponent(filePath);
+        const url = `${API_BASE_URL}/applications/${applicationId}/files/${encodedPath}`;
+        return url
+      }
+    }
   },
 
   // Saved offers (redundant but included for clarity)

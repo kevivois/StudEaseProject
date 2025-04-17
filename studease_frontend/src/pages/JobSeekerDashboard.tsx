@@ -193,17 +193,16 @@ export default function JobSeekerDashboard() {
       // First, upload documents
       const formData = new FormData();
       data.documents.forEach(file => formData.append('files', file));
-      let uploadResponse = null
-      if(data.documents.length > 0){
-       uploadResponse = await api.files.upload(formData);
-      }
-      // Then create application with document URLs
       const applicationData = {
-        application_message: data.message,
-        documents: uploadResponse? uploadResponse.data : [],
+        application_message: data.message
       };
 
-      await api.applications.create(selectedOffer.offer_id, applicationData);
+      let application = (await api.applications.create(selectedOffer.offer_id, applicationData)).application;
+      console.log(application)
+
+      if(data.documents.length > 0){
+        await api.applications.files.upload(application.id,formData);
+       }
       setIsApplicationModalOpen(false);
       loadApplications(); // Reload applications after successful submission
     } catch (error) {

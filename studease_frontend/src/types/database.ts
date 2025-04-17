@@ -94,6 +94,7 @@ export interface Offer {
   industries?: string[];
   max_appliants:number;
   applications:Application[];
+  documents?:[];
 }
 
 export interface Application {
