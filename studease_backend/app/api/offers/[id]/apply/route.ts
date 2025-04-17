@@ -50,7 +50,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
             if(!data || offerError){
               throw new Error("Error while creating applications "+offerError?.message)
             }
-            return NextResponse.json({offer:offerData});
+            return NextResponse.json({application:offerData});
         }else{
           throw Error("only user can apply to offer")
         }

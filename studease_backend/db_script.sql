@@ -48,8 +48,7 @@ CREATE TABLE users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    phone_number varchar(100) NOT NULL,
-    location_id uuid REFERENCES locations(location_id) ON DELETE SET NULL,
+    phone_number varchar(100) NOT NULL
     profile_description TEXT,
     skills TEXT[],  -- Liste des compétences sous forme de tableau
     availability_start DATE, -- Dates de disponibilité pour les entreprises

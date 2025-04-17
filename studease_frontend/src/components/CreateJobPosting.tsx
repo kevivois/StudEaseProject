@@ -8,7 +8,15 @@ export default function CreateJobPosting() {
 
   const handleSubmit = async (data: any) => {
     try {
-      await api.offers.create(data);
+      let offer = (await api.offers.create(data)).offer;
+      let id = offer.offer_id
+      let formData = new FormData();
+      if(Array.isArray(data.documents) && data.documents.length > 0){
+        data.documents.forEach((file:any) => {
+          formData.append("files",file)
+        })
+        await api.offers.files.upload(id,formData)
+      }
       navigate('/employer');
     } catch (error) {
       console.error('Error creating job posting:', error);

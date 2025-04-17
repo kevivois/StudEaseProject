@@ -1,10 +1,11 @@
 // API base URL
-export const API_BASE_URL = 'https://studease-api.jevs.ch/api';
+export const API_BASE_URL = 'https://studease-api.jevs.ch/api'; // https://studease-api.jevs.ch/api
 
 // Helper to handle API responses
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
+    console.log(error.message)
     throw Error(error.message)
   }
   return await response.json();
@@ -28,9 +29,11 @@ export const api = {
       phone_number: string;
       profile_description?: string;
       skills?: string[];
-      availability_start?: Date;
-      availability_end?: Date;
+      availability_start?: String;
+      availability_end?: String;
+      birthdate:String;
     }) => {
+      console.log(data,JSON.stringify(data))
       const response = await fetch(`${API_BASE_URL}/auth/users`, {
         method: 'POST',
         credentials: 'include',
@@ -207,7 +210,7 @@ export const api = {
       return handleResponse(response);
     },
   },
-
+  /*
   // File upload and access
   files: {
     upload: async (formData: FormData) => {
@@ -219,13 +222,12 @@ export const api = {
       return handleResponse(response);
     },
 
-    getSignedUrl: async (filePath: string) => {
-      const response = await fetch(`${API_BASE_URL}/files/${filePath}/signed-url`, {
-        credentials: 'include',
-      });
-      return handleResponse(response);
-    },
-  },
+    getFullUrl: (filePath: string) => {
+      const encodedPath = encodeURIComponent(filePath);
+      const url = `${API_BASE_URL}/files/${encodedPath}`;
+      return url
+    }
+  },*/
 
   // Offers
   offers: {
@@ -314,6 +316,22 @@ export const api = {
       });
       return handleResponse(response);
     },
+    files: {
+      upload: async (offerId:string,formData: FormData) => {
+        const response = await fetch(`${API_BASE_URL}/offers/${offerId}/files/upload`, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+        return handleResponse(response);
+      },
+  
+      getFullUrl: (offerId:string,filePath: string) => {
+        const encodedPath = encodeURIComponent(filePath);
+        const url = `${API_BASE_URL}/offers/${offerId}/files/${encodedPath}`;
+        return url
+      }
+    }
   },
 
   // Applications
@@ -356,6 +374,28 @@ export const api = {
         credentials: 'include',
       });
       return handleResponse(response);
+    },
+    getById: async (applicationId: string) => {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
+        credentials: 'include',
+      });
+      return handleResponse(response);
+    },
+    files: {
+      upload: async (applicationId:string,formData: FormData) => {
+        const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/files/upload`, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+        return handleResponse(response);
+      },
+  
+      getFullUrl: (applicationId:string,filePath: string) => {
+        const encodedPath = encodeURIComponent(filePath);
+        const url = `${API_BASE_URL}/applications/${applicationId}/files/${encodedPath}`;
+        return url
+      }
     }
   },
 

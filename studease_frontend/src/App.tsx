@@ -7,7 +7,6 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
-import Profile from './pages/Profile';
 import Layout from './components/Layout';
 import CreateJobPosting from "./components/CreateJobPosting"
 import EditJobPosting from "./components/EditJobPosting"
@@ -28,12 +27,6 @@ function App() {
             <Route path="/student" element={<ProtectedRoute userType="student">
               <JobSeekerDashboard />
             </ProtectedRoute>}></Route>
-          <Route
-            path="/profile"
-            element={
-              <Profile />
-            }
-          />
              <Route
               path="/employer/offers/new"
               element={

@@ -27,7 +27,7 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
               {offer.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {offer.company?.company_name}
+              {offer.companies?.company_name}
             </Typography>
           </div>
           <IconButton onClick={() => onSave(offer.offer_id)}>

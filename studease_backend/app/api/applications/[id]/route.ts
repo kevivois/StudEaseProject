@@ -21,15 +21,13 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .select(`
         *,
         offers (
-          id,
-          company_id
-        ),users(user_id,email),offers(*,companies(*),locations(*))
-      `)
+          *,companies(*),locations(*)
+        ),users(*)`)
       .eq('id', params.id)
       .single();
 
       if (error || !application) {
-        return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+        return NextResponse.json({ error: 'Application not found | '+error?.message }, { status: 404 });
       }
 
       const isOwner = application.user_id === user?.user_id;

@@ -122,13 +122,13 @@ export default function JobSeekerDashboard() {
   };
 
   const loadProfile = async () => {
-    if (!user?.id) return;
+    if (!user?.user_id) return;
 
     try {
       setLoading(prev => ({ ...prev, profile: true }));
       setError(prev => ({ ...prev, profile: null }));
-      const profileData = await api.users.getProfile(user.id);
-      setProfile(profileData);
+      const profileData = await api.users.getProfile(user.user_id);
+      setProfile(profileData.user);
     } catch (err) {
       setError(prev => ({ ...prev, profile: 'Error loading profile' }));
       console.error('Error loading profile:', err);
@@ -193,17 +193,16 @@ export default function JobSeekerDashboard() {
       // First, upload documents
       const formData = new FormData();
       data.documents.forEach(file => formData.append('files', file));
-      let uploadResponse = null
-      if(data.documents.length > 0){
-       uploadResponse = await api.files.upload(formData);
-      }
-      // Then create application with document URLs
       const applicationData = {
-        application_message: data.message,
-        documents: uploadResponse? uploadResponse.urls : [],
+        application_message: data.message
       };
 
-      await api.applications.create(selectedOffer.offer_id, applicationData);
+      let application = (await api.applications.create(selectedOffer.offer_id, applicationData)).application;
+      console.log(application)
+
+      if(data.documents.length > 0){
+        await api.applications.files.upload(application.id,formData);
+       }
       setIsApplicationModalOpen(false);
       loadApplications(); // Reload applications after successful submission
     } catch (error) {
@@ -215,7 +214,7 @@ export default function JobSeekerDashboard() {
     try { 
       if (!user?.user_id) return;
       const updatedProfile = await api.users.updateProfile(user.user_id, data);
-      setProfile(updatedProfile);
+      setProfile(updatedProfile.user);
     } catch (error) {
       console.error('Error updating profile:', error);
       throw error;
@@ -315,7 +314,7 @@ export default function JobSeekerDashboard() {
           <div className="flex justify-center">
             <CircularProgress />
           </div>
-        ) : (<StudentProfile onUpdate={handleUpdateProfile} />
+        ) : (<StudentProfile profile={profile} onUpdate={handleUpdateProfile} />
         )}
       </TabPanel>
 
