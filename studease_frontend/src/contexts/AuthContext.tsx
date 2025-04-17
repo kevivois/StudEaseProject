@@ -15,8 +15,7 @@ interface AuthContextType {
     location_id?: string;
     profile_description?: string;
     skills?: string[];
-    availability_start?: Date; // date in format 'YYYY-MM-DD'
-    availability_end?: Date;   // date in format 'YYYY-MM-DD'
+    birthdate:string
   }) => Promise<void>;
   registerCompany: (data: {
     email: string;
@@ -78,8 +77,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     location_id?: string;
     profile_description?: string;
     skills?: string[];
-    availability_start?: Date;
-    availability_end?: Date;
+    availability_start?: string;
+    availability_end?: string;
+    birthdate:string;
   }) => {
     try {
       setError(null);
@@ -93,7 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         profile_description: data.profile_description,
         skills: data.skills,
         availability_start: data.availability_start,
-        availability_end: data.availability_end
+        availability_end: data.availability_end,
+        birthdate:data.birthdate
       });
       setUser(userData.user); // Assuming userData contains the created user
     } catch (err) {

@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
         { error: "Données invalides", details: parsedBody.error.format() },
         { status: 400 }
       );
-    }
-  const { email, password, first_name, last_name, profile_description, skills,phone_number } = parsedBody.data
+  }
+  const { email, password, first_name, last_name, profile_description, skills,phone_number,birthdate } = parsedBody.data
   const supabase = createRouteHandlerClient({ cookies });
   const { data, error } = await supabase.auth.signUp({ email, password });
 
@@ -34,7 +34,8 @@ export async function POST(request: NextRequest) {
         last_name,
         profile_description,
         skills,
-        phone_number
+        phone_number,
+        birthdate
       }]);
     if (response.error) {
       await supabase.auth.admin.deleteUser(data.user.id)

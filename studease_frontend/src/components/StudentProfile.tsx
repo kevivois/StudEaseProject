@@ -16,25 +16,25 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { User } from '../types/database';
-import { useAuth } from '../contexts/AuthContext';
+import { CalendarToday } from '@mui/icons-material';
 
 interface Props {
   onUpdate: (data: Partial<User>) => Promise<void>;
+  profile:any;
 }
 
-export default function ProfileSection({onUpdate }: Props) {
+export default function ProfileSection({onUpdate,profile }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState<any>({});
   const [newSkill, setNewSkill] = useState('');
-  let {user:profile} = useAuth()
 
   useEffect(() => {
     setEditedProfile(profile)
-  },[])
+  },[profile])
 
   const handleSave = async () => {
     try {
-      await onUpdate(editedProfile);
+      onUpdate(editedProfile);
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -57,6 +57,9 @@ export default function ProfileSection({onUpdate }: Props) {
       skills: prev.skills?.filter((skill:any) => skill !== skillToRemove)
     }));
   };
+  if(profile == null){
+    return (<div></div>)
+  }
 
   return (
     <div className="space-y-6">
@@ -110,6 +113,13 @@ export default function ProfileSection({onUpdate }: Props) {
                   label="Téléphone"
                   value={editedProfile.phone_number}
                   onChange={(e) => setEditedProfile((prev:any) => ({ ...prev, phone_number: e.target.value }))}
+                />
+                <TextField
+                  label="Date de naissance"
+                  type="date"
+                  value={editedProfile.birthdate}
+                  onChange={(e) => setEditedProfile((prev:any) => ({ ...prev, birthdate: e.target.value }))}
+                  InputLabelProps={{ shrink: true }}
                 />
               </div>
 
@@ -197,6 +207,15 @@ export default function ProfileSection({onUpdate }: Props) {
                     primary="Disponibilité"
                     secondary={`Du ${new Date(profile.availability_start).toLocaleDateString()} au ${profile.availability_end ? new Date(profile.availability_end).toLocaleDateString() : 'Non défini'}`}
                   />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <CalendarToday className="h-5 w-5" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Date de naissance"
+                    secondary={`${new Date(profile.birthdate).toLocaleDateString()}`}>
+                    </ListItemText>
                 </ListItem>
               </List>
 

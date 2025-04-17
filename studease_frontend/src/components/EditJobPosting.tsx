@@ -11,6 +11,13 @@ export default function EditJobPosting() {
   const handleSubmit = async (data: any) => {
     try {
       await api.offers.update(id!, data);
+      if(Array.isArray(data.documents) && data.documents.length > 0){
+        let formData = new FormData()
+        Array.from(data.documents).forEach((file:any) => {
+          formData.append("files",file)
+        })
+        await api.offers.files.upload(id!,formData)
+      }
       navigate('/employer');
     } catch (error) {
       console.error('Error updating job posting:', error);

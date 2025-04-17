@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import {updateUserSchema} from "@/lib/schemas"
+import {authUserUpdate} from "@/lib/schemas"
 
 
 export async function GET(request: NextRequest) {
@@ -40,7 +40,7 @@ export async function PUT(request: NextRequest) {
 
     // Parse and validate input data using Zod schema
     const body = await request.json();
-    const parsed = updateUserSchema.safeParse(body);
+    const parsed = authUserUpdate.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json({

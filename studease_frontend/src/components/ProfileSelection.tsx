@@ -38,6 +38,7 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
     }
   };
 
+
   const handleAddSkill = () => {
     if (newSkill.trim()) {
       setEditedProfile(prev => ({
@@ -53,6 +54,12 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
       ...prev,
       skills: prev.skills?.filter(skill => skill !== skillToRemove)
     }));
+  };
+  const formatDateForInput = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   return (
@@ -140,14 +147,14 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
                   label="Disponible à partir du"
                   type="date"
                   value={editedProfile.availability_start}
-                  onChange={(e) => setEditedProfile(prev => ({ ...prev, availability_start: e.target.value }))}
+                  onChange={(e) => setEditedProfile(prev => ({ ...prev, availability_start: formatDateForInput(new Date(e.target.value)) }))}
                   InputLabelProps={{ shrink: true }}
                 />
                 <TextField
                   label="Disponible jusqu'au"
                   type="date"
                   value={editedProfile.availability_end}
-                  onChange={(e) => setEditedProfile(prev => ({ ...prev, availability_end: e.target.value }))}
+                  onChange={(e) => setEditedProfile(prev => ({ ...prev, availability_end: formatDateForInput(new Date(e.target.value)) }))}
                   InputLabelProps={{ shrink: true }}
                 />
               </div>

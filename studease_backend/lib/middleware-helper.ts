@@ -105,12 +105,10 @@ export function getHeaders() {
   
     // Set CORS headers for all API routes
     headers.append('Access-Control-Allow-Credentials', "true")
-    headers.append('Access-Control-Allow-Origin', 'https://studease.jevs.ch') // frontend url
+    headers.append('Access-Control-Allow-Origin', 'https://studease.jevs.ch') // frontend url https://studease.jevs.ch
     headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT,OPTIONS')
     headers.append(
         'Access-Control-Allow-Headers',
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version,Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization,'    )
-
-  
     return headers;
 }

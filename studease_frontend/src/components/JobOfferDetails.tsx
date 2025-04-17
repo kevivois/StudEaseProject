@@ -17,6 +17,9 @@ import {
   ListItemText,
   Avatar,
   Button,
+  ListItemButton,
+  Link as MuiLink,
+  Stack,
 } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -42,12 +45,19 @@ export default function JobOfferDetails() {
   const [applications,setApplications] = useState<any | null>(null);
   let navigate = useNavigate()
 
+  const handleDownloadDocument = async (documentUrl: string) => {
+    try {
+      window.open(documentUrl, '_blank');
+    } catch (error) {
+      console.error('Error downloading document:', error);
+    }
+  };
+
   useEffect(() => {
     const loadOffer = async () => {
       try {
         setLoading(true);
         let data = (await api.offers.getById(id!)).offer;
-        console.log(data.applications)
         setOffer(data.offer);
         setApplications(data.applications)
       } catch (err) {
@@ -61,6 +71,23 @@ export default function JobOfferDetails() {
       loadOffer();
     }
   }, [id]);
+
+  const reloadApplication = async (application_id:string) => {
+    try {
+      setLoading(true);
+      let data = await api.applications.getById(application_id)
+      setApplications((prev:any) =>
+        prev.map((app:any) =>
+          app.id === application_id ? data.application : app
+        )
+      );
+    } catch (err) {
+      setError("Erreur lors du rechargement de l'offre");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleUpdateApplicationStatus = async (applicationId: string, status: string) => {
     try {
@@ -211,6 +238,31 @@ export default function JobOfferDetails() {
                 </Card>
               )}
 
+              {/* company documents */}
+
+              <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Documents mis en ligne
+                    </Typography>
+                    <div>
+                      <List>
+                        {offer.documents_urls && Array.isArray(offer.documents_urls) && offer.documents_urls.map((doc:any, index:any) => (
+                          <ListItemButton
+                            key={index}
+                            onClick={() => handleDownloadDocument(api.offers.files.getFullUrl(id!,doc))}
+                          >
+                            <ListItemIcon>
+                              <DescriptionIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={doc.split('/').pop()} />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </div>
+                    </CardContent>
+                  </Card>
+
               {/* Applications */}
               <Card>
                 <CardContent>
@@ -268,21 +320,29 @@ export default function JobOfferDetails() {
 
                                 {application.documents?.length > 0 && (
                                   <div className="mt-2">
-                                    <Typography variant="subtitle2" gutterBottom>
-                                      Documents fournis:
-                                    </Typography>
-                                    <div className="flex flex-wrap gap-2">
-                                      {application.documents.map((doc:any, index:any) => (
-                                        <Chip
-                                          key={index}
-                                          icon={<DescriptionIcon />}
-                                          label={doc.split('/').pop()}
-                                          onClick={() => window.open(doc, '_blank')}
-                                          className="cursor-pointer"
-                                        />
-                                      ))}
+                                    <Typography variant="subtitle1" gutterBottom>
+                                        Documents
+                                      </Typography>
+                                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                                        {application.documents.map((doc: string, index: number) => (
+                                          <MuiLink
+                                            key={index}
+                                            href={api.applications.files.getFullUrl(application.id, doc)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            underline="none"
+                                            sx={{ mb: 1 }}
+                                          >
+                                            <Chip
+                                              icon={<DescriptionIcon />}
+                                              label={doc.split('/').pop()}
+                                              clickable
+                                              className="cursor-pointer"
+                                            />
+                                          </MuiLink>
+                                        ))}
+                                      </Stack>
                                     </div>
-                                  </div>
                                 )}
 
                                 <div className="flex justify-end gap-2 mt-4">
@@ -415,6 +475,7 @@ export default function JobOfferDetails() {
         <ApplicationDetails
           open={!!selectedApplication}
           onClose={() => setSelectedApplication(null)}
+          reloadApplication={reloadApplication}
           application={selectedApplication}
           onStatusUpdate={handleUpdateApplicationStatus}
         />
