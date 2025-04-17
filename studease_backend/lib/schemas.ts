@@ -20,7 +20,7 @@ export const registerCompanySchema = z.object({
   email: z.string().email("Email invalide"),
   password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
   company_name: z.string().min(2, "Nom de l'entreprise requis"),
-  company_logo_url: z.string().url().optional(),
+  company_logo_url: z.string().url().optional().nullable(),
   company_type_id: z.string().uuid().nullable(),
   company_address: z.string().optional(),
   company_phone: z.string().optional(),
@@ -54,7 +54,7 @@ export const companySchema = z.object({
   email: z.string().email("L'email est requis"),
   password: z.string().min(6, "Le mot de passe est requis"),
   company_name: z.string().min(2, "Nom de l'entreprise requis"),
-  company_logo_url: z.string().url().optional(),
+  company_logo_url: z.string().url().optional().nullable(),
   company_type_id: z.string().uuid().nullable(),
   company_address: z.string().optional(),
   company_phone: z.string().optional(),
@@ -252,7 +252,7 @@ export const offerContractTypeSchema = z.object({
 
 export const companyUpdateSchema = z.object({
   company_name: z.string().optional(),
-  company_logo_url: z.string().optional(),
+  company_logo_url: z.string().optional().nullable(),
   company_address: z.string().optional(),
   company_phone: z.string().optional(),
   company_website: z.string().optional(),
