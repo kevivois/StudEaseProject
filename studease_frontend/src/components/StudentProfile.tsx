@@ -313,7 +313,7 @@ export default function ProfileSection({ onUpdate, profile }: Props) {
                     <Typography variant="h6" gutterBottom className="font-medium">
                       À propos
                     </Typography>
-                    <Typography variant="body1" className="text-gray-700 bg-gray-50 p-4 rounded-lg">
+                    <Typography variant="body1" className="text-gray-700 bg-gray-50 p-4 rounded-lg" style={{ whiteSpace: 'pre-line', wordWrap: 'break-word' }}>
                       {profile.profile_description}
                     </Typography>
                   </div>

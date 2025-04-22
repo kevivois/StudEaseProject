@@ -181,7 +181,7 @@ export default function CompanyProfileSection({onUpdate}: Props) {
                   <Typography variant="h6" gutterBottom className="font-semibold">
                     À propos de nous
                   </Typography>
-                  <Typography variant="body1" className="text-gray-700 bg-gray-50 p-4 rounded-lg">
+                  <Typography variant="body1" className="text-gray-700 bg-gray-50 p-4 rounded-lg" style={{ whiteSpace: 'pre-line', wordWrap: 'break-word' }}>
                     {profile.company_description}
                   </Typography>
                 </div>
