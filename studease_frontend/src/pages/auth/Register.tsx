@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
+import { Typography } from '@mui/material';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -207,17 +208,6 @@ export default function Register() {
                     placeholder="Numéro de téléphone"
                   />
                 </div>
-                <div>
-                   <input
-                     id="birthdate"
-                     name="birthdate"
-                     type="date"
-                     required
-                     value={birthdate}
-                     onChange={handleDateChangeBirthdate}
-                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                   />
-                 </div>
                  <div>
                    <input
                      id="study_field"
@@ -239,6 +229,20 @@ export default function Register() {
                      required
                      value={school_name}
                      onChange={(e) => setSchoolName(e.target.value)}
+                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                   />
+                 </div>
+                 <div>
+                <h3>
+                  Date de naissance
+                  </h3>
+                   <input
+                     id="birthdate"
+                     name="birthdate"
+                     type="date"
+                     required
+                     value={birthdate}
+                     onChange={handleDateChangeBirthdate}
                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                    />
                  </div>
