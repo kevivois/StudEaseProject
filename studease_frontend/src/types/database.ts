@@ -45,6 +45,8 @@ export interface User {
   availability_end: string;
   created_at: string;
   updated_at: string;
+  study_field:string;
+  school_name:string;
   email:string;
 }
 
@@ -71,8 +73,8 @@ export interface Offer {
   contract_type_id: string;
   duration_id: string;
   application_deadline: string;
-  startDate: string;
-  endDate: string | null;
+  start: string;
+  end: string | null;
   work_location_type: string;
   profile_description: string;
   required_skills: string[];
@@ -95,6 +97,7 @@ export interface Offer {
   max_appliants:number;
   applications:Application[];
   documents?:[];
+  is_activity_rate_flexible:boolean;
 }
 
 export interface Application {

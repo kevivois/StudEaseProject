@@ -89,14 +89,14 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     remuneration_type_id: '',
     duration_id: '',
     application_deadline: '',
-    startDate: '',
-    endDate: '',
-    work_location_type: 'on_site',
+    start: '',
+    end: '',
+    work_location_type: '',
     profile_description: '',
     required_skills: [],
-    required_documents: ['CV', 'Lettre de motivation'],
+    required_documents: [],
     benefits: [],
-    application_steps: ['Entretien RH', 'Test technique', 'Entretien final'],
+    application_steps: [],
     languages: [],
     activity_rate_min: 20,
     activity_rate_max: 100,
@@ -109,6 +109,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
     documents:[],
     max_appliants:1,
     industries: [], // Add this field to store industry IDs
+    is_activity_rate_flexible:false
   });
 
   const [activeStep, setActiveStep] = useState(0);
@@ -166,29 +167,15 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
       let data = await api.offers.getById(offerId!);
       data = data.offer.offer
       const formData: Partial<Offer> = {
-        title: data.title,
-        job_type_id: data.job_type_id,
-        location_id: data.location_id,
-        contract_type_id: data.contract_type_id,
-        remuneration_type_id: data.remuneration_type_id,
-        duration_id: data.duration_id,
-        application_deadline: data.application_deadline,
-        startDate: data.start,  // correspondance personnalisée
-        endDate: data.end,      // correspondance personnalisée
-        work_location_type: data.work_location_type || 'on_site',
-        profile_description: data.profile_description,
+        ...data,
         required_skills: data.required_skills || [],
-        required_documents: data.required_documents || ['CV', 'Lettre de motivation'],
+        required_documents: data.required_documents || [],
         benefits: data.benefits || [],
-        application_steps: data.application_steps || ['Entretien RH', 'Test technique', 'Entretien final'],
+        application_steps: data.application_steps || [],
         languages: data.languages || [],
         activity_rate_min: parseInt(data.activity_rate_min),
         activity_rate_max: parseInt(data.activity_rate_max),
         working_days_hours_description: data.working_days_hours_description || [],
-        job_level: data.job_level,
-        is_working_hours_flexible: data.is_working_hours_flexible,
-        contact_email: data.contact_email,
-        contact_name: data.contact_name,
         documents_urls: data.documents_urls || [],
         max_appliants: data.max_appliants || 1,
         industries: data.industries?.map((i:any) => i.industries?.industry_id) || [], // extraction des IDs d'industries
@@ -202,9 +189,10 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   const handleSelectChange = (field: string) => (
     event: SelectChangeEvent<string>
   ) => {
+    console.log((formData as any)[field],event.target.value)
     setFormData((prev:any) => ({
       ...prev,
-      [field]: event.target.value,
+      [field]: event.target.value === 'clear' ? '' : event.target.value,
     }));
   };
 
@@ -267,8 +255,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
       const submitData = {
         ...formData,
         application_deadline: formData.application_deadline ? dayjs(formData.application_deadline).format('YYYY-MM-DD') : null,
-        startDate: formData.startDate ? dayjs(formData.startDate).format('YYYY-MM-DD') : null,
-        endDate: formData.endDate ? dayjs(formData.endDate).format('YYYY-MM-DD') : null,
+        start: formData.start ? dayjs(formData.start).format('YYYY-MM-DD') : null,
+        end: formData.end ? dayjs(formData.end).format('YYYY-MM-DD') : null,
       };
       await onSubmit(submitData);
     } catch (err: any) {
@@ -327,37 +315,39 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
 
             <FormControl fullWidth required>
               <InputLabel>Type de travail</InputLabel>
-              <Select value={formData.job_type_id} onChange={handleSelectChange('job_type_id')}>
+              <Select value={formData.job_type_id} onChange={handleSelectChange('job_type_id')} required >
                 {metadata.jobTypes.map((jt: any) => (
                   <MenuItem key={jt.job_type_id} value={jt.job_type_id}>
                     {jt.job_type_name}
                   </MenuItem>
                 ))}
+                <MenuItem key='clear' value=''>Supprimer la sélection</MenuItem>
               </Select>
             </FormControl>
 
             <FormControl fullWidth required>
               <InputLabel>Type de contrat</InputLabel>
-              <Select value={formData.contract_type_id} onChange={handleSelectChange('contract_type_id')}>
+              <Select value={formData.contract_type_id} onChange={handleSelectChange('contract_type_id')} required>
                 {metadata.contractTypes.map((ct: any) => (
                   <MenuItem key={ct.contract_type_id} value={ct.contract_type_id}>
                     {ct.contract_type_name}
                   </MenuItem>
                 ))}
+                <MenuItem key='clear' value=''>Supprimer la sélection</MenuItem>
               </Select>
             </FormControl>
 
-            <FormControl fullWidth required>
+            <FormControl fullWidth>
               <InputLabel>Niveau du poste</InputLabel>
               <Select value={formData.job_level} onChange={handleSelectChange('job_level')}>
-                <MenuItem value="junior">Junior</MenuItem>
-                <MenuItem value="intermediate">Intermédiaire</MenuItem>
-                <MenuItem value="senior">Senior</MenuItem>
+                <MenuItem value="Bachelor">Bachelor</MenuItem>
+                <MenuItem value="Master">Master</MenuItem>
+                <MenuItem value="Doctorat">Senior</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth required>
             <TextField
-              label="Nombre de places recherchée"
+              label="Nombre de places recherchées"
               fullWidth
               required
               inputProps={{ min: 1 }} 
@@ -374,7 +364,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             <Typography variant="h6" gutterBottom>
               Description du poste
             </Typography>
-            <TextField
+            <TextField 
               label="Description détaillée"
               multiline
               rows={4}
@@ -385,9 +375,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               placeholder="Décrivez les responsabilités, les objectifs et le contexte du poste..."
             />
 
-            <FormControl fullWidth>
+            <FormControl fullWidth required>
               <InputLabel>Secteurs d'activité</InputLabel>
-              <Select
+              <Select required
                 multiple
                 value={formData.industries || []}
                 onChange={handleArrayInputChangeSelect('industries')}
@@ -432,9 +422,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 <MenuItem value="13ème salaire">13ème salaire</MenuItem>
               </Select>
             </FormControl>
-            <FormControl fullWidth>
+            <FormControl fullWidth required>
               <InputLabel>Langues</InputLabel>
-              <Select
+              <Select required
                 multiple
                 value={formData.languages || []}
                 onChange={handleArrayInputChangeSelect('languages')}
@@ -454,9 +444,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               </Select>
             </FormControl>
 
-            <FormControl fullWidth>
+            <FormControl fullWidth required>
               <InputLabel>Documents requis</InputLabel>
-              <Select
+              <Select required
                 multiple
                 value={formData.required_documents || []}
                 onChange={handleArrayInputChangeSelect('required_documents')}
@@ -473,6 +463,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 <MenuItem value="Lettre de motivation">Lettre de motivation</MenuItem>
                 <MenuItem value="Diplômes">Diplômes</MenuItem>
                 <MenuItem value="Certificats">Certificats</MenuItem>
+                <MenuItem value="Profil Studease">Profil Studease</MenuItem>
               </Select>
             </FormControl>
             </>
@@ -491,16 +482,18 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                     {`${loc.region}`}
                   </MenuItem>
                 ))}
+                <MenuItem key='clear' value=''>Supprimer la sélection</MenuItem>
               </Select>
             </FormControl>
 
             <FormControl fullWidth required>
-              <TextField
-              placeholder='Type de lieu de travail (remote)'
-                value={formData.work_location_type}
-                onChange={handleInputChange('work_location_type')}
-              >
-              </TextField>
+            <InputLabel>Type de lieu de travail</InputLabel>
+              <Select value={formData.work_location_type} onChange={handleSelectChange('work_location_type')}>
+              <MenuItem key='En présentiel' value='En présentiel' >En présentiel</MenuItem>
+              <MenuItem key='Hybride' value='Hybride' >Hybride</MenuItem>
+              <MenuItem key='Télétravail' value='Télétravail' >Télétravail</MenuItem>
+              <MenuItem key='clear' value=''>Supprimer la sélection</MenuItem>
+              </Select>
             </FormControl>
             <FormControl fullWidth >
               <InputLabel>Durée</InputLabel>
@@ -510,6 +503,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                     {dr.duration_label}
                   </MenuItem>
                 ))}
+                <MenuItem key='clear' value=''>Supprimer la sélection</MenuItem>
               </Select>
             </FormControl>
 
@@ -537,6 +531,21 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             <FormControlLabel
               control={
                 <Checkbox
+                  checked={formData.is_activity_rate_flexible}
+                  onChange={(e) =>
+                    setFormData((prev:any) => ({
+                      ...prev,
+                      is_activity_rate_flexible: e.target.checked,
+                    }))
+                  }
+                />
+              }
+              label="Taux flexibles / à convenir"
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox
                   checked={formData.is_working_hours_flexible}
                   onChange={(e) =>
                     setFormData((prev:any) => ({
@@ -546,6 +555,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                   }
                 />
               }
+              
               label="Horaires flexibles"
             />
 
@@ -586,7 +596,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
 
               <FormControl fullWidth required>
               <InputLabel>Type de remuneration</InputLabel>
-              <Select
+              <Select required
                 value={formData.remuneration_type_id}
                 onChange={handleSelectChange('remuneration_type_id')}
               >
@@ -602,8 +612,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <TextField
                 label="Date de début"
                 type="date"
-                value={formData.startDate}
-                onChange={handleInputChange('startDate')}
+                value={formData.start}
+                onChange={handleInputChange('start')}
                 InputLabelProps={{ shrink: true }}
                 required
               />
@@ -611,8 +621,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <TextField
                 label="Date de fin"
                 type="date"
-                value={formData.endDate}
-                onChange={handleInputChange('endDate')}
+                value={formData.end}
+                onChange={handleInputChange('end')}
                 InputLabelProps={{ shrink: true }}
               />
             </div>

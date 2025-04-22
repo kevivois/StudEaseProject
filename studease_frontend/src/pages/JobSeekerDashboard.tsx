@@ -185,7 +185,7 @@ export default function JobSeekerDashboard() {
   const handleSubmitApplication = async (data: {
     message: string;
     documents: File[];
-    startDate?: string;
+    start?: string;
   }) => {
     if (!selectedOffer) return;
 
@@ -251,7 +251,7 @@ export default function JobSeekerDashboard() {
               onSearch={() => loadOffers()}
             />
           </Grid>
-          <Grid item xs={12} md={9}>
+          <Grid item xs={12} md={9} >
             {loading.offers ? (
               <div className="flex justify-center">
                 <CircularProgress />

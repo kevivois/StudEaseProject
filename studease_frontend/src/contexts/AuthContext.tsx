@@ -15,7 +15,9 @@ interface AuthContextType {
     location_id?: string;
     profile_description?: string;
     skills?: string[];
-    birthdate:string
+    birthdate:string;
+    study_field?:string;
+    school_name?:string;
   }) => Promise<void>;
   registerCompany: (data: {
     email: string;
@@ -80,22 +82,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     availability_start?: string;
     availability_end?: string;
     birthdate:string;
+    school_name?:string;
+    study_field?:string;
   }) => {
     try {
       setError(null);
       // Make sure the data matches the "users" table structure
-      const userData = await api.auth.registerUser({
-        email: data.email,
-        password: data.password,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        phone_number: data.phone_number,
-        profile_description: data.profile_description,
-        skills: data.skills,
-        availability_start: data.availability_start,
-        availability_end: data.availability_end,
-        birthdate:data.birthdate
-      });
+      const userData = await api.auth.registerUser(data);
       setUser(userData.user); // Assuming userData contains the created user
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
@@ -107,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string;
     password: string;
     company_name: string;
-    company_type_id: string; // UUID reference from "company_types"
+    company_type_id: string; 
     company_address: string;
     company_phone: string;
     company_website: string;
@@ -118,17 +111,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       setError(null);
       // Make sure the data matches the "companies" table structure
-      const companyData = await api.auth.registerCompany({
-        email: data.email,
-        password: data.password,
-        company_name: data.company_name,
-        company_type_id: data.company_type_id, // Reference to company type
-        company_address: data.company_address,
-        company_phone: data.company_phone,
-        company_website: data.company_website,
-        company_logo_url: data.company_logo_url,
-        company_description: data.company_description
-      });
+      const companyData = await api.auth.registerCompany(data)
+      ;
       setUser(companyData.user); // Assuming companyData contains the created company
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');

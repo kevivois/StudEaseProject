@@ -112,3 +112,10 @@ export function getHeaders() {
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version,Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization,'    )
     return headers;
 }
+
+export function sanitizeFileName(filename: string): string {
+  return filename
+    .normalize("NFD") // decompose accents
+    .replace(/[\u0300-\u036f]/g, "") // remove accents
+    .replace(/[^a-zA-Z0-9._-]/g, "_"); // replace any remaining unsafe characters
+}
