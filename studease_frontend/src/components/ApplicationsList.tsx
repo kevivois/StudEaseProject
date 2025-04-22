@@ -282,6 +282,7 @@ export default function ApplicationsList({ applications }: Props) {
               <Button
                   variant="outlined"
                   color="error"
+                  onClick={(e) => removeApplication(application.id)}
                 >
                   Retirer ma candidature
                 </Button>

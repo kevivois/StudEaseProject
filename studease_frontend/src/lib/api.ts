@@ -345,6 +345,13 @@ export const api = {
       });
       return handleResponse(response);
     },
+    delete: async (applicationId:string) => {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`,{
+        method:'DELETE',
+        credentials:'include'
+      })
+      return handleResponse(response);
+    },
 
     update: async (applicationId: string, data: any) => {
       const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
