@@ -105,6 +105,10 @@ export default function JobSeekerDashboard() {
     }
   };
 
+  const handleApplicationRemove = async (id:string) => {
+    await api.applications.delete(id)
+    loadApplications();
+  }
   const loadApplications = async () => {
     if (!user?.user_id) return;
     
@@ -305,7 +309,7 @@ export default function JobSeekerDashboard() {
         ) : error.applications ? (
           <Alert severity="error">{error.applications}</Alert>
         ) : (
-          <ApplicationsList applications={applications} />
+          <ApplicationsList applications={applications} onRemove={handleApplicationRemove}/>
         )}
       </TabPanel>
 

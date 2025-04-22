@@ -36,6 +36,7 @@ import { api } from "../lib/api"
 import { InsertDriveFile } from '@mui/icons-material';
 interface Props {
   applications: any[];
+  onRemove: (id:string) => Promise<void>
 }
 
 const getStatusColor = (status: string) => {
@@ -68,7 +69,7 @@ const getStatusLabel = (status: string) => {
   }
 };
 
-export default function ApplicationsList({ applications }: Props) {
+export default function ApplicationsList({ applications,onRemove }: Props) {
 
   const handleDownloadDocument = async (applicationId:string,documentUrl: string) => {
       try {
@@ -78,6 +79,10 @@ export default function ApplicationsList({ applications }: Props) {
         console.error('Error downloading document:', error);
       }
     };
+
+  let removeApplication = async(applicationId:any) => {
+    await onRemove(applicationId)
+  }
 
   return (
     <div className="space-y-6">
