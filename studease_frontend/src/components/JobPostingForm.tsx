@@ -342,7 +342,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               <Select value={formData.job_level} onChange={handleSelectChange('job_level')}>
                 <MenuItem value="Bachelor">Bachelor</MenuItem>
                 <MenuItem value="Master">Master</MenuItem>
-                <MenuItem value="Doctorat">Senior</MenuItem>
+                <MenuItem value="Doctorat">Doctorat</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth required>
