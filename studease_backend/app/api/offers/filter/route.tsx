@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
       contractTypeId,
       industryIds,
       searchTerm,
-      isFlexible,
       activityRateMin,
       activityRateMax,
       workingHoursSearch,
@@ -48,10 +47,6 @@ export async function POST(request: NextRequest) {
 
     if (Array.isArray(contractTypeId) && contractTypeId.length > 0) {
       query = query.in('contract_type_id', contractTypeId);
-    }
-
-    if (isFlexible !== undefined) {
-      query = query.eq('is_working_hours_flexible', isFlexible);
     }
 
     if (activityRateMin) {

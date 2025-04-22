@@ -84,7 +84,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     const offerId = params.id;
     const body = await request.json();
-
+    console.log(body)
     const parsedBody = offerUpdateSchema.safeParse(body);
     if (!parsedBody.success) {
       return NextResponse.json(

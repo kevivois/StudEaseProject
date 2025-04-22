@@ -136,7 +136,7 @@ function EmployerDashboard() {
             aria-selected={activeTab === 'profile'}
             aria-controls="profile-panel"
           >
-            Profile
+            Profil
           </button>
         </div>
       </div>

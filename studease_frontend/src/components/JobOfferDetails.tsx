@@ -301,17 +301,13 @@ export default function JobOfferDetails() {
                                         <span>{application.users.phone_number}</span>
                                       </div>
                                     )}
+                                    {application.users?.study_field && (
+                                      <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                        <SchoolIcon className="w-4 h-4" />
+                                        <span>{`${application.users.study_field} - ${application.users.school_name}`}</span>
+                                      </div>
+                                    )}
                                   </div>
-                                  <Chip
-                                    label={application.status}
-                                    color={
-                                      application.status === 'accepté'
-                                        ? 'success'
-                                        : application.status === 'refusé'
-                                        ? 'error'
-                                        : 'default'
-                                    }
-                                  />
                                 </div>
 
                                 <Typography variant="body2" className="mt-2">
@@ -352,24 +348,6 @@ export default function JobOfferDetails() {
                                   >
                                     Voir les détails
                                   </Button>
-                                  {application.status === 'en_attente' && (
-                                    <>
-                                      <Button
-                                        variant="contained"
-                                        color="success"
-                                        onClick={() => handleUpdateApplicationStatus(application.id, 'accepté')}
-                                      >
-                                        Accepter
-                                      </Button>
-                                      <Button
-                                        variant="contained"
-                                        color="error"
-                                        onClick={() => handleUpdateApplicationStatus(application.id, 'refusé')}
-                                      >
-                                        Refuser
-                                      </Button>
-                                    </>
-                                  )}
                                 </div>
                               </div>
                             </div>
@@ -410,14 +388,14 @@ export default function JobOfferDetails() {
                         secondary={new Date(offer.application_deadline).toLocaleDateString()}
                       />
                     </ListItem>
-                    {offer.startDate && (
+                    {offer.start && (
                       <ListItem>
                         <ListItemIcon>
                           <CalendarTodayIcon className="text-gray-400" />
                         </ListItemIcon>
                         <ListItemText
                           primary="Date de début"
-                          secondary={new Date(offer.startDate).toLocaleDateString()}
+                          secondary={new Date(offer.end).toLocaleDateString()}
                         />
                       </ListItem>
                     )}

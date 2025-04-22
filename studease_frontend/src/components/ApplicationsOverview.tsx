@@ -82,11 +82,6 @@ export default function ApplicationsOverview({
                         </Typography>
                       </div>
                     </div>
-                    <Chip
-                      label={getStatusLabel(application.status)}
-                      color={getStatusColor(application.status)}
-                      size="small"
-                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mt-4">
@@ -133,24 +128,6 @@ export default function ApplicationsOverview({
                     >
                       Voir le dossier
                     </Button>
-                    {application.status === 'en_attente' && (
-                      <>
-                        <Button
-                          variant="contained"
-                          onClick={() => onUpdateStatus(application.id, 'accepté')}
-                          color="success"
-                        >
-                          Accepter
-                        </Button>
-                        <Button
-                          variant="contained"
-                          onClick={() => onUpdateStatus(application.id, 'refusé')}
-                          color="error"
-                        >
-                          Refuser
-                        </Button>
-                      </>
-                    )}
                   </div>
                 </div>
               </div>

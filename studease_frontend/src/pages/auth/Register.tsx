@@ -18,6 +18,8 @@ export default function Register() {
   const [company_address, setCompanyAddress] = useState('');
   const [company_phone, setCompanyPhone] = useState('');
   const [company_website, setCompanyWebsite] = useState('');
+  const [study_field, setStudyField] = useState('');
+  const [school_name, setSchoolName] = useState('');
   const [birthdate, setBirthDate] = useState('');
   const [companyTypes, setCompanyTypes] = useState<{ company_type_id: string; label: string }[]>([]);
   const [error, setError] = useState('');
@@ -65,7 +67,9 @@ export default function Register() {
           first_name,
           last_name,
           phone_number,
-          birthdate:birthdate
+          birthdate:birthdate,
+          study_field,
+          school_name
         });
       } else {
         await registerCompany({
@@ -211,6 +215,30 @@ export default function Register() {
                      required
                      value={birthdate}
                      onChange={handleDateChangeBirthdate}
+                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                   />
+                 </div>
+                 <div>
+                   <input
+                     id="study_field"
+                     name="study_field"
+                     type="text"
+                     placeholder="Domaine d'étude"
+                     required
+                     value={study_field}
+                     onChange={(e) => setStudyField(e.target.value)}
+                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                   />
+                 </div>
+                 <div>
+                   <input
+                     id="school_name"
+                     name="school_name"
+                     type="text"
+                     placeholder='Établissement ou école'
+                     required
+                     value={school_name}
+                     onChange={(e) => setSchoolName(e.target.value)}
                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                    />
                  </div>

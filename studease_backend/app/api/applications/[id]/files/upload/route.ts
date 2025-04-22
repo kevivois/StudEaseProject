@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { getUserDataType } from '@/lib/middleware-helper';
-
+import { sanitizeFileName } from '@/lib/middleware-helper';
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const supabase = createRouteHandlerClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const paths = [];
 
   for (const file of files) {
-    const path = `applications/${application_id}/${file.name}`;
+    const path = `applications/${application_id}/${sanitizeFileName(file.name)}`;
     const { error } = await supabase.storage.from('documents').upload(path, file, {
       upsert: true,
       contentType: file.type,

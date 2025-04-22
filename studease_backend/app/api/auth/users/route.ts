@@ -17,11 +17,14 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
   }
-  const { email, password, first_name, last_name, profile_description, skills,phone_number,birthdate } = parsedBody.data
+  const { email, password, first_name, last_name, profile_description, skills,phone_number,birthdate,study_field,school_name } = parsedBody.data
   const supabase = createRouteHandlerClient({ cookies });
   const { data, error } = await supabase.auth.signUp({ email, password });
 
   if(!data || !data.user || !data.user.id){
+    if(data.user){
+      await supabase.auth.admin.deleteUser(data.user.id)
+    }
     throw Error("created user data is null : server Error ")
   }
 
@@ -35,7 +38,9 @@ export async function POST(request: NextRequest) {
         profile_description,
         skills,
         phone_number,
-        birthdate
+        birthdate,
+        study_field,
+        school_name
       }]);
     if (response.error) {
       await supabase.auth.admin.deleteUser(data.user.id)

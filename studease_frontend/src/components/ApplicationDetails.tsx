@@ -70,16 +70,6 @@ export default function ApplicationDetails({
       <DialogTitle>
         <div className="flex justify-between items-center">
           <Typography variant="h6">Détails de la candidature</Typography>
-          <Chip
-            label={application.status}
-            color={
-              application.status === 'accepté'
-                ? 'success'
-                : application.status === 'refusé'
-                ? 'error'
-                : 'default'
-            }
-          />
         </div>
       </DialogTitle>
       <DialogContent dividers>
@@ -166,22 +156,6 @@ export default function ApplicationDetails({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Fermer</Button>
-        {application.status === 'en_attente' && (
-          <>
-            <Button
-              onClick={() => onStatusUpdate(application.id, 'refusé')}
-              color="error"
-            >
-              Refuser
-            </Button>
-            <Button
-              onClick={() => onStatusUpdate(application.id, 'accepté')}
-              color="success"
-            >
-              Accepter
-            </Button>
-          </>
-        )}
         <Button
           onClick={handleSaveFeedback}
           variant="contained"

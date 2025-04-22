@@ -36,6 +36,7 @@ export default function CompanyProfileSection({onUpdate}: Props) {
   const handleSave = async () => {
     try {
       await onUpdate(editedProfile);
+      setEditedProfile(useAuth().user)
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -59,11 +60,6 @@ export default function CompanyProfileSection({onUpdate}: Props) {
                 <Typography variant="h4" className="font-bold">
                   {profile.company_name}
                 </Typography>
-                <Chip
-                  icon={<BusinessIcon className="text-primary" />}
-                  label={profile.company_type_id}
-                  className="mt-2 bg-primary/10 text-primary"
-                />
               </div>
             </div>
             <Button

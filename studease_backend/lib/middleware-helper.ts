@@ -105,10 +105,17 @@ export function getHeaders() {
   
     // Set CORS headers for all API routes
     headers.append('Access-Control-Allow-Credentials', "true")
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:5173') // frontend url https://studease.jevs.ch
+    headers.append('Access-Control-Allow-Origin', 'https://studease.jevs.ch') // frontend url https://studease.jevs.ch
     headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT,OPTIONS')
     headers.append(
         'Access-Control-Allow-Headers',
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version,Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization,'    )
     return headers;
+}
+
+export function sanitizeFileName(filename: string): string {
+  return filename
+    .normalize("NFD") // decompose accents
+    .replace(/[\u0300-\u036f]/g, "") // remove accents
+    .replace(/[^a-zA-Z0-9._-]/g, "_"); // replace any remaining unsafe characters
 }

@@ -26,7 +26,6 @@ interface FiltersProps {
     contractTypeId: string | string[];
     industryIds: string[];
     searchTerm: string;
-    isFlexible: boolean;
     activityRateMin: string;
     activityRateMax: string;
     workingHoursSearch: string;
@@ -261,16 +260,6 @@ export default function OfferFilters({
           InputProps={{ inputProps: { min: 0, max: 100 } }}
         />
       </div>
-
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={filters.isFlexible}
-            onChange={(e) => onFilterChange('isFlexible', e.target.checked)}
-          />
-        }
-        label="Horaires flexibles"
-      />
 
       <Button
         variant="contained"

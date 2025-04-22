@@ -21,7 +21,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   offer: any | null;
-  onSubmit: (data: { message: string; documents: File[]; startDate?: string }) => Promise<void>;
+  onSubmit: (data: { message: string; documents: File[]; start?: string }) => Promise<void>;
 }
 
 export default function ApplicationModal({ open, onClose, offer, onSubmit }: Props) {
@@ -39,6 +39,8 @@ export default function ApplicationModal({ open, onClose, offer, onSubmit }: Pro
     try {
       setLoading(true);
       await onSubmit({ message, documents });
+      setMessage('')
+      setDocuments([])
       onClose();
     } catch (error) {
       console.error('Error submitting application:', error);

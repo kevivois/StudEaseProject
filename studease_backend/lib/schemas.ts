@@ -15,6 +15,8 @@ export const registerUserSchema = z.object({
   availability_start: z.string().date().optional().nullable(),
   availability_end: z.string().date().optional().nullable(),
   birthdate:z.string().date(),
+  study_field:z.string().optional().nullable(),
+  school_name:z.string().optional().nullable(),
 });
 export const registerCompanySchema = z.object({
   email: z.string().email("Email invalide"),
@@ -70,7 +72,7 @@ export const offerSchema = z.object({
   location_id: z.string().uuid(),
   remuneration_type_id: z.string().uuid(),
   duration_id: z.string().uuid().optional().nullable(),
-  application_deadline: z.string().date(),
+  application_deadline: z.string().date().optional().nullable(),
   work_location_type: z.string(),
   contract_type_id: z.string().uuid(),
   profile_description: z.string().optional(),
@@ -87,11 +89,12 @@ export const offerSchema = z.object({
   contact_email: z.string().email(),
   contact_name: z.string().min(2, "Nom du contact requis"),
   documents_urls: z.array(z.string()).optional().default([]),
-  startDate:z.string().date().optional().nullable(),
-  endDate:z.string().date().optional().nullable(),
+  start:z.string().date().optional().nullable(),
+  end:z.string().date().optional().nullable(),
   max_appliants:z.number(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
+  is_activity_rate_flexible:z.boolean().default(false)
 })
 
 export const offerUpdateSchema = z.object({
@@ -100,10 +103,10 @@ export const offerUpdateSchema = z.object({
   location_id: z.string().uuid(),
   remuneration_type_id: z.string().uuid(),
   duration_id: z.string().uuid().optional().nullable(),
-  application_deadline: z.string().date(),
+  application_deadline: z.string().date().optional().nullable(),
   work_location_type: z.string(),
-  startDate:z.string().date().optional().nullable(),
-  endDate:z.string().date().optional().nullable(),
+  start:z.string().date().optional().nullable(),
+  end:z.string().date().optional().nullable(),
   contract_type_id: z.string().uuid(),
   profile_description: z.string().optional(),
   required_skills: z.array(z.string()).optional().default([]),
@@ -123,6 +126,7 @@ export const offerUpdateSchema = z.object({
   industries:z.array(z.string().uuid()).optional(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
+  is_activity_rate_flexible: z.boolean().default(false),
 })
 
 
@@ -132,11 +136,11 @@ export const createOfferSchema = z.object({
   location_id: z.string().uuid(),
   remuneration_type_id: z.string().uuid(),
   duration_id: z.string().uuid().optional().nullable(),
-  application_deadline: z.string().date(),
+  application_deadline: z.string().date().optional().nullable(),
   work_location_type: z.string(),
-  industries:z.array(z.string().uuid()),
-  startDate:z.string().date().optional().nullable(),
-  endDate:z.string().date().optional().nullable(),
+  industries:z.array(z.string().uuid()).optional(),
+  start:z.string().date().optional().nullable(),
+  end:z.string().date().optional().nullable(),
   contract_type_id: z.string().uuid(),
   profile_description: z.string().optional(),
   required_skills: z.array(z.string()).optional().default([]),
@@ -150,6 +154,7 @@ export const createOfferSchema = z.object({
   job_level: z.string(),
   max_appliants:z.number(),
   is_working_hours_flexible: z.boolean().default(false),
+  is_activity_rate_flexible:z.boolean().default(false),
   contact_email: z.string().email(),
   contact_name: z.string().min(2, "Nom du contact requis"),
   documents_urls: z.array(z.string()).optional().default([]),
@@ -204,7 +209,9 @@ export const userUpdateSchema = z.object({
   skills: z.array(z.string()).optional().default([]).nullable(),
   availability_start: z.string().date().optional().nullable(),
   birthdate:z.string().date(),
-  availability_end: z.string().date().optional().nullable()
+  availability_end: z.string().date().optional().nullable(),
+  study_field:z.string().optional().nullable(),
+  school_name:z.string().optional().nullable(),
 })
 
 

@@ -95,10 +95,6 @@ export default function ApplicationsList({ applications }: Props) {
                   <span>{application.offers?.companies?.company_name}</span>
                 </div>
               </div>
-              <Chip
-                label={getStatusLabel(application.status)}
-                className={getStatusColor(application.status)}
-              />
             </div>
 
             <Divider />
@@ -283,14 +279,12 @@ export default function ApplicationsList({ applications }: Props) {
                 Voir les détails
               </Button>
               */}
-              {application.status === 'en_attente' && (
-                <Button
+              <Button
                   variant="outlined"
                   color="error"
                 >
                   Retirer ma candidature
                 </Button>
-              )}
             </div>
           </CardContent>
         </Card>

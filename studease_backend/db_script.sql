@@ -106,8 +106,11 @@ CREATE TABLE offers (
     contact_name VARCHAR(255), -- Contact pour postuler
     documents_urls TEXT[],
     max_appliants INT DEFAULT 1,
+    study_field varchar(50) null,
+    school_name varchar(50) null,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
 );
 
 -- Table des relations entre les utilisateurs et les offres sauvegardées (saved_offers)
