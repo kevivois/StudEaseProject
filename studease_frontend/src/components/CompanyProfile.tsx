@@ -174,6 +174,7 @@ export default function CompanyProfileSection({onUpdate}: Props) {
                   />
                 </ListItem>
               </List>
+            
 
               {profile.company_description && (
                 <div>

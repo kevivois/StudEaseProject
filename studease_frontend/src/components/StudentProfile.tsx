@@ -66,7 +66,7 @@ export default function ProfileSection({ onUpdate, profile }: Props) {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="overflow-visible">
         <CardContent className="space-y-6">
           {/* Header */}
           <div className="flex justify-between items-start">
@@ -305,7 +305,7 @@ export default function ProfileSection({ onUpdate, profile }: Props) {
                   ))}
                 </div>
               </div>
-
+              <Divider />
               {profile.profile_description && (
                 <>
                   <Divider />
