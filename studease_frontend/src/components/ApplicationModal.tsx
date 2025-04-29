@@ -24,14 +24,15 @@ interface Props {
   onSubmit: (data: { message: string; documents: File[]; start?: string }) => Promise<void>;
 }
 
-export default function ApplicationModal({ open, onClose, offer, onSubmit }: Props) {
+export default function yApplicationModal({ open, onClose, offer, onSubmit }: Props) {
   const [message, setMessage] = useState('');
   const [documents, setDocuments] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setDocuments(Array.from(event.target.files));
+      let old_documents = Array.isArray(documents)  ? documents : []
+      setDocuments(old_documents.concat(Array.from(event.target.files)));
     }
   };
 
