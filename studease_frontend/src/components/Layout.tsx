@@ -1,3 +1,4 @@
+import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SchoolIcon from '@mui/icons-material/School';
@@ -50,13 +51,11 @@ export default function Layout() {
           </div>
         </div>
       </header>
-
       {/* Contenu principal */}
-      <main className="flex-grow flex flex-col min-h-0">
+      <main>
         <Outlet />
       </main>
-
       <Footer />
-    </div>
+      </div>
   );
 }
