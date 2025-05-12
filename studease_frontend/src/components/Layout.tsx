@@ -1,13 +1,13 @@
-import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SchoolIcon from '@mui/icons-material/School';
 import Footer from './Footer';
+
 export default function Layout() {
   const { user, logout } = useAuth();
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,12 +50,13 @@ export default function Layout() {
           </div>
         </div>
       </header>
+
       {/* Contenu principal */}
-      <main>
+      <main className="flex-grow flex flex-col min-h-0">
         <Outlet />
       </main>
 
       <Footer />
-      </>
+    </div>
   );
 }
