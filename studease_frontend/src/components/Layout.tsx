@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SchoolIcon from '@mui/icons-material/School';
-
+import Footer from './Footer';
 export default function Layout() {
   const { user, logout } = useAuth();
 
@@ -54,6 +54,8 @@ export default function Layout() {
       <main>
         <Outlet />
       </main>
+
+      <Footer />
       </>
   );
 }
