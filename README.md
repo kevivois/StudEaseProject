@@ -404,6 +404,12 @@ Le modèle économique envisagé pour les entreprises repose sur une logique « 
 
 ## Équipe et droits
 
+### Développement
+
+La plateforme a été développée par **Kevin Voisin**, dans le cadre d’un contrat réalisé lorsqu’il faisait partie de la **JEVS (Junior Entreprise Valais)**.
+
+### Conception du projet
+
 StudEase a été conceptualisé par :
 
 - Méline Bolis
