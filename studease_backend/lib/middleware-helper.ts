@@ -105,7 +105,7 @@ export function getHeaders() {
   
     // Set CORS headers for all API routes
     headers.append('Access-Control-Allow-Credentials', "true")
-    headers.append('Access-Control-Allow-Origin', 'https://stud-ease.vercel.app') // frontend url https://studease.jevs.ch
+    headers.append('Access-Control-Allow-Origin', 'https://stud-easy.vercel.app') // frontend url https://studease.jevs.ch
     headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT,OPTIONS')
     headers.append(
         'Access-Control-Allow-Headers',
