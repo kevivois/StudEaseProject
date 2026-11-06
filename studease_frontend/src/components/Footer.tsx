@@ -1,19 +1,12 @@
-import { Typography, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <Box 
-      component="footer" 
-      className="w-full py-4 px-4 mt-auto bg-gray-50 border-t border-gray-200"
-    >
-      <Typography 
-        variant="body2" 
-        align="center" 
-        color="text.secondary"
-        className="text-sm"
-      >
+    <footer className="app-footer">
+      <div className="app-footer-inner">
+        <p>
         © {currentYear}{' '}
         <a 
           href="https://jevs.ch" 
@@ -24,7 +17,12 @@ export default function Footer() {
           JEVS.ch
         </a>
         {' '}- Tous droits réservés
-      </Typography>
-    </Box>
+        </p>
+        <nav className="app-footer-links" aria-label="Liens de pied de page">
+          <Link to="/info">La plateforme</Link>
+          <Link to="/login">Connexion</Link>
+        </nav>
+      </div>
+    </footer>
   );
 }

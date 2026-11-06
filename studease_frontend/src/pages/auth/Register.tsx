@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
 import { Typography } from '@mui/material';
+import AuthLayout from '../../components/AuthLayout';
 
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { registerUser, registerCompany } = useAuth();
-  const [userType, setUserType] = useState<'student' | 'company'>('student');
+  const [userType, setUserType] = useState<'student' | 'company'>(() =>
+    searchParams.get('type') === 'company' ? 'company' : 'student'
+  );
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [first_name, setFirstName] = useState('');
@@ -93,13 +97,12 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#7fba3c]/10 to-[#008080]/10 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <AuthLayout>
+        <div className="auth-card-header">
+          <h1>
             Créer un compte
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          </h1>
+          <p>
             Ou{' '}
             <Link to="/login" className="font-medium text-primary hover:text-primary-dark">
               connectez-vous à votre compte existant
@@ -107,40 +110,33 @@ export default function Register() {
           </p>
         </div>
 
-        <div className="flex justify-center space-x-4">
+        <div className="segment-control" role="group" aria-label="Type de compte">
           <button
             type="button"
-            className={`px-4 py-2 rounded-full ${
-              userType === 'student'
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+            aria-pressed={userType === 'student'}
             onClick={() => setUserType('student')}
           >
             Étudiant
           </button>
           <button
             type="button"
-            className={`px-4 py-2 rounded-full ${
-              userType === 'company'
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+            aria-pressed={userType === 'company'}
             onClick={() => setUserType('company')}
           >
             Entreprise
           </button>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
+            <div className="auth-error" role="alert">
               {error}
             </div>
           )}
 
-          <div className="rounded-md shadow-sm space-y-4">
+          <div className="auth-fields">
             <div>
+              <label htmlFor="email">Adresse email</label>
               <input
                 id="email"
                 name="email"
@@ -155,6 +151,7 @@ export default function Register() {
             </div>
 
             <div>
+              <label htmlFor="password">Mot de passe</label>
               <input
                 id="password"
                 name="password"
@@ -171,6 +168,7 @@ export default function Register() {
             {userType === 'student' ? (
               <>
                 <div>
+                  <label htmlFor="firstName">Prénom</label>
                   <input
                     id="firstName"
                     name="firstName"
@@ -184,6 +182,7 @@ export default function Register() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="lastName">Nom</label>
                   <input
                     id="lastName"
                     name="lastName"
@@ -197,6 +196,7 @@ export default function Register() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="phone">Numéro de téléphone</label>
                   <input
                     id="phone"
                     name="phone"
@@ -209,6 +209,7 @@ export default function Register() {
                   />
                 </div>
                  <div>
+                   <label htmlFor="study_field">Domaine d'étude</label>
                    <input
                      id="study_field"
                      name="study_field"
@@ -221,6 +222,7 @@ export default function Register() {
                    />
                  </div>
                  <div>
+                   <label htmlFor="school_name">Établissement ou école</label>
                    <input
                      id="school_name"
                      name="school_name"
@@ -233,9 +235,9 @@ export default function Register() {
                    />
                  </div>
                  <div>
-                <h3>
+                <label htmlFor="birthdate">
                   Date de naissance
-                  </h3>
+                </label>
                    <input
                      id="birthdate"
                      name="birthdate"
@@ -250,6 +252,7 @@ export default function Register() {
             ) : (
               <>
                 <div>
+                  <label htmlFor="companyName">Nom de l'entreprise</label>
                   <input
                     id="companyName"
                     name="companyName"
@@ -263,6 +266,7 @@ export default function Register() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="companyTypeId">Type d'entreprise</label>
                   <select
                     id="companyTypeId"
                     name="companyTypeId"
@@ -286,6 +290,7 @@ export default function Register() {
                   </select>
                 </div>
                 <div>
+                  <label htmlFor="companyAddress">Adresse de l'entreprise</label>
                   <input
                     id="companyAddress"
                     name="companyAddress"
@@ -298,6 +303,7 @@ export default function Register() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="companyPhone">Téléphone</label>
                   <input
                     id="companyPhone"
                     name="companyPhone"
@@ -310,6 +316,7 @@ export default function Register() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="companyWebsite">Site web de l'entreprise</label>
                   <input
                     id="companyWebsite"
                     name="companyWebsite"
@@ -329,13 +336,12 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+              className="app-button app-button-primary w-full"
             >
               {loading ? 'Création du compte...' : 'Créer un compte'}
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </AuthLayout>
   );
 }

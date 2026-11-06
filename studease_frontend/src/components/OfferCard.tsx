@@ -39,18 +39,18 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
 
   return (
     <>
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className="offer-card">
         <CardContent className="space-y-4">
           <div className="flex justify-between items-start">
-            <div>
-              <Typography variant="h6" className="font-semibold">
+            <div className="offer-card-title">
+              <Typography variant="h6" component="h3" className="font-semibold">
                 {offer.title}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {offer.companies?.company_name}
               </Typography>
             </div>
-            <IconButton onClick={() => onSave(offer.offer_id)}>
+            <IconButton onClick={() => onSave(offer.offer_id)} aria-label={isSaved ? 'Retirer des offres sauvegardées' : 'Sauvegarder cette offre'} aria-pressed={isSaved}>
               {isSaved ? (
                 <BookmarkIcon className="text-primary" />
               ) : (
@@ -59,7 +59,7 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
             </IconButton>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-gray-600">
               <LocationOnIcon fontSize="small" />
               <Typography variant="body2">
@@ -90,7 +90,7 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
           </div>
 
           <div>
-            <Typography variant="subtitle2" gutterBottom>
+            <Typography variant="subtitle2" component="p" gutterBottom>
               Description
             </Typography>
             <Typography variant="body2" color="text.secondary" className="line-clamp-3">
@@ -105,7 +105,7 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
             </Button>
           </div>
 
-          <div className="flex justify-between items-center pt-2">
+          <div className="offer-card-footer">
             <Typography variant="caption" color="text.secondary">
               Publié le {new Date(offer.created_at).toLocaleDateString()}
             </Typography>
@@ -138,7 +138,7 @@ export default function OfferCard({ offer, onApply, onSave, isSaved }: Props) {
         </DialogTitle>
         <DialogContent dividers>
           <div className="space-y-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex items-center gap-2">
                 <LocationOnIcon className="text-gray-400" />
                 <Typography>

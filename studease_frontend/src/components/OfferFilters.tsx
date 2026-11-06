@@ -90,7 +90,10 @@ export default function OfferFilters({
     loadMetadata()
   },[])
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+    <section className="offer-filter-panel" aria-labelledby="offer-filters-heading">
+      <h2 id="offer-filters-heading">Affiner la recherche</h2>
+      <p>Les critères qui comptent pour vous.</p>
+      <div className="offer-filter-fields">
       <TextField
         fullWidth
         label="Rechercher"
@@ -125,8 +128,9 @@ export default function OfferFilters({
       />
 
       <FormControl fullWidth>
-        <InputLabel>Type de travail</InputLabel>
+        <InputLabel id="filter-job-type-label">Type de travail</InputLabel>
         <Select
+          labelId="filter-job-type-label"
           multiple
           value={Array.isArray(filters.jobTypeId) ? filters.jobTypeId : []}
           onChange={(e) => onFilterChange('jobTypeId', e.target.value)}
@@ -155,8 +159,9 @@ export default function OfferFilters({
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel>Lieu</InputLabel>
+        <InputLabel id="filter-location-label">Lieu</InputLabel>
         <Select
+          labelId="filter-location-label"
           multiple
           value={Array.isArray(filters.locationId) ? filters.locationId : []}
           onChange={(e) => onFilterChange('locationId', e.target.value)}
@@ -185,8 +190,9 @@ export default function OfferFilters({
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel>Type de contrat</InputLabel>
+        <InputLabel id="filter-contract-label">Type de contrat</InputLabel>
         <Select
+          labelId="filter-contract-label"
           multiple
           value={Array.isArray(filters.contractTypeId) ? filters.contractTypeId : []}
           onChange={(e) => onFilterChange('contractTypeId', e.target.value)}
@@ -215,8 +221,9 @@ export default function OfferFilters({
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel>Secteurs d'activité</InputLabel>
+        <InputLabel id="filter-industries-label">Secteurs d'activité</InputLabel>
         <Select
+          labelId="filter-industries-label"
           multiple
           value={filters.industryIds}
           onChange={(e) => onFilterChange('industryIds', e.target.value)}
@@ -244,10 +251,11 @@ export default function OfferFilters({
         </Select>
       </FormControl>
 
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4">
         <TextField
           label="Taux d'activité min"
           type="number"
+          fullWidth
           value={filters.activityRateMin}
           onChange={(e) => onFilterChange('activityRateMin', e.target.value)}
           InputProps={{ inputProps: { min: 0, max: 100 } }}
@@ -255,6 +263,7 @@ export default function OfferFilters({
         <TextField
           label="Taux d'activité max"
           type="number"
+          fullWidth
           value={filters.activityRateMax}
           onChange={(e) => onFilterChange('activityRateMax', e.target.value)}
           InputProps={{ inputProps: { min: 0, max: 100 } }}
@@ -270,6 +279,7 @@ export default function OfferFilters({
       >
         Rechercher
       </Button>
-    </div>
+      </div>
+    </section>
   );
 }

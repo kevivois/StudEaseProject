@@ -65,11 +65,11 @@ export default function ApplicationsOverview({
         {Array.isArray(applications) && applications.map((application) => (
           <Card key={application.id} className="hover:shadow-md transition-shadow">
             <CardContent>
-              <div className="flex items-start gap-4">
+              <div className="flex flex-col sm:flex-row items-start gap-4">
                 <Avatar className="bg-primary/10 text-primary">
                   <PersonIcon />
                 </Avatar>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0 w-full">
                   <div className="flex justify-between items-start">
                     <div>
                       <Typography variant="h6">
@@ -84,7 +84,7 @@ export default function ApplicationsOverview({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                     <div className="flex items-center text-gray-600">
                       <LocationOnIcon className="w-4 h-4 mr-2" />
                       <Typography variant="body2">
@@ -106,7 +106,7 @@ export default function ApplicationsOverview({
                         <Typography variant="subtitle2" className="mb-2">
                           Progression
                         </Typography>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {application.application_progress.map((step, index) => (
                             <Chip
                               key={index}

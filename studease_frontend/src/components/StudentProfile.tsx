@@ -69,10 +69,10 @@ export default function ProfileSection({ onUpdate, profile }: Props) {
       <Card className="overflow-visible">
         <CardContent className="space-y-6">
           {/* Header */}
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
+          <div className="profile-header">
+            <div className="profile-identity">
               <Avatar
-                className="h-16 w-16 text-2xl bg-primary"
+                sx={{ width: 56, height: 56, flexShrink: 0, bgcolor: 'primary.main', fontSize: 24 }}
                 alt={`${profile.first_name} ${profile.last_name}`}
               >
                 {profile.first_name[0]}
@@ -164,12 +164,13 @@ export default function ProfileSection({ onUpdate, profile }: Props) {
                 <Typography variant="h6" gutterBottom className="font-medium">
                   Compétences
                 </Typography>
-                <div className="flex gap-2 mb-2">
+                <div className="inline-form-row mb-2">
                   <TextField
                     size="small"
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     placeholder="Ajouter une compétence"
+                    label="Nouvelle compétence"
                     fullWidth
                   />
                   <Button 

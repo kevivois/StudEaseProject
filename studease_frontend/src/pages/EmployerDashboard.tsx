@@ -108,32 +108,25 @@ function EmployerDashboard() {
 
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Espace recruteur</h1>
-        <div className="flex space-x-4">
+    <div className="page-container">
+      <div className="page-heading">
+        <div>
+          <h1>Espace recruteur</h1>
+          <p>Donnez de la visibilité à vos offres et rencontrez vos prochains talents.</p>
+        </div>
+        <div className="segment-control" role="group" aria-label="Espace recruteur">
           <button
-            className={`px-4 py-2 rounded-full ${
-              activeTab === 'postings'
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
             onClick={() => setActiveTab('postings')}
-            aria-selected={activeTab === 'postings'}
+            aria-pressed={activeTab === 'postings'}
             aria-controls="postings-panel"
           >
             Offres
           </button>
           <button
-            className={`px-4 py-2 rounded-full ${
-              activeTab === 'profile'
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
             onClick={() => {
               setActiveTab('profile');
             }}
-            aria-selected={activeTab === 'profile'}
+            aria-pressed={activeTab === 'profile'}
             aria-controls="profile-panel"
           >
             Profil
@@ -148,16 +141,21 @@ function EmployerDashboard() {
       )}
 
       <div id="postings-panel" hidden={activeTab !== 'postings'}>
-        {activeTab === 'postings' && (
+        {activeTab === 'postings' && (loading ? (
+          <div className="loading-state" role="status">
+            <CircularProgress />
+            <span>Chargement des offres…</span>
+          </div>
+        ) : (
           <JobPostingsList
             jobPostings={jobPostings}
             onEdit={handleEditPosting}
             onDelete={handleDeletePosting}
           />
-        )}
+        ))}
       </div>
 
-      <div id="applications-panel" hidden={activeTab !== 'profile'}>
+      <div id="profile-panel" hidden={activeTab !== 'profile'}>
         {activeTab === 'profile' && (
           <CompanyProfileSection onUpdate={handleProfileUpdate} />
         )}

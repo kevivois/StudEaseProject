@@ -56,7 +56,7 @@ export default function yApplicationModal({ open, onClose, offer, onSubmit }: Pr
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle className="flex justify-between items-center">
         <div>
-          <Typography variant="h6">Postuler pour : {offer.title}</Typography>
+          <Typography variant="h6" component="span">Postuler pour : {offer.title}</Typography>
           <Typography variant="body2" color="text.secondary">
             {offer.companies.company_name}
           </Typography>
@@ -89,6 +89,7 @@ export default function yApplicationModal({ open, onClose, offer, onSubmit }: Pr
             Message de motivation
           </Typography>
           <TextField
+            label="Message de motivation"
             multiline
             rows={4}
             fullWidth
@@ -103,19 +104,15 @@ export default function yApplicationModal({ open, onClose, offer, onSubmit }: Pr
             type="file"
             multiple
             onChange={handleFileChange}
-            className="hidden"
+            className="sr-only file-input"
             id="document-upload"
             accept=".pdf,.doc,.docx"
           />
           <label htmlFor="document-upload">
-            <Button
-              component="span"
-              variant="outlined"
-              startIcon={<UploadFileIcon />}
-              fullWidth
-            >
-              Télécharger les documents
-            </Button>
+            <span className="app-button app-button-outline w-full">
+              <UploadFileIcon fontSize="small" />
+              Ajouter des documents
+            </span>
           </label>
           {documents.length > 0 && (
             <List>

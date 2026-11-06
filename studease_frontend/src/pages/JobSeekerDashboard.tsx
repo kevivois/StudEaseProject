@@ -98,7 +98,7 @@ export default function JobSeekerDashboard() {
       const response = await api.offers.filter(filters);
       setOffers(response.offers);
     } catch (err) {
-      setError(prev => ({ ...prev, offers: 'Error loading offers' }));
+      setError(prev => ({ ...prev, offers: 'Erreur lors du chargement des offres.' }));
       console.error('Error loading offers:', err);
     } finally {
       setLoading(prev => ({ ...prev, offers: false }));
@@ -118,7 +118,7 @@ export default function JobSeekerDashboard() {
       const response = await api.applications.getByUser(user.user_id);
       setApplications(response.applications);
     } catch (err) {
-      setError(prev => ({ ...prev, applications: 'Error loading applications' }));
+      setError(prev => ({ ...prev, applications: 'Erreur lors du chargement des candidatures.' }));
       console.error('Error loading applications:', err);
     } finally {
       setLoading(prev => ({ ...prev, applications: false }));
@@ -134,7 +134,7 @@ export default function JobSeekerDashboard() {
       const profileData = await api.users.getProfile(user.user_id);
       setProfile(profileData.user);
     } catch (err) {
-      setError(prev => ({ ...prev, profile: 'Error loading profile' }));
+      setError(prev => ({ ...prev, profile: 'Erreur lors du chargement du profil.' }));
       console.error('Error loading profile:', err);
     } finally {
       setLoading(prev => ({ ...prev, profile: false }));
@@ -228,42 +228,59 @@ export default function JobSeekerDashboard() {
   if (!user) {
     return (
       <Container maxWidth="xl" className="py-8">
-        <Alert severity="warning">Please log in to access this page.</Alert>
+        <Alert severity="warning">Veuillez vous connecter pour accéder à cet espace.</Alert>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="xl" className="py-8">
+    <Container maxWidth="xl" className="page-container">
+      <div className="page-heading">
+        <div>
+          <h1>Espace étudiant</h1>
+          <p>Trouvez votre prochaine opportunité et gardez le fil de vos candidatures.</p>
+        </div>
+      </div>
       <Tabs
         value={activeTab}
         onChange={(_, newValue) => setActiveTab(newValue)}
         className="mb-6"
+        aria-label="Espace étudiant"
       >
-        <Tab icon={<SearchIcon className="h-5 w-5" />} label="Recherche" />
-        <Tab icon={<BookmarkIcon className="h-5 w-5" />} label="Offres sauvegardées" />
-        <Tab icon={<AssignmentIcon className="h-5 w-5" />} label="Mes candidatures" />
-        <Tab icon={<PersonIcon className="h-5 w-5" />} label="Mon profil" />
+        <Tab id="tab-0" aria-controls="tabpanel-0" iconPosition="start" icon={<SearchIcon className="h-5 w-5" />} label="Recherche" />
+        <Tab id="tab-1" aria-controls="tabpanel-1" iconPosition="start" icon={<BookmarkIcon className="h-5 w-5" />} label="Offres sauvegardées" />
+        <Tab id="tab-2" aria-controls="tabpanel-2" iconPosition="start" icon={<AssignmentIcon className="h-5 w-5" />} label="Mes candidatures" />
+        <Tab id="tab-3" aria-controls="tabpanel-3" iconPosition="start" icon={<PersonIcon className="h-5 w-5" />} label="Mon profil" />
       </Tabs>
 
       <TabPanel value={activeTab} index={0}>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={3}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
+          <Grid item xs={12} md={4} lg={3} sx={{ minWidth: 0 }}>
             <OfferFilters
               filters={filters}
               onFilterChange={handleFilterChange}
               onSearch={() => loadOffers()}
             />
           </Grid>
-          <Grid item xs={12} md={9} >
+          <Grid item xs={12} md={8} lg={9} sx={{ minWidth: 0 }}>
             {loading.offers ? (
-              <div className="flex justify-center">
+              <div className="loading-state" role="status">
                 <CircularProgress />
+                <span>Recherche des offres…</span>
               </div>
             ) : error.offers ? (
               <Alert severity="error">{error.offers}</Alert>
             ) : (
               <div className="space-y-4">
+                <div className="section-heading">
+                  <Typography variant="h5" component="h2">Les opportunités</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {Array.isArray(offers) ? offers.length : 0} offre(s)
+                  </Typography>
+                </div>
+                {Array.isArray(offers) && offers.length === 0 && (
+                  <Alert severity="info">Aucune offre pour ces critères. Essayez d'élargir votre recherche.</Alert>
+                )}
                 {Array.isArray(offers) ? offers.map((offer) => (
                   <OfferCard
                     key={offer.offer_id}
@@ -303,8 +320,9 @@ export default function JobSeekerDashboard() {
 
       <TabPanel value={activeTab} index={2}>
         {loading.applications ? (
-          <div className="flex justify-center">
+          <div className="loading-state" role="status">
             <CircularProgress />
+            <span>Chargement des candidatures…</span>
           </div>
         ) : error.applications ? (
           <Alert severity="error">{error.applications}</Alert>
@@ -315,10 +333,11 @@ export default function JobSeekerDashboard() {
 
       <TabPanel value={activeTab} index={3}>
         {loading.profile ? (
-          <div className="flex justify-center">
+          <div className="loading-state" role="status">
             <CircularProgress />
+            <span>Chargement du profil…</span>
           </div>
-        ) : (<StudentProfile profile={profile} onUpdate={handleUpdateProfile} />
+        ) : error.profile ? <Alert severity="error">{error.profile}</Alert> : (<StudentProfile profile={profile} onUpdate={handleUpdateProfile} />
         )}
       </TabPanel>
 

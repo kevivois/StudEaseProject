@@ -10,6 +10,7 @@ import {
   Button,
   TableContainer,
   Paper,
+  Alert,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -28,7 +29,7 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
   const navigate = useNavigate();
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mb-8">
+      <div className="section-heading">
         <div>
           <Typography variant="h5" component="h2" className="font-bold">
             Offres postées
@@ -47,41 +48,44 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
         </Button>
       </div>
 
-      <TableContainer component={Paper} className="shadow-sm">
-        <Table>
+      {jobPostings.length === 0 ? (
+        <Alert severity="info">Vous n'avez pas encore publié d'offre. Créez votre première annonce pour rencontrer les étudiants.</Alert>
+      ) : (
+      <TableContainer component={Paper} className="responsive-offer-table" tabIndex={0} role="region" aria-label="Liste des offres publiées">
+        <Table aria-label="Offres publiées" role="table">
           <TableHead className="bg-gray-50">
             <TableRow>
-              <TableCell>Titre</TableCell>
-              <TableCell>Lieu</TableCell>
-              <TableCell>Contrat</TableCell>
-              <TableCell>Poste</TableCell>
-              <TableCell>Date de création</TableCell>
-              <TableCell>Candidatures</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell scope="col">Titre</TableCell>
+              <TableCell scope="col">Lieu</TableCell>
+              <TableCell scope="col">Contrat</TableCell>
+              <TableCell scope="col">Poste</TableCell>
+              <TableCell scope="col">Date de création</TableCell>
+              <TableCell scope="col">Candidatures</TableCell>
+              <TableCell scope="col" align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {jobPostings.map((posting) => (
               
-              <TableRow key={posting.offer_id} className="hover:bg-gray-50">
-                <TableCell>
+              <TableRow key={posting.offer_id} className="hover:bg-gray-50" role="row">
+                <TableCell data-label="Titre" role="cell">
                   <div className="font-medium">{posting.title}</div>
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Lieu" role="cell">
                   <div className="text-sm">{posting.locations.region} {posting.locations.country}</div>
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Contrat" role="cell">
                   <div className="text-sm">{posting.contract_types.contract_type_name}</div>
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Poste" role="cell">
                   <div className="text-sm">{posting.job_level}</div>
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Créée le" role="cell">
                   <div className="text-sm">
                     {new Date(posting.created_at).toLocaleDateString()}
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Candidatures" role="cell">
                   <div className="flex items-center gap-2">
                     <div className={`text-sm inline-flex px-2 py-1 rounded-full ${
                       (Array.isArray(posting.applications) ? posting.applications.length : 0) >= posting.max_appliants 
@@ -92,13 +96,14 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
                     </div>
                   </div>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell data-label="Actions" align="right" role="cell">
                   <div className="flex justify-end gap-2">
                     <IconButton
                       onClick={() => navigate(`/employer/offers/${posting.offer_id}`)}
                       className="text-blue-600 hover:text-blue-800"
                       size="small"
                       title="Voir l'offre"
+                      aria-label="Voir l'offre"
                     >
                       <VisibilityIcon />
                     </IconButton>
@@ -107,6 +112,7 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
                       className="text-primary hover:text-primary-dark"
                       size="small"
                       title="Modifier"
+                      aria-label="Modifier l'offre"
                     >
                       <EditIcon />
                     </IconButton>
@@ -115,6 +121,7 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
                       className="text-red-600 hover:text-red-900"
                       size="small"
                       title="Supprimer"
+                      aria-label="Supprimer l'offre"
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -125,6 +132,7 @@ export default function JobPostingsList({ jobPostings, onEdit, onDelete }: Props
           </TableBody>
         </Table>
       </TableContainer>
+      )}
     </div>
   );
 }

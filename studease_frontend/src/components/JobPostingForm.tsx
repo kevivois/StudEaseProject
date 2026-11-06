@@ -275,14 +275,14 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
   };
 
   if (loading) {
-    return <CircularProgress />;
+    return <div className="loading-state" role="status"><CircularProgress /><span>Chargement…</span></div>;
   }
 
   return (
     <Box component="form" className="space-y-6">
       {error && <Alert severity="error">{error}</Alert>}
       
-      <div className="flex justify-between items-center">
+      <div className="section-heading">
         <Button onClick={() => navigate('/employer')} variant="outlined" type="button">
           Retour
         </Button>
@@ -291,13 +291,16 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
         </Typography>
       </div>
 
-      <Stepper activeStep={activeStep} alternativeLabel className="mb-8">
+      <Stepper activeStep={activeStep} alternativeLabel className="job-form-stepper" aria-label="Étapes de création de l'offre">
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
+      <Typography variant="body2" color="text.secondary" aria-live="polite">
+        Étape {activeStep + 1} sur {steps.length} · {steps[activeStep]}
+      </Typography>
 
       <div className="space-y-6">
         {activeStep === 0 && (
@@ -314,8 +317,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             />
 
             <FormControl fullWidth required>
-              <InputLabel>Type de travail</InputLabel>
-              <Select value={formData.job_type_id} onChange={handleSelectChange('job_type_id')} required >
+              <InputLabel id="posting-job-type-label">Type de travail</InputLabel>
+              <Select labelId="posting-job-type-label" label="Type de travail" value={formData.job_type_id} onChange={handleSelectChange('job_type_id')} required >
                 {metadata.jobTypes.map((jt: any) => (
                   <MenuItem key={jt.job_type_id} value={jt.job_type_id}>
                     {jt.job_type_name}
@@ -326,8 +329,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
             <FormControl fullWidth required>
-              <InputLabel>Type de contrat</InputLabel>
-              <Select value={formData.contract_type_id} onChange={handleSelectChange('contract_type_id')} required>
+              <InputLabel id="posting-contract-label">Type de contrat</InputLabel>
+              <Select labelId="posting-contract-label" label="Type de contrat" value={formData.contract_type_id} onChange={handleSelectChange('contract_type_id')} required>
                 {metadata.contractTypes.map((ct: any) => (
                   <MenuItem key={ct.contract_type_id} value={ct.contract_type_id}>
                     {ct.contract_type_name}
@@ -338,8 +341,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
             <FormControl fullWidth>
-              <InputLabel>Niveau du poste</InputLabel>
-              <Select value={formData.job_level} onChange={handleSelectChange('job_level')}>
+              <InputLabel id="posting-level-label">Niveau du poste</InputLabel>
+              <Select labelId="posting-level-label" label="Niveau du poste" value={formData.job_level} onChange={handleSelectChange('job_level')}>
                 <MenuItem value="Bachelor">Bachelor</MenuItem>
                 <MenuItem value="Master">Master</MenuItem>
                 <MenuItem value="Doctorat">Doctorat</MenuItem>
@@ -376,8 +379,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             />
 
             <FormControl fullWidth required>
-              <InputLabel>Secteurs d'activité</InputLabel>
+              <InputLabel id="posting-industries-label">Secteurs d'activité</InputLabel>
               <Select required
+                labelId="posting-industries-label"
                 multiple
                 value={formData.industries || []}
                 onChange={handleArrayInputChangeSelect('industries')}
@@ -402,8 +406,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
             <FormControl fullWidth>
-              <InputLabel>Avantages</InputLabel>
+              <InputLabel id="posting-benefits-label">Avantages</InputLabel>
               <Select
+                labelId="posting-benefits-label"
                 multiple
                 value={formData.benefits || []}
                 onChange={handleArrayInputChangeSelect('benefits')}
@@ -423,8 +428,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               </Select>
             </FormControl>
             <FormControl fullWidth required>
-              <InputLabel>Langues</InputLabel>
+              <InputLabel id="posting-languages-label">Langues</InputLabel>
               <Select required
+                labelId="posting-languages-label"
                 multiple
                 value={formData.languages || []}
                 onChange={handleArrayInputChangeSelect('languages')}
@@ -445,8 +451,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
             <FormControl fullWidth required>
-              <InputLabel>Documents requis</InputLabel>
+              <InputLabel id="posting-documents-label">Documents requis</InputLabel>
               <Select required
+                labelId="posting-documents-label"
                 multiple
                 value={formData.required_documents || []}
                 onChange={handleArrayInputChangeSelect('required_documents')}
@@ -475,8 +482,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               Conditions de travail
             </Typography>
             <FormControl fullWidth required>
-              <InputLabel>Lieu de travail</InputLabel>
-              <Select value={formData.location_id} onChange={handleSelectChange('location_id')}>
+              <InputLabel id="posting-location-label">Lieu de travail</InputLabel>
+              <Select labelId="posting-location-label" label="Lieu de travail" value={formData.location_id} onChange={handleSelectChange('location_id')}>
                 {metadata.locations.map((loc: any) => (
                   <MenuItem key={loc.location_id} value={loc.location_id}>
                     {`${loc.region}`}
@@ -487,8 +494,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
             <FormControl fullWidth required>
-            <InputLabel>Type de lieu de travail</InputLabel>
-              <Select value={formData.work_location_type} onChange={handleSelectChange('work_location_type')}>
+            <InputLabel id="posting-workplace-label">Type de lieu de travail</InputLabel>
+              <Select labelId="posting-workplace-label" label="Type de lieu de travail" value={formData.work_location_type} onChange={handleSelectChange('work_location_type')}>
               <MenuItem key='En présentiel' value='En présentiel' >En présentiel</MenuItem>
               <MenuItem key='Hybride' value='Hybride' >Hybride</MenuItem>
               <MenuItem key='Télétravail' value='Télétravail' >Télétravail</MenuItem>
@@ -496,8 +503,8 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               </Select>
             </FormControl>
             <FormControl fullWidth >
-              <InputLabel>Durée</InputLabel>
-              <Select value={formData.duration_id} onChange={handleSelectChange('duration_id')}>
+              <InputLabel id="posting-duration-label">Durée</InputLabel>
+              <Select labelId="posting-duration-label" label="Durée" value={formData.duration_id} onChange={handleSelectChange('duration_id')}>
                 {metadata.durations.map((dr: any) => (
                   <MenuItem key={dr.duration_id} value={dr.duration_id}>
                     {dr.duration_label}
@@ -508,7 +515,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             </FormControl>
 
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextField
                 label="Taux d'activité minimum (%)"
                 type="number"
@@ -559,7 +566,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               label="Horaires flexibles"
             />
 
-              <div className="flex gap-4 items-end">
+              <div className="inline-form-row">
                 <TextField
                   label="Jour(s) - horaires"
                   placeholder='Lundi  08:00 - 18:00'
@@ -595,8 +602,10 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               </div>
 
               <FormControl fullWidth required>
-              <InputLabel>Type de remuneration</InputLabel>
+              <InputLabel id="posting-pay-label">Type de remuneration</InputLabel>
               <Select required
+                labelId="posting-pay-label"
+                label="Type de remuneration"
                 value={formData.remuneration_type_id}
                 onChange={handleSelectChange('remuneration_type_id')}
               >
@@ -608,7 +617,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
               </Select>
             </FormControl>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextField
                 label="Date de début"
                 type="date"
@@ -662,8 +671,9 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
             />
 
             <FormControl fullWidth>
-              <InputLabel>Étapes du processus de recrutement</InputLabel>
+              <InputLabel id="posting-process-label">Étapes du processus de recrutement</InputLabel>
               <Select
+                labelId="posting-process-label"
                 multiple
                 value={formData.application_steps || []}
                 onChange={handleArrayInputChangeSelect('application_steps')}
@@ -692,13 +702,11 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
                 multiple
                 onChange={handleFileUpload}
                 accept="*"
-                className="hidden"
+                className="sr-only file-input"
                 id="company-documents"
               />
               <label htmlFor="company-documents">
-                <Button variant="outlined" component="span">
-                  Télécharger des documents
-                </Button>
+                <span className="app-button app-button-outline">Ajouter des documents</span>
               </label>
               {formData.documents_urls && formData.documents_urls.length > 0 && (
                 <Box sx={{ mt: 2 }}>
@@ -741,7 +749,7 @@ export default function JobPostingForm({ offerId, onSubmit }: Props) {
 
         <Divider className="my-6" />
 
-        <div className="flex justify-between">
+        <div className="form-actions">
           <Button
             onClick={handleBack}
             disabled={activeStep === 0}

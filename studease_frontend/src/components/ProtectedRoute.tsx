@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { CircularProgress } from '@mui/material';
 
 interface Props {
   children: React.ReactNode;
@@ -12,7 +13,7 @@ export default function ProtectedRoute({ children, userType }: Props) {
   const location = useLocation();
 
   if (loading) {
-    return <div>Chargement...</div>;
+    return <div className="loading-state" role="status"><CircularProgress /><span>Chargement de votre espace…</span></div>;
   }
 
   if (!user) {

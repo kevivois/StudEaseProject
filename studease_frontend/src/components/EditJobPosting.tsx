@@ -26,11 +26,11 @@ export default function EditJobPosting() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="page-container form-page">
       <Typography variant="h4" component="h1" gutterBottom>
         Modifier l'offre
       </Typography>
-      <Paper className="p-6 mt-6">
+      <Paper className="form-panel mt-6">
         <JobPostingForm offerId={id} onSubmit={handleSubmit} />
       </Paper>
     </div>

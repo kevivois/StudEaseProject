@@ -66,10 +66,10 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
     <div className="space-y-6">
       <Card>
         <CardContent className="space-y-6">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
+          <div className="profile-header">
+            <div className="profile-identity">
               <Avatar
-                className="h-16 w-16 text-2xl bg-primary"
+                sx={{ width: 56, height: 56, bgcolor: 'primary.main', flexShrink: 0, fontSize: 24 }}
                 alt={`${profile.first_name} ${profile.last_name}`}
               >
                 {profile.first_name[0]}
@@ -94,7 +94,7 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
 
           {isEditing ? (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <TextField
                   label="Prénom"
                   value={editedProfile.first_name}
@@ -121,12 +121,13 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
                 <Typography variant="subtitle1" gutterBottom>
                   Compétences
                 </Typography>
-                <div className="flex gap-2 mb-2">
+                <div className="inline-form-row mb-2">
                   <TextField
                     size="small"
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     placeholder="Ajouter une compétence"
+                    label="Nouvelle compétence"
                   />
                   <Button onClick={handleAddSkill}>Ajouter</Button>
                 </div>
@@ -142,7 +143,7 @@ export default function ProfileSection({ profile, onUpdate }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <TextField
                   label="Disponible à partir du"
                   type="date"

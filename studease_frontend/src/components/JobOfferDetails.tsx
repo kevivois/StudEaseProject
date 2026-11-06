@@ -101,22 +101,23 @@ export default function JobOfferDetails() {
   };
   if (loading) {
     return (
-      <Box className="flex justify-center items-center min-h-screen">
+      <Box className="loading-state" role="status">
         <CircularProgress />
+        <span>Chargement de l'offre…</span>
       </Box>
     );
   }
 
   if (error || !offer) {
     return (
-      <Box className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Box className="page-container">
         <Alert severity="error">{error || "L'offre n'a pas été trouvée"}</Alert>
       </Box>
     );
   }
   return (
-    <Box className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Paper className="p-8 space-y-8">
+    <Box className="page-container">
+      <Paper className="form-panel space-y-8">
       <Button onClick={() => navigate('/employer')} variant="outlined" type="button">
           Retour
         </Button>
@@ -157,8 +158,8 @@ export default function JobOfferDetails() {
         <Divider />
 
         {/* Main Content */}
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={8}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
+          <Grid item xs={12} md={8} sx={{ minWidth: 0 }}>
             <div className="space-y-6">
               {/* Description */}
               <Card>
@@ -266,7 +267,7 @@ export default function JobOfferDetails() {
               {/* Applications */}
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom className="flex items-center justify-between">
+                  <Typography variant="h6" gutterBottom className="flex flex-wrap gap-3 items-center justify-between">
                     Candidatures
                     <Chip 
                       label={`${applications?.length || 0}/${offer.max_appliants}`}
@@ -281,11 +282,11 @@ export default function JobOfferDetails() {
                       {Array.isArray(applications) ? applications.map((application:any) => (
                         <Card key={application.id} variant="outlined">
                           <CardContent>
-                            <div className="flex items-start gap-4">
+                            <div className="flex flex-col sm:flex-row items-start gap-4">
                               <Avatar className="bg-primary">
                                 {application.users?.first_name?.[0]}
                               </Avatar>
-                              <div className="flex-1">
+                              <div className="flex-1 min-w-0 w-full">
                                 <div className="flex justify-between items-start">
                                   <div>
                                     <Typography variant="subtitle1">
@@ -361,7 +362,7 @@ export default function JobOfferDetails() {
             </div>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={4} sx={{ minWidth: 0 }}>
             <div className="space-y-4">
               {/* Key Information */}
               <Card>

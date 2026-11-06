@@ -69,7 +69,7 @@ export default function ApplicationDetails({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <div className="flex justify-between items-center">
-          <Typography variant="h6">Détails de la candidature</Typography>
+          <Typography variant="h6" component="span">Détails de la candidature</Typography>
         </div>
       </DialogTitle>
       <DialogContent dividers>
@@ -144,6 +144,7 @@ export default function ApplicationDetails({
               Retour au candidat
             </Typography>
             <TextField
+              label="Retour au candidat"
               multiline
               rows={4}
               fullWidth

@@ -12,13 +12,15 @@ import CreateJobPosting from "./components/CreateJobPosting"
 import EditJobPosting from "./components/EditJobPosting"
 import UserOrCompanyProtected from './components/UserOrCompanyProtected';
 import JobOfferDetails from './components/JobOfferDetails';
+import Info from './pages/Info';
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gradient-to-br from-[#7fba3c]/10 to-[#008080]/10">
+      <div className="min-h-screen">
         <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<UserOrCompanyProtected />}></Route>
+          <Route path="/info" element={<Info />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/employer" element={<ProtectedRoute userType="company">
@@ -51,10 +53,17 @@ function App() {
                 </ProtectedRoute>
               }
             />
-          </Route>
           <Route path="*" element={
-            <div>not found</div>
-          }></Route>
+            <div className="page-container">
+              <section className="auth-card max-w-xl mx-auto my-8">
+                <p className="text-primary font-semibold mb-4">404 · Page introuvable</p>
+                <h1>Cette page n'existe pas.</h1>
+                <p className="text-gray-600 mt-4 leading-relaxed">Le lien a peut-être changé. Retrouvez votre espace ou découvrez la plateforme depuis l'accueil.</p>
+                <Link to="/" className="app-button app-button-primary mt-6">Retour à l'accueil</Link>
+              </section>
+            </div>
+          } />
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>

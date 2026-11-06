@@ -47,11 +47,11 @@ export default function CompanyProfileSection({onUpdate}: Props) {
     <div className="space-y-6">
       <Card className="overflow-visible">
         <CardContent className="space-y-6">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
+          <div className="profile-header">
+            <div className="profile-identity">
               <Avatar
                 src={profile.company_logo_url || undefined}
-                className="h-20 w-20 bg-primary text-3xl"
+                sx={{ width: { xs: 56, sm: 80 }, height: { xs: 56, sm: 80 }, flexShrink: 0, bgcolor: 'primary.main', fontSize: 28 }}
                 alt={profile.company_name}
               >
                 {profile.company_name[0]}

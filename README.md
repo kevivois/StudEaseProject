@@ -42,6 +42,23 @@ Pour les entreprises :
 3. FONCTIONNALITÉS PRINCIPALES
 ------------------------------------------------------------
 
+Page de garde publique : `/info`
+- Presentation de StudEase, des parcours et des questions frequentes.
+- Accessible sans compte, y compris aux visiteurs deja connectes.
+- La racine `/` y redirige les visiteurs non connectes ; les comptes connectes
+  conservent leur redirection vers leur tableau de bord.
+- Les liens etudiant / entreprise preselectionnent le type de compte a l'inscription.
+- Mise en page responsive et animations respectant la reduction des mouvements.
+
+Style du frontend :
+- Theme Material UI partage dans `studease_frontend/src/theme.ts`.
+- Styles et classes de mise en page communs dans `studease_frontend/src/index.css`.
+- Vert StudEase pour l'identite, turquoise contraste pour les actions.
+- Formulaires accessibles avec labels, navigation clavier et mouvements reduits.
+- Onglets defilants sur mobile ; les offres recruteur s'affichent en fiches
+  sous 900 px, sans supprimer les actions de consultation, modification ou suppression.
+- Les routes, appels API, filtres et etapes des formulaires restent inchanges.
+
 3.1 Côté Étudiants
 
 ✔ Moteur de recherche avancé avec filtres :
@@ -127,6 +144,37 @@ Créer un fichier `.env.local` à la racine du projet :
 
 NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_cle_anonyme
+
+
+5.3 Remplacer un mot de passe (administrateur)
+
+Depuis le dossier `studease_backend`, ajouter temporairement dans `.env.local` :
+
+SUPABASE_SERVICE_ROLE_KEY=votre_cle_service_role
+
+La variable NEXT_PUBLIC_SUPABASE_URL doit aussi etre renseignee dans ce fichier.
+Ne jamais publier la cle service_role ni lui donner un prefixe NEXT_PUBLIC_.
+Ne pas committer ce fichier ni le nouveau mot de passe.
+
+Executer dans PowerShell :
+
+    cd .\studease_backend
+    npm run auth:reset-password -- UUID_SUPABASE_AUTH
+
+Remplacer UUID_SUPABASE_AUTH par l'identifiant du compte dans Supabase >
+Authentication > Users (pas l'identifiant de la table publique users ou companies).
+Le script demande le nouveau mot de passe dans la console et l'affiche en clair.
+Il demande ensuite "Are you sure?" : taper yes pour confirmer. Toute autre
+reponse ou une fin de saisie annule la modification.
+Attention aux captures d'ecran, au partage d'ecran et aux journaux du terminal.
+NEW_PASSWORD n'est plus utilise : retirer cette variable si elle est presente.
+Le script utilise Supabase Auth Admin, sans modifier directement le hash en DB.
+Il affiche un message de reussite seulement apres une mise a jour reussie et retourne
+un code d'erreur en cas d'echec. Les regles de mot de passe Supabase restent applicables.
+
+Retirer SUPABASE_SERVICE_ROLE_KEY de `.env.local` apres utilisation.
+Cette commande est manuelle : elle ne s'execute pas au demarrage du serveur et
+n'ajoute aucune route publique. Aucun mot de passe ne doit etre passe en argument.
 
 
 6. DÉPLOIEMENT

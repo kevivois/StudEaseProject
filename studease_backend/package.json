@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "auth:reset-password": "tsx scripts/resetPassword.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

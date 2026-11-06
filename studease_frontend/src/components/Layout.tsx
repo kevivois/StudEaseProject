@@ -1,5 +1,4 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SchoolIcon from '@mui/icons-material/School';
 import Footer from './Footer';
@@ -8,51 +7,52 @@ export default function Layout() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            {/* Logo et lien vers la page d'accueil */}
-            <Link to="/" className="flex items-center">
-              <SchoolIcon className="h-8 w-8 text-[#7fba3c]" />
-              <span className="ml-2 text-2xl font-bold text-gradient">StudEase</span>
+    <div className="app-shell">
+      <a className="skip-link" href="#main-content">Aller au contenu</a>
+      <header className="app-header">
+        <div className="app-header-inner">
+            <Link to="/" className="app-logo" aria-label="StudEase — Accueil">
+              <span className="app-logo-icon"><SchoolIcon /></span>
+              <div>
+                <span className="app-logo-name text-gradient">StudEase</span>
+                <p className="app-logo-tagline">Learn. Lead. Succeed.</p>
+              </div>
             </Link>
-            {/* Menu de navigation */}
-            <div className="flex items-center space-x-4">
-              {/* Si l'utilisateur est connecté, affiche les options de profil et déconnexion */}
+            <nav className="app-nav" aria-label="Navigation principale">
+              <NavLink to="/info" className="app-nav-link">
+                Découvrir
+              </NavLink>
               {user ? (
-                <div className="flex items-center space-x-4">
-                  <Link
+                <>
+                  <NavLink
                     to={user?.type === 'student' ? '/student' : '/employer'}
-                    className="text-gray-700 hover:text-[#7fba3c]"
+                    className="app-nav-link app-account-link"
+                    title={user.type === 'student' ? `${user.first_name} ${user.last_name}` : user.company_name}
                   >
-                    {user.type === 'student'
+                    <span className="hidden sm:inline">{user.type === 'student'
                       ? `${user.first_name} ${user.last_name}`
-                      : user.company_name}
-                  </Link>
+                      : user.company_name}</span>
+                    <span className="sm:hidden">Mon espace</span>
+                  </NavLink>
                   <button
                     onClick={() => logout()}
-                    className="bg-[#008080] text-white px-4 py-2 rounded-full hover:bg-[#006666] transition-colors"
+                    className="app-button app-button-outline"
                   >
                     Déconnexion
                   </button>
-                </div>
+                </>
               ) : (
-                // Si l'utilisateur n'est pas connecté, lien vers la page de connexion
                 <Link
                   to="/login"
-                  className="bg-[#008080] text-white px-4 py-2 rounded-full hover:bg-[#006666] transition-colors"
+                  className="app-button app-button-primary"
                 >
                   Connexion
                 </Link>
               )}
-            </div>
-          </div>
+            </nav>
         </div>
       </header>
-      {/* Contenu principal */}
-      <main>
+      <main className="app-content" id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

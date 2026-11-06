@@ -13,7 +13,8 @@ import {
   ListItemIcon,
   ListItemText,
   ListItem,
-  Link
+  Link,
+  Alert,
 } from '@mui/material';
 import {
   Timeline,
@@ -86,6 +87,10 @@ export default function ApplicationsList({ applications,onRemove }: Props) {
 
   return (
     <div className="space-y-6">
+      <Typography variant="h5" component="h2">Mes candidatures</Typography>
+      {Array.isArray(applications) && applications.length === 0 && (
+        <Alert severity="info">Vous n'avez pas encore envoyé de candidature. Explorez les offres pour trouver votre prochaine opportunité.</Alert>
+      )}
       {Array.isArray(applications) ? applications.map((application) => (
         <Card key={application.id} className="overflow-visible">
           <CardContent className="space-y-4">
@@ -105,7 +110,7 @@ export default function ApplicationsList({ applications,onRemove }: Props) {
             <Divider />
 
             {/* Job Details */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex items-center gap-2 text-gray-600">
                 <LocationOnIcon className="w-4 h-4" />
                 <Typography variant="body2">
@@ -246,7 +251,7 @@ export default function ApplicationsList({ applications,onRemove }: Props) {
                 <Typography variant="subtitle2" className="mb-2">
                   Étapes du recrutement
                 </Typography>
-                <Timeline>
+                <Timeline sx={{ p: 0, '& .MuiTimelineItem-root::before': { display: 'none' } }}>
                   {application.offers.application_steps.map((step: string, index: number) => (
                     <TimelineItem key={index}>
                       <TimelineSeparator>
