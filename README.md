@@ -199,6 +199,35 @@ Les API Routes seront automatiquement déployées et connectées
 à Supabase de manière sécurisée.
 
 
+6.3 Frontend et backend sur Vercel : session via proxy
+
+Le frontend appelle `/api` sur sa propre origine, jamais directement le domaine
+de l'API. Dans `studease_frontend/vercel.json`, la regle `/api/:path*` transmet
+les requetes a `https://stud-ease-api.vercel.app/api/:path*` avant la regle SPA.
+Les cookies sans attribut Domain sont ainsi associes au domaine du frontend :
+la session ne depend plus de l'autorisation des cookies tiers du navigateur.
+Conserver `credentials: 'include'` et SameSite=Lax ; SameSite=None n'est pas
+necessaire pour ce parcours. Ne pas definir Domain sur le domaine du backend.
+Le flag Secure est recommande en production HTTPS ; il ne remplace pas ce proxy.
+
+Redeployer le frontend apres cette modification. Si l'URL du backend change,
+mettre a jour la destination du proxy Vercel. Le backend doit etre accessible
+au proxy (pas de protection Vercel demandant une connexion pour ces routes).
+Supprimer les anciens cookies de session du frontend et du backend, puis se
+reconnecter. Dans DevTools, verifier :
+- POST https://DOMAINE_FRONTEND/api/auth/login : cookie Set-Cookie accepte.
+- GET https://DOMAINE_FRONTEND/api/auth/me : cookie envoye et reponse 200.
+- Aucun appel d'authentification direct au domaine du backend.
+
+En local, demarrer le backend sur le port 3000 et le frontend avec `npm run dev`.
+Le proxy Vite transmet `/api` a `http://localhost:3000`. Cette configuration ne
+demarre pas automatiquement le backend. Un hebergement statique autre que
+Vercel doit disposer d'un reverse proxy equivalent pour `/api`.
+
+Validation du proxy et du client API, depuis `studease_frontend` :
+
+    node --test scripts\apiProxy.test.cjs
+
 7. SÉCURITÉ
 ------------------------------------------------------------
 
